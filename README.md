@@ -1,5 +1,3 @@
-# game-WIP
+# game
 
-whats uuuuup
-
-lmao lmao lol
+this is a game
