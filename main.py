@@ -30,7 +30,6 @@ class Game:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
-        self.background_rgb = (randint(0, 255), randint(0, 255), randint(0, 255))
         self.keys = []
         self.background_x = -1000
         self.background_y = -1000
@@ -43,16 +42,12 @@ class Game:
 
     def events(self):
         for event in pygame.event.get():
+            # will stop running and exit
             if event.type == pygame.QUIT:
-                sys.exit()
                 self.running = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.background_rgb = (randint(0, 255), randint(0, 255), randint(0, 255))
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
-                if event.key == pygame.K_SPACE:
-                    self.background_rgb = (randint(0, 255), randint(0, 255), randint(0, 255))
 
         self.keys = pygame.key.get_pressed()
         # Each key moves the background the oposite direction as we want our character to move.
@@ -103,10 +98,6 @@ class Game:
         # draw fps
         text = font.render("FPS: " + str(int(self.clock.get_fps())), True, (0, 0, 0))
         self.screen.blit(text, (0, 30))
-
-        # draw background color
-        text = font.render("Background Color: " + str(self.background_rgb), True, (0, 0, 0))
-        self.screen.blit(text, (0, 60))
 
         # draw help text
         text = font.render("Press SPACE to change background color", True, (0, 0, 0))
