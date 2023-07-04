@@ -4,13 +4,31 @@ from random import randint
 
 pygame.init()
 
+class Character:
+    def __init__(self, screen, x, y):
+        self.screen = screen
+        self.x = x
+        self.y = y
+        self.width = 20
+        self.height = 45
+        self.animation_images = [(255, 0, 0), (0, 255, 0), (0, 0, 255), (120, 120, 120)]
+        self.animation_count = 0
+        self.rect = pygame.Rect((self.x, self.y), (self.width, self.height))
+    def events(self):
+        if (self.animation_count >= 15):
+            self.animation_count = 0
+        self.animation_count += 1
+
+        #pygame.draw.rect(self.screen, self.animation_images[self.animation_count//4][0], pygame.transform.scale((self.character_rect), (self.width * self.animation_images[self.animation_count//4][1], self.height * self.animation_images[self.animation_count//4][1])))
+    def draw(self):
+        pygame.draw.rect(self.screen, self.animation_images[self.animation_count//4], self.rect)
 
 class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((800, 600))
         self.running = True
         self.clock = pygame.time.Clock()
-        pygame.display.set_caption('Game')
+        pygame.display.set_caption('Produce Tycoon')
 
         self.background_rgb = (randint(0, 255), randint(0, 255), randint(0, 255))
         self.keys = []
@@ -19,7 +37,9 @@ class Game:
         self.display_scroll = [0, 0]
         self.background_height = 2001
         self.background_width = 2001
-        self.background_box = pygame.Rect((self.background_x - self.display_scroll[0], self.background_y - self.display_scroll[1]), (self.background_width, self.background_height))
+        self.background_box = pygame.Rect((self.background_x, self.background_y), (self.background_width, self.background_height))
+
+        self.character = Character(self.screen, 0, 0)
 
     def events(self):
         for event in pygame.event.get():
@@ -39,18 +59,26 @@ class Game:
         # Scroll left
         if self.keys[pygame.K_a]:
             self.display_scroll[0] -= 20
+            self.character.x -= 20
         # Scroll right
         if self.keys[pygame.K_d]:
             self.display_scroll[0] += 20
+            self.character.x += 20
         # Scroll down
         if self.keys[pygame.K_w]:
             self.display_scroll[1] -= 20
+            self.character.y -= 20
         # Scroll Up
         if self.keys[pygame.K_s]:
             self.display_scroll[1] += 20
+            self.character.y += 20
         
         # redrawling background image and border
         self.background_box = pygame.Rect((self.background_x - self.display_scroll[0], self.background_y - self.display_scroll[1]), (self.background_width, self.background_height))
+        self.character.events()
+
+        # updating character position
+        self.character.rect = pygame.Rect((self.character.x - self.display_scroll[0], self.character.y - self.display_scroll[1]), (self.character.width, self.character.height))
 
     def update(self):
         pass
@@ -61,6 +89,10 @@ class Game:
         # Creating a background and a border
         pygame.draw.rect(self.screen, (0, 255, 0), self.background_box)
         pygame.draw.rect(self.screen, (255, 0, 0), self.background_box, 2)
+
+        # drawling charachters
+        self.character.draw()
+
         # load font
         font = pygame.font.SysFont('Arial', 30)
 
