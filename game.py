@@ -19,7 +19,7 @@ class Game:
         self.background = Background(self.screen, -1000,-1000)
 
         self.guests: list[Guest] = []
-        self.guests.append(Guest(self.screen, random.random() * WIDTH, random.random() * HEIGHT))
+        self.guests.append(Guest(self.screen, WIDTH/2, HEIGHT/2, self.background.background_box))
 
     def events(self):
         for event in pygame.event.get():
