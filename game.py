@@ -1,6 +1,7 @@
 import pygame
 
 # local imports
+from background import Background
 from character import Character
 
 # this is the main game loop (events, update, draw)
@@ -13,7 +14,11 @@ class Game:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
-        self.character = Character(self.screen, WIDTH/2, HEIGHT/2)
+        self.background = Background(self.screen, -1000,-1000)
+
+        self.characters = []
+        self.character_a = Character(self.screen, WIDTH/2, HEIGHT/2)
+        self.characters.append(self.character_a)
 
     def events(self):
         for event in pygame.event.get():
@@ -23,15 +28,24 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
+        
+        self.background.events()
+        for character in self.characters:
+            character.events()
 
     def update(self):
-        self.character.update()
+        self.background.update()
+        for character in self.characters:
+            character.update()
 
     def draw(self):
         self.screen.fill((0,0,0))
 
+        # drawling background
+        self.background.draw()
         # drawling charachters
-        self.character.draw()
+        for character in self.characters:
+            character.draw()
 
         # load font
         font = pygame.font.SysFont('Arial', 30)
@@ -49,7 +63,7 @@ class Game:
         self.screen.blit(text, (0, 150))
         
         # draw position (x, y)
-        text = font.render("(" + str(self.character.x) + ", " + str(self.character.y) + ")", True, (0, 0, 0))
+        text = font.render("(" + str(self.character_a.x) + ", " + str(self.character_a.y) + ")", True, (0, 0, 0))
         self.screen.blit(text, (0, 180))
 
         pygame.display.update()
