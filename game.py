@@ -62,7 +62,7 @@ class Game:
         self.screen.blit(text, (0, 150))
         
         # draw position (x, y)
-        text = font.render("(" + str(self.character_a.x) + ", " + str(self.character_a.y) + ")", True, (0, 0, 0))
+        text = font.render("(" + str(self.characters[0].x) + ", " + str(self.characters[0].y) + ")", True, (0, 0, 0))
         self.screen.blit(text, (0, 180))
 
         pygame.display.update()
