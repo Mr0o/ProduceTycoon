@@ -1,7 +1,7 @@
 import pygame
 
 class Character:
-    def __init__(self, screen, x, y):
+    def __init__(self, screen: pygame.Surface, x: int, y: int):
         self.screen = screen
         self.x = x
         self.y = y
