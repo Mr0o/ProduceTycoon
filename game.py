@@ -16,14 +16,6 @@ class Game:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
-        self.keys = []
-        self.background_x = -1000
-        self.background_y = -1000
-        self.display_scroll = [0, 0]
-        self.background_height = 2001
-        self.background_width = 2001
-        self.background_box = pygame.Rect((self.background_x, self.background_y), (self.background_width, self.background_height))
-
         self.character = Character(self.screen, WIDTH/2, HEIGHT/2)
 
     def events(self):
@@ -35,41 +27,11 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
 
-        self.keys = pygame.key.get_pressed()
-        # Each key moves the background the oposite direction as we want our character to move.
-        # Scroll left
-        if self.keys[pygame.K_a]:
-            self.display_scroll[0] -= 20
-            self.character.x -= 20
-        # Scroll right
-        if self.keys[pygame.K_d]:
-            self.display_scroll[0] += 20
-            self.character.x += 20
-        # Scroll down
-        if self.keys[pygame.K_w]:
-            self.display_scroll[1] -= 20
-            self.character.y -= 20
-        # Scroll Up
-        if self.keys[pygame.K_s]:
-            self.display_scroll[1] += 20
-            self.character.y += 20
-        
-        # redrawling background image and border
-        self.background_box = pygame.Rect((self.background_x - self.display_scroll[0], self.background_y - self.display_scroll[1]), (self.background_width, self.background_height))
-        self.character.events()
-
-        # updating character position
-        self.character.rect = pygame.Rect((self.character.x - self.display_scroll[0], self.character.y - self.display_scroll[1]), (self.character.width, self.character.height))
-
     def update(self):
-        pass
+        self.character.update()
 
     def draw(self):
         self.screen.fill((0,0,0))
-
-        # Creating a background and a border
-        pygame.draw.rect(self.screen, (0, 255, 0), self.background_box)
-        pygame.draw.rect(self.screen, (255, 0, 0), self.background_box, 2)
 
         # drawling charachters
         self.character.draw()
@@ -85,12 +47,12 @@ class Game:
         text = font.render("FPS: " + str(int(self.clock.get_fps())), True, (0, 0, 0))
         self.screen.blit(text, (0, 30))
 
-        # draw help text
-        text = font.render("Press SPACE to change background color", True, (0, 0, 0))
+        # draw position text
+        text = font.render("Pos", True, (0, 0, 0))
         self.screen.blit(text, (0, 150))
         
         # draw position (x, y)
-        text = font.render("(" + str(self.background_box.x) + ", " + str(self.background_box.y) + ")", True, (0, 0, 0))
+        text = font.render("(" + str(self.character.x) + ", " + str(self.character.y) + ")", True, (0, 0, 0))
         self.screen.blit(text, (0, 180))
 
         pygame.display.update()
