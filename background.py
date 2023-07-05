@@ -8,6 +8,9 @@ class Background:
         self.height = 2001
         self.width = 2001
         self.background_box = pygame.Rect((self.x, self.y), (self.width, self.height))
+        self.background_img = pygame.image.load('./bg.jpg')
+        self.background_img = pygame.transform.scale(self.background_img, (self.width, self.height))
+
     def events(self):
         self.keys = pygame.key.get_pressed()
         # Each key moves the background the oposite direction that we want our character to move.
@@ -40,5 +43,5 @@ class Background:
 
     def draw(self):
         # Drawling background and a border
-        pygame.draw.rect(self.screen, (100, 255, 12), self.background_box)
+        self.screen.blit(self.background_img, (self.x, self.y))
         pygame.draw.rect(self.screen, (255, 0, 0), self.background_box, 2)
