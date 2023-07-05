@@ -14,8 +14,7 @@ class Background:
         self.background_img = pygame.transform.scale(self.background_img, (self.width, self.height))
 
     def events(self):
-        self.x = Movement.check_if_move(self.x, self.y)[0]
-        self.y = Movement.check_if_move(self.x, self.y)[1]
+        self.x, self.y = Movement.check_if_move(self.x, self.y)
             
     def update(self):
         # Updatig background and border
