@@ -5,11 +5,8 @@ from character import Character
 
 # this is the main game loop (events, update, draw)
 class Game:
-    def __init__(self):
+    def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
         pygame.init()
-
-        WIDTH = 800
-        HEIGHT = 600
 
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.running = True
