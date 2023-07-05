@@ -24,7 +24,7 @@ class Game:
         self.background_width = 2001
         self.background_box = pygame.Rect((self.background_x, self.background_y), (self.background_width, self.background_height))
 
-        self.character = Character(self.screen, 0, 0)
+        self.character = Character(self.screen, WIDTH/2, HEIGHT/2)
 
     def events(self):
         for event in pygame.event.get():
