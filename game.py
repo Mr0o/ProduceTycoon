@@ -28,7 +28,7 @@ class Game:
         self.character.update()
 
     def draw(self):
-        self.screen.fill((0,0,0))
+        self.screen.fill((100,100,100))
 
         # drawling charachters
         self.character.draw()
