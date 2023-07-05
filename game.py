@@ -8,7 +8,10 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        self.screen = pygame.display.set_mode((800, 600))
+        WIDTH = 800
+        HEIGHT = 600
+
+        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.running = True
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
