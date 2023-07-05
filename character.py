@@ -23,7 +23,6 @@ class Character:
             self.animation_count = 0
         self.animation_count += 1
 
-    def update(self):
         self.keys = pygame.key.get_pressed()
         # Each key moves the background the oposite direction as we want our character to move.
         # Scroll left
@@ -42,10 +41,21 @@ class Character:
         if self.keys[pygame.K_s]:
             self.display_scroll[1] += 20
             self.y += 20
-        
+
+        # get relative mouse position
+        self.rel_mouse_pos = pygame.mouse.get_rel()
+        # get mouse buttons
+        self.mouse_buttons = pygame.mouse.get_pressed()
+        # if left mouse button is pressed
+        if self.mouse_buttons[0]:
+            # scroll background
+            self.display_scroll[0] -= self.rel_mouse_pos[0]
+            self.display_scroll[1] -= self.rel_mouse_pos[1]
+
+
+    def update(self):
         # redrawling background image and border
         self.background_box = pygame.Rect((self.background_x - self.display_scroll[0], self.background_y - self.display_scroll[1]), (self.background_width, self.background_height))
-        self.events()
 
         # updating character position
         self.rect = pygame.Rect((self.x - self.display_scroll[0], self.y - self.display_scroll[1]), (self.width, self.height))
