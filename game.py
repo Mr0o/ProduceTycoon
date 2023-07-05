@@ -38,7 +38,7 @@ class Game:
             character.update()
 
     def draw(self):
-        self.screen.fill((0,0,0))
+        self.screen.fill((120,120,120))
 
         # drawling background
         self.background.draw()
