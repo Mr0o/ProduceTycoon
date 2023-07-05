@@ -33,11 +33,11 @@ class Background:
             # scroll background
             self.x += self.rel_mouse_pos[0]
             self.y += self.rel_mouse_pos[1]
+            
     def update(self):
-        self.events()
         # Updatig background and border
         self.background_box = pygame.Rect((self.x, self.y), (self.width, self.height))
-        self.draw()
+
     def draw(self):
         # Drawling background and a border
         pygame.draw.rect(self.screen, (100, 255, 12), self.background_box)
