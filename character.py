@@ -12,21 +12,6 @@ class Character:
         self.rect = pygame.Rect((self.x, self.y), (self.width, self.height))
 
     def events(self):
-        self.keys = pygame.key.get_pressed()
-        # Each key moves the background the oposite direction that we want our character to move.
-        # Scroll left
-        if self.keys[pygame.K_a]:
-            self.x += 20
-        # Scroll right
-        if self.keys[pygame.K_d]:
-            self.x -= 20
-        # Scroll down
-        if self.keys[pygame.K_w]:
-            self.y += 20
-        # Scroll Up
-        if self.keys[pygame.K_s]:
-            self.y -= 20
-        
         # counting the frames once we get to 15 we reset to 0 back to the first image in out animation
         if (self.animation_count >= 15):
             self.animation_count = 0
