@@ -26,16 +26,6 @@ class Character:
         # Scroll Up
         if self.keys[pygame.K_s]:
             self.y -= 20
-
-        # get relative mouse position
-        self.rel_mouse_pos = pygame.mouse.get_rel()
-        # get mouse buttons
-        self.mouse_buttons = pygame.mouse.get_pressed()
-        # if left mouse button is pressed
-        if self.mouse_buttons[0]:
-            # scroll background
-            self.x += self.rel_mouse_pos[0]
-            self.y += self.rel_mouse_pos[1]
         
         # counting the frames once we get to 15 we reset to 0 back to the first image in out animation
         if (self.animation_count >= 15):
