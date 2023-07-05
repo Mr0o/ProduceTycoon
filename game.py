@@ -16,9 +16,8 @@ class Game:
 
         self.background = Background(self.screen, -1000,-1000)
 
-        self.characters = []
-        self.character_a = Character(self.screen, WIDTH/2, HEIGHT/2)
-        self.characters.append(self.character_a)
+        self.characters: list[Character] = []
+        self.characters.append(Character(self.screen, WIDTH/2, HEIGHT/2))
 
     def events(self):
         for event in pygame.event.get():
