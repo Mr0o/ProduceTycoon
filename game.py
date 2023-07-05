@@ -23,6 +23,8 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
+        
+        self.character.events()
 
     def update(self):
         self.character.update()
