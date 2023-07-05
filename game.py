@@ -1,13 +1,15 @@
 import pygame
+import random
 
 # local imports
 from background import Background
-from character import Character
+from guest import Guest
 
 # this is the main game loop (events, update, draw)
 class Game:
     def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
         pygame.init()
+        #random.seed(100)
 
         self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
         self.running = True
@@ -16,8 +18,8 @@ class Game:
 
         self.background = Background(self.screen, -1000,-1000)
 
-        self.characters: list[Character] = []
-        self.characters.append(Character(self.screen, WIDTH/2, HEIGHT/2))
+        self.guests: list[Guest] = []
+        self.guests.append(Guest(self.screen, random.random() * WIDTH, random.random() * HEIGHT))
 
     def events(self):
         for event in pygame.event.get():
@@ -29,13 +31,13 @@ class Game:
                     self.running = False
         
         self.background.events()
-        for character in self.characters:
-            character.events()
+        for guest in self.guests:
+            guest.events()
 
     def update(self):
         self.background.update()
-        for character in self.characters:
-            character.update()
+        for guest in self.guests:
+            guest.update()
 
     def draw(self):
         self.screen.fill((120,120,120))
@@ -43,8 +45,8 @@ class Game:
         # drawling background
         self.background.draw()
         # drawling charachters
-        for character in self.characters:
-            character.draw()
+        for guest in self.guests:
+            guest.draw()
 
         # load font
         font = pygame.font.SysFont('Arial', 30)
@@ -62,7 +64,7 @@ class Game:
         self.screen.blit(text, (0, 150))
         
         # draw position (x, y)
-        text = font.render("(" + str(self.characters[0].x) + ", " + str(self.characters[0].y) + ")", True, (0, 0, 0))
+        text = font.render("(" + str(self.guests[0].x) + ", " + str(self.guests[0].y) + ")", True, (0, 0, 0))
         self.screen.blit(text, (0, 180))
 
         pygame.display.update()
