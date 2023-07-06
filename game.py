@@ -19,15 +19,13 @@ class Game:
 
         self.rows, self.col = (20, 20)
         self.background_starting_pos = -2000
-        self.background_grid = []
+        self.background_grid: list[Background] = []
 
-        #for i in range(self.rows):
-            #self.background_grid.append(())
-        for j in range(self.col):
-            self.background_grid.append((0, 0))
-        self.mat_vals = np.vstack(self.background_grid)
-
-        #Background(self.screen, self.background_starting_pos - 20 * i,self.background_starting_pos - 20 * i
+        for i in range(self.rows):
+            col: list[Background] = []
+            for j in range(self.col):
+                col.append(Background(self.screen, self.background_starting_pos - 20 * i,self.background_starting_pos - 20 * i))
+                self.background_grid.append(col)
 
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, WIDTH/2, HEIGHT/2))
@@ -43,7 +41,7 @@ class Game:
         
         for i in range(self.rows):
             for j in range(self.col):
-                self.background_grid[i][j].events()
+               self.background_grid[i][j].events()
         for guest in self.guests:
             guest.events()
 
@@ -51,17 +49,17 @@ class Game:
 
         #for i in range(self.rows):
         #    for j in range(self.col):    
-        #        self.background_grid[i][j].update()
+         #       self.background_grid[i][j].update()
         for guest in self.guests:
             guest.update()
 
     def draw(self):
-        self.screen.fill((0, 0, 0))
+        self.screen.fill((255, 255, 255))
 
         # drawling background
         for i in range(self.rows):
             for j in range(self.col):
-                self.background_grid[i][j].draw()
+               self.background_grid[i][j].draw()
         # drawling charachters
         for guest in self.guests:
             guest.draw()
