@@ -1,6 +1,6 @@
 import pygame
 
-def check_if_move(x: int, y: int):
+def inputMovement(x: int, y: int) -> tuple[int, int]:
     keys = pygame.key.get_pressed()
     # Each key moves the background the oposite direction that we want our character to move.
     # Scroll left

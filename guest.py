@@ -1,7 +1,7 @@
 import pygame
 import random
 
-from movement import check_if_move
+from movement import inputMovement
 
 class Guest(object):
     def __init__(self, screen: pygame.Surface, x: int, y: int):
@@ -23,7 +23,7 @@ class Guest(object):
             self.animation_count = 0
         self.animation_count += 1
 
-        self.x, self.y = check_if_move(self.x, self.y)
+        self.x, self.y = inputMovement(self.x, self.y)
         
 
         # Add flipping to images to show which direction we are moving
