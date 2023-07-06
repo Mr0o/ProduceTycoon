@@ -2,7 +2,7 @@ import pygame
 
 def inputMovement(x: int, y: int) -> tuple[int, int]:
     keys = pygame.key.get_pressed()
-    # Each key moves the background the oposite direction that we want our character to move.
+    # Each key moves the tileMap the oposite direction that we want our character to move.
     # Scroll left
     if keys[pygame.K_a]:
         x += 20
@@ -22,7 +22,7 @@ def inputMovement(x: int, y: int) -> tuple[int, int]:
     mouse_buttons = pygame.mouse.get_pressed()
     # if left mouse button is pressed
     if mouse_buttons[0]:
-        # scroll background
+        # scroll tileMap
         x += rel_mouse_pos[0]
         y += rel_mouse_pos[1]
 

@@ -1,7 +1,7 @@
 import pygame
 
 # local imports
-from background import Background
+from tileMap import TileMap
 from guest import Guest
 
 # this is the main game loop (events, update, draw)
@@ -15,7 +15,7 @@ class Game:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
-        self.background = Background(self.screen, 0,0)
+        self.tileMap = TileMap(self.screen, 0,0)
 
 
         self.guests: list[Guest] = []
@@ -30,13 +30,13 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
         
-        self.background.events()
+        self.tileMap.events()
         
         for guest in self.guests:
             guest.events()
 
     def update(self):
-        self.background.update()
+        self.tileMap.update()
 
         for guest in self.guests:
             guest.update()
@@ -44,8 +44,8 @@ class Game:
     def draw(self):
         self.screen.fill((0, 0, 0))
 
-        # drawing background
-        self.background.draw()
+        # drawing tileMap
+        self.tileMap.draw()
 
         # drawing charachters
         for guest in self.guests:
