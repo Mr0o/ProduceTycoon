@@ -2,20 +2,20 @@ import pygame
 
 from movement import Movement
 
+background_width = 20
+
 class Background:
     def __init__(self, screen: pygame.Surface, x: int, y: int):
         self.screen = screen
         self.x = x
         self.y = y
-        self.height = 2001
-        self.width = 2001
-        self.background_box = pygame.Rect((self.x, self.y), (self.width, self.height))
+        self.size = 20
+        self.background_box = pygame.Rect((self.x, self.y), (self.size, self.size))
         self.background_img = pygame.image.load('./bg.jpg')
-        self.background_img = pygame.transform.scale(self.background_img, (self.width, self.height))
+        self.background_img = pygame.transform.scale(self.background_img, (self.size, self.size))
 
     def events(self):
-        self.x = Movement.check_if_move(self.x, self.y)[0]
-        self.y = Movement.check_if_move(self.x, self.y)[1]
+        self.x, self.y = Movement.check_if_move(self.x, self.y)
             
     def update(self):
         # Updatig background and border
