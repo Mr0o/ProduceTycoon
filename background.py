@@ -18,7 +18,7 @@ class Background:
         for i in range(self.rows):
             col: list[Tile] = []
             for j in range(self.col):
-                col.append(Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size))
+                col.append(Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size, pygame.image.load('./bg.jpg')))
             self.background_grid.append(col)
 
     def events(self):

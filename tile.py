@@ -1,7 +1,7 @@
 import pygame
 
-class Tile:
-    def __init__(self, screen: pygame.Surface, x: int, y: int, size: int, tile_img: pygame.Surface = pygame.image.load('./bg.jpg')):
+class Tile():
+    def __init__(self, screen: pygame.Surface, x: int, y: int, size: int, tile_img: pygame.Surface):
         self.screen = screen
         self.x = x
         self.y = y
