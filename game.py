@@ -16,16 +16,15 @@ class Game:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
-        self.background_grid_width = 200
-        self.background_drig_height = 200
-        for i in range(self.background_grid_width):
-            for j in range(self.background_grid_height):
-                self.background = Background(self.screen, -1000,-1000)
-        self.background_grid = []
+        
+        self.rows, self.col = (200, 200)
+        self.background_starting_pos = -2000
         
 
+        self.background_grid = [[Background(self.screen, self.background_starting_pos - 20 * self.rows,self.background_starting_pos - 20 * self.rows)] * self.rows] * self.col
+
         self.guests: list[Guest] = []
-        self.guests.append(Guest(self.screen, WIDTH/2, HEIGHT/2, self.background.background_box))
+        self.guests.append(Guest(self.screen, WIDTH/2, HEIGHT/2))
 
     def events(self):
         for event in pygame.event.get():
