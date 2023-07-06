@@ -19,22 +19,30 @@ class Background:
         for i in range(self.rows):
             col: list[Tile] = []
             for j in range(self.col):
-                col.append(Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size))
+                if (i + j) % 2 == 0:
+                    col.append(Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size))
+                else:
+                    col.append(Graphic_Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size, pygame.image.load('./bg.jpg')))
             self.background_grid.append(col)
-            
-        self.background_grid[3][8] = Graphic_Tile(self.screen, self.background_starting_pos + 8 * self.tile_size, self.background_starting_pos + 3 * self.tile_size, self.tile_size, pygame.image.load('./bg.jpg'))
+
+        self.rect = pygame.Rect((0, 0), (self.screen.get_width(), self.screen.get_height()))
 
     def events(self):
-        self.x, self.y = inputMovement(self.x, self.y)
+        for i in range(self.rows):
+            for j in range(self.col):
+                self.background_grid[i][j].x, self.background_grid[i][j].y = inputMovement(self.background_grid[i][j].x, self.background_grid[i][j].y)
+        self.rect.x, self.rect.y = inputMovement(self.rect.x, self.rect.y)
 
     def update(self):
-        pass
-
+        for i in range(self.rows):
+            for j in range(self.col):
+                self.background_grid[i][j].update(self.background_grid[i][j].x, self.background_grid[i][j].y)
     def draw(self):
         # drawing background
         for i in range(self.rows):
             for j in range(self.col):
                 self.background_grid[i][j].draw()
+        pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
 
         
 

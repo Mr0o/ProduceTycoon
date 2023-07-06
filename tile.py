@@ -6,8 +6,14 @@ class Tile():
         self.x = x
         self.y = y
         self.size = size
-        self.tile_img = pygame.Rect((self.x, self.y), (self.size, self.size))
+        #self.tile_img = pygame.image.load('./bg.jpg')
+        #self.tile_img = pygame.Rect((self.x, self.y), (self.size, self.size))
+
+    def update(self, x:int, y:int):
+        pass
+        #self.tile_img = pygame.Rect((self.x, self.y), (self.size, self.size))
         
     def draw(self):
-        pygame.draw.rect(self.screen, (0, 0, 0), self.tile_img)
-        #self.screen.blit(self.background_grid.tile_img, (self.x, self.y))
+        pass
+        #pygame.draw.rect(self.screen, (255, 255, 255), self.tile_img)
+        #self.screen.blit(self.tile_img, (self.x, self.y))
