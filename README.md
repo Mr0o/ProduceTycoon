@@ -17,7 +17,6 @@ py main.py
 
 # Goals
 
-- [ ] Create a camera system
-- [ ] Create a tile system
+- [X] Create a tile system
 - [ ] Create tile types
 - [ ] Create display tiles (tomatoes, bananas, etc)
