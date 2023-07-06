@@ -14,3 +14,10 @@ or  (Windows)
 ```
 py main.py
 ```
+
+# Goals
+
+- [x] Create a camera system
+- [x] Create a tile system
+- [x] Create tile types
+- [x] Create display tiles (tomatoes, bananas, etc)
