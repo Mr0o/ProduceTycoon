@@ -4,11 +4,10 @@ import random
 from movement import Movement
 
 class Guest(object):
-    def __init__(self, screen: pygame.Surface, x: int, y: int, background_dim: pygame.Rect):
+    def __init__(self, screen: pygame.Surface, x: int, y: int):
         self.screen = screen
         self.x = x
         self.y = y
-        self.background_dim = background_dim
         self.width = 30
         self.height = 45
         self.moving_left = False
