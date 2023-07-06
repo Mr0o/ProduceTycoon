@@ -10,8 +10,8 @@ class Tile():
         #self.tile_img = pygame.Rect((self.x, self.y), (self.size, self.size))
 
     def update(self, x:int, y:int):
-        pass
-        #self.tile_img = pygame.Rect((self.x, self.y), (self.size, self.size))
+        self.x += x
+        self.y += y
         
     def draw(self):
         pass

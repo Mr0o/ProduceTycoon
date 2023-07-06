@@ -9,6 +9,8 @@ class Background:
         self.screen = screen
         self.x = x
         self.y = y
+        self.x_mov = 0
+        self.y_mov = 0
 
         # create grid of tiles
         self.rows = screen.get_height() // 50
@@ -20,28 +22,32 @@ class Background:
             col: list[Tile] = []
             for j in range(self.col):
                 if (i + j) % 2 == 0:
-                    col.append(Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size))
-                else:
                     col.append(Graphic_Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size, pygame.image.load('./bg.jpg')))
+                else:
+                    col.append(Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size))
             self.background_grid.append(col)
 
+        # creates rectangle size of screen for border
         self.rect = pygame.Rect((0, 0), (self.screen.get_width(), self.screen.get_height()))
 
     def events(self):
-        for i in range(self.rows):
-            for j in range(self.col):
-                self.background_grid[i][j].x, self.background_grid[i][j].y = inputMovement(self.background_grid[i][j].x, self.background_grid[i][j].y)
-        self.rect.x, self.rect.y = inputMovement(self.rect.x, self.rect.y)
+        # changing the x and y positions
+        self.x_mov, self.y_mov = inputMovement(self.x, self.y)
 
     def update(self):
         for i in range(self.rows):
             for j in range(self.col):
-                self.background_grid[i][j].update(self.background_grid[i][j].x, self.background_grid[i][j].y)
+                # updates each tiles x and y positions
+                self.background_grid[i][j].update(self.x_mov, self.y_mov)
+        #updating borders xand y positions
+        self.rect.x += self.x_mov 
+        self.rect.y += self.y_mov
     def draw(self):
         # drawing background
         for i in range(self.rows):
             for j in range(self.col):
                 self.background_grid[i][j].draw()
+        # draws border
         pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
 
         
