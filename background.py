@@ -3,6 +3,7 @@ import pygame
 from functions import inputMovement
 from tile import Tile
 from graphic_tile import Graphic_Tile
+from boundary_tile import Boundary_Tile
 
 class Background:
     def __init__(self, screen: pygame.Surface, x: int, y: int):
@@ -21,7 +22,9 @@ class Background:
         for i in range(self.rows):
             col: list[Tile] = []
             for j in range(self.col):
-                if (i + j) % 2 == 0:
+                if i == 0 or j == 0 or i == self.rows-1 or j == self.col-1:
+                    col.append(Boundary_Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size, pygame.image.load('./Barrier.png')))
+                elif (i + j) % 2 == 0:
                     col.append(Graphic_Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size, pygame.image.load('./bg.jpg')))
                 else:
                     col.append(Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size))
