@@ -15,10 +15,7 @@ class Game:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
-        self.rows, self.col = (20, 20)
-        self.background_starting_pos = -2000
-
-        self.background = Background(self.screen, self.background_starting_pos, self.background_starting_pos)
+        self.background = Background(self.screen, 0,0)
 
 
         self.guests: list[Guest] = []
@@ -45,7 +42,7 @@ class Game:
         self.background.update()
 
     def draw(self):
-        self.screen.fill((255, 255, 255))
+        self.screen.fill((120, 120, 120))
 
         # drawing background
         self.background.draw()
