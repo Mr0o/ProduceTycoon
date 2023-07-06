@@ -1,5 +1,6 @@
 import pygame
 import random
+import numpy as np
 
 # local imports
 from background import Background
@@ -16,12 +17,17 @@ class Game:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
-        
-        self.rows, self.col = (200, 200)
+        self.rows, self.col = (20, 20)
         self.background_starting_pos = -2000
-        
+        self.background_grid = []
 
-        self.background_grid = [[Background(self.screen, self.background_starting_pos - 20 * self.rows,self.background_starting_pos - 20 * self.rows)] * self.rows] * self.col
+        #for i in range(self.rows):
+            #self.background_grid.append(())
+        for j in range(self.col):
+            self.background_grid.append((0, 0))
+        self.mat_vals = np.vstack(self.background_grid)
+
+        #Background(self.screen, self.background_starting_pos - 20 * i,self.background_starting_pos - 20 * i
 
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, WIDTH/2, HEIGHT/2))
@@ -35,20 +41,27 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
         
-        self.background.events()
+        for i in range(self.rows):
+            for j in range(self.col):
+                self.background_grid[i][j].events()
         for guest in self.guests:
             guest.events()
 
     def update(self):
-        self.background.update()
+
+        #for i in range(self.rows):
+        #    for j in range(self.col):    
+        #        self.background_grid[i][j].update()
         for guest in self.guests:
             guest.update()
 
     def draw(self):
-        self.screen.fill((120,120,120))
+        self.screen.fill((0, 0, 0))
 
         # drawling background
-        self.background.draw()
+        for i in range(self.rows):
+            for j in range(self.col):
+                self.background_grid[i][j].draw()
         # drawling charachters
         for guest in self.guests:
             guest.draw()
