@@ -1,6 +1,4 @@
 import pygame
-import random
-import numpy as np
 
 # local imports
 from background import Background
@@ -19,13 +17,9 @@ class Game:
 
         self.rows, self.col = (20, 20)
         self.background_starting_pos = -2000
-        self.background_grid: list[Background] = []
 
-        for i in range(self.rows):
-            col: list[Background] = []
-            for j in range(self.col):
-                col.append(Background(self.screen, self.background_starting_pos - 20 * i,self.background_starting_pos - 20 * i))
-                self.background_grid.append(col)
+        self.background = Background(self.screen, self.background_starting_pos, self.background_starting_pos)
+
 
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, WIDTH/2, HEIGHT/2))
@@ -39,28 +33,24 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
         
-        for i in range(self.rows):
-            for j in range(self.col):
-               self.background_grid[i][j].events()
         for guest in self.guests:
             guest.events()
 
-    def update(self):
+        self.background.events()
 
-        #for i in range(self.rows):
-        #    for j in range(self.col):    
-         #       self.background_grid[i][j].update()
+    def update(self):
         for guest in self.guests:
             guest.update()
+
+        self.background.update()
 
     def draw(self):
         self.screen.fill((255, 255, 255))
 
-        # drawling background
-        for i in range(self.rows):
-            for j in range(self.col):
-               self.background_grid[i][j].draw()
-        # drawling charachters
+        # drawing background
+        self.background.draw()
+
+        # drawing charachters
         for guest in self.guests:
             guest.draw()
 
