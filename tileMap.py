@@ -1,9 +1,7 @@
 import pygame
 
 from functions import inputMovement
-from tile import Tile
-from graphic_tile import Graphic_Tile
-from boundary_tile import Boundary_Tile
+from tile import Tile, Type
 
 class TileMap():
     def __init__(self, screen: pygame.Surface, x: int, y: int):
@@ -23,11 +21,11 @@ class TileMap():
             col: list[Tile] = []
             for j in range(self.col):
                 if i == 0 or j == 0 or i == self.rows-1 or j == self.col-1:
-                    col.append(Boundary_Tile(self.screen, self.tileMap_starting_pos + j * self.tile_size, self.tileMap_starting_pos + i * self.tile_size, self.tile_size, pygame.image.load('./Barrier.png')))
+                    col.append(Tile(self.screen, self.tileMap_starting_pos + j * self.tile_size, self.tileMap_starting_pos + i * self.tile_size, self.tile_size, Type.BOUNDARY))
                 elif (i + j) % 2 == 0:
-                    col.append(Graphic_Tile(self.screen, self.tileMap_starting_pos + j * self.tile_size, self.tileMap_starting_pos + i * self.tile_size, self.tile_size, pygame.image.load('./bg.jpg')))
+                    col.append(Tile(self.screen, self.tileMap_starting_pos + j * self.tile_size, self.tileMap_starting_pos + i * self.tile_size, self.tile_size, Type.INTERACTABLE))
                 else:
-                    col.append(Tile(self.screen, self.tileMap_starting_pos + j * self.tile_size, self.tileMap_starting_pos + i * self.tile_size, self.tile_size))
+                    col.append(Tile(self.screen, self.tileMap_starting_pos + j * self.tile_size, self.tileMap_starting_pos + i * self.tile_size, self.tile_size, Type.WALKABLE))
             self.tileMap_grid.append(col)
 
         # creates rectangle size of screen for border
@@ -45,7 +43,7 @@ class TileMap():
         #updating borders x and y positions
         self.rect.x += self.x_mov 
         self.rect.y += self.y_mov
-        
+
     def draw(self):
         # drawing tileMap
         for i in range(self.rows):
