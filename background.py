@@ -1,6 +1,6 @@
 import pygame
 
-from movement import inputMovement
+from functions import inputMovement
 from tile import Tile
 
 class Background:

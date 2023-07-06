@@ -1,7 +1,7 @@
 import pygame
 import random
 
-from movement import inputMovement
+from functions import inputMovement
 
 class Guest(object):
     def __init__(self, screen: pygame.Surface, x: int, y: int):
