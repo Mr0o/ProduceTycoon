@@ -42,7 +42,7 @@ class Background:
             for j in range(self.col):
                 # updates each tiles x and y positions
                 self.background_grid[i][j].update(self.x_mov, self.y_mov)
-        #updating borders xand y positions
+        #updating borders x and y positions
         self.rect.x += self.x_mov 
         self.rect.y += self.y_mov
     def draw(self):
