@@ -5,7 +5,7 @@ from tileMap import TileMap
 from guest import Guest
 
 # this is the main game loop (events, update, draw)
-class Game:
+class Game():
     def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
         pygame.init()
         #random.seed(100)
@@ -14,6 +14,9 @@ class Game:
         self.running = True
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
+
+        # load font
+        self.debugFont = pygame.font.SysFont('Arial', 15, bold=True)
 
         self.tileMap = TileMap(self.screen, 0,0)
 
@@ -41,6 +44,8 @@ class Game:
         for guest in self.guests:
             guest.update()
 
+        pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
+
     def draw(self):
         self.screen.fill((0, 0, 0))
 
@@ -51,24 +56,21 @@ class Game:
         for guest in self.guests:
             guest.draw()
 
-        # load font
-        font = pygame.font.SysFont('Arial', 30)
-
-        # draw text
-        text = font.render('Hello World', True, (0, 0, 0))
+        # draw raw frametime
+        ft = int(self.clock.get_rawtime())
+        # change color based on frametime to indicate performance (green = good, yellow = ok, red = bad)
+        if ft > 16:
+            ftColor = (255, 0, 0)
+        elif ft > 8:
+            ftColor = (255, 255, 0)
+        else:
+            ftColor = (0, 255, 0)
+        text = self.debugFont.render(str(ft) + "ms", True, ftColor)
         self.screen.blit(text, (0, 0))
 
         # draw fps
-        text = font.render("FPS: " + str(int(self.clock.get_fps())), True, (0, 0, 0))
-        self.screen.blit(text, (0, 30))
-
-        # draw position text
-        text = font.render("Pos", True, (0, 0, 0))
-        self.screen.blit(text, (0, 150))
-        
-        # draw position (x, y)
-        text = font.render("(" + str(self.guests[0].x) + ", " + str(self.guests[0].y) + ")", True, (0, 0, 0))
-        self.screen.blit(text, (0, 180))
+        text = self.debugFont.render(str(int(self.clock.get_fps())) + " FPS ", True, (255, 255, 255))
+        self.screen.blit(text, (0, text.get_height()))
 
         pygame.display.update()
 
