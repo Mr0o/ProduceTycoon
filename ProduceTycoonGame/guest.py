@@ -1,7 +1,7 @@
 import pygame
 import random
 
-from functions import inputMovement
+from ProduceTycoonGame.functions import inputMovement
 
 class Guest():
     def __init__(self, screen: pygame.Surface, x: int, y: int):

@@ -1,8 +1,8 @@
 import pygame
 
 # local imports
-from tileMap import TileMap
-from guest import Guest
+from ProduceTycoonGame.tileMap import TileMap
+from ProduceTycoonGame.guest import Guest
 
 # this is the main game loop (events, update, draw)
 class Game():

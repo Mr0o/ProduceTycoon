@@ -1,7 +1,7 @@
 import pygame
 
-from functions import inputMovement
-from tile import Tile, Type
+from ProduceTycoonGame.functions import inputMovement
+from ProduceTycoonGame.tile import Tile, Type
 
 class TileMap():
     def __init__(self, screen: pygame.Surface, x: int, y: int):
