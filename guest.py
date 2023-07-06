@@ -3,7 +3,7 @@ import random
 
 from functions import inputMovement
 
-class Guest(object):
+class Guest():
     def __init__(self, screen: pygame.Surface, x: int, y: int):
         self.screen = screen
         self.x = x
