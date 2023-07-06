@@ -1,8 +1,8 @@
 import pygame
 from enum import Enum
 
-WALKABLE_TILE_IMG = pygame.image.load('./bg.jpg')
-INTERACTABLE_TILE_IMG = pygame.image.load('./bg.jpg')
+WALKABLE_TILE_IMG = pygame.image.load('./Walkable.jpg')
+INTERACTABLE_TILE_IMG = pygame.image.load('./Interactable.jpg')
 BOUNDARY_TILE_IMG = pygame.image.load('./Barrier.png')
 
 class Type(Enum):
