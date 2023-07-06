@@ -1,12 +1,14 @@
 import pygame
+import random
 
 from movement import Movement
 
 class Guest(object):
-    def __init__(self, screen: pygame.Surface, x: int, y: int):
+    def __init__(self, screen: pygame.Surface, x: int, y: int, background_dim: pygame.Rect):
         self.screen = screen
         self.x = x
         self.y = y
+        self.background_dim = background_dim
         self.width = 30
         self.height = 45
         self.moving_left = False
@@ -17,13 +19,13 @@ class Guest(object):
         self.rect = pygame.Rect((self.x, self.y), (self.width, self.height))
 
     def events(self):
-        # counting the frames once we get to 39 we reset to 0 back to the first image in out animation
+        # counting the frames once we get to 49 we reset to 0 back to the first image in out animation
         if (self.animation_count >= 49):
             self.animation_count = 0
         self.animation_count += 1
 
-        self.x = Movement.check_if_move(self.x, self.y)[0]
-        self.y = Movement.check_if_move(self.x, self.y)[1]
+        self.x, self.y = Movement.check_if_move(self.x, self.y)
+        
 
         # Add flipping to images to show which direction we are moving
     

@@ -27,4 +27,6 @@ class Movement:
             # scroll background
             x += rel_mouse_pos[0]
             y += rel_mouse_pos[1]
+
+        # after all movement has been checked returns updated x and y positions
         return (x, y)
