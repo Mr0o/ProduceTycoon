@@ -30,19 +30,19 @@ class Game:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
         
+        self.background.events()
+        
         for guest in self.guests:
             guest.events()
 
-        self.background.events()
-
     def update(self):
+        self.background.update()
+
         for guest in self.guests:
             guest.update()
 
-        self.background.update()
-
     def draw(self):
-        self.screen.fill((120, 120, 120))
+        self.screen.fill((0, 0, 0))
 
         # drawing background
         self.background.draw()
