@@ -2,6 +2,7 @@ import pygame
 
 from functions import inputMovement
 from tile import Tile
+from graphic_tile import Graphic_Tile
 
 class Background:
     def __init__(self, screen: pygame.Surface, x: int, y: int):
@@ -18,8 +19,10 @@ class Background:
         for i in range(self.rows):
             col: list[Tile] = []
             for j in range(self.col):
-                col.append(Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size, pygame.image.load('./bg.jpg')))
+                col.append(Tile(self.screen, self.background_starting_pos + j * self.tile_size, self.background_starting_pos + i * self.tile_size, self.tile_size))
             self.background_grid.append(col)
+            
+        self.background_grid[3][8] = Graphic_Tile(self.screen, self.background_starting_pos + 8 * self.tile_size, self.background_starting_pos + 3 * self.tile_size, self.tile_size, pygame.image.load('./bg.jpg'))
 
     def events(self):
         self.x, self.y = inputMovement(self.x, self.y)
@@ -31,7 +34,7 @@ class Background:
         # drawing background
         for i in range(self.rows):
             for j in range(self.col):
-                self.screen.blit(self.background_grid[i][j].tile_img, (self.background_grid[i][j].x + self.x, self.background_grid[i][j].y + self.y))
+                self.background_grid[i][j].draw()
 
         
 
