@@ -40,5 +40,4 @@ class Tile():
         self.rect = pygame.Rect((self.x, self.y), (self.size, self.size))
         
     def draw(self):
-        pygame.draw.rect(self.screen, (255, 255, 255), self.rect)
-        #self.screen.blit(self.tile_img, (self.x, self.y))
+        self.screen.blit(self.tile_img, (self.x, self.y))
