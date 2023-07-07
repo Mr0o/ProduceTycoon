@@ -53,7 +53,5 @@ class Tile():
         self.rect = pygame.Rect((self.x, self.y), (self.size, self.size))
         
     def draw(self):
-        if self.isHighlighted:
-            print("Tile " + str(self.id) + " is highlighted")
-        else:
+        if not self.isHighlighted:
             self.screen.blit(self.tile_img, (self.x, self.y))
