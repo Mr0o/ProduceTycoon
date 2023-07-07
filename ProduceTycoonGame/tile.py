@@ -10,9 +10,16 @@ class Type(Enum):
     INTERACTABLE = 2
     BOUNDARY = 3
 
+# global
+id = 0
+
 class Tile():
     def __init__(self, screen: pygame.Surface, x: int, y: int, size: int, type: Type = Type.WALKABLE):
+        # create unique id for each tile
+        global id; self.id = id; id += 1
+
         self.screen = screen
+
         self.x = x
         self.y = y
         self.size = size
@@ -34,10 +41,19 @@ class Tile():
 
         self.rect = pygame.Rect((self.x, self.y), (self.size, self.size))
 
+        # when the mouse is hovering over the tile
+        self.isHighlighted = False
+
+        # when the mouse has clicked on the tile
+        self.isSelected = False
+
     def update(self, x:int, y:int):
         self.x += x
         self.y += y
         self.rect = pygame.Rect((self.x, self.y), (self.size, self.size))
         
     def draw(self):
-        self.screen.blit(self.tile_img, (self.x, self.y))
+        if self.isHighlighted:
+            print("Tile " + str(self.id) + " is highlighted")
+        else:
+            self.screen.blit(self.tile_img, (self.x, self.y))
