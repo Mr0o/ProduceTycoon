@@ -20,7 +20,6 @@ class Game():
 
         self.tileMap = TileMap(self.screen, 0,0)
 
-
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, WIDTH/2, HEIGHT/2))
 
@@ -56,6 +55,8 @@ class Game():
         for guest in self.guests:
             guest.draw()
 
+
+        ## DEBUG STUFF ##
         # draw raw frametime
         ft = int(self.clock.get_rawtime())
         # change color based on frametime to indicate performance (green = good, yellow = ok, red = bad)
@@ -65,7 +66,7 @@ class Game():
             ftColor = (255, 255, 0)
         else:
             ftColor = (0, 255, 0)
-        text = self.debugFont.render(str(ft) + "ms", True, ftColor)
+        text = self.debugFont.render(str(ft) + " ms", True, ftColor)
         self.screen.blit(text, (0, 0))
 
         # draw fps
