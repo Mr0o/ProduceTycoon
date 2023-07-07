@@ -10,7 +10,10 @@ class Game():
         pygame.init()
         #random.seed(100)
 
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.WIDTH = WIDTH
+        self.HEIGHT = HEIGHT
+
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.running = True
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
@@ -72,6 +75,11 @@ class Game():
         # draw fps
         text = self.debugFont.render(str(int(self.clock.get_fps())) + " FPS ", True, (255, 255, 255))
         self.screen.blit(text, (0, text.get_height()))
+
+        # draw the highlighted tile id
+        if self.tileMap.highlighted_tile is not None:
+            text = self.debugFont.render("Tile ID: " + str(self.tileMap.highlighted_tile.id), True, (255, 255, 0))
+            self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, 0))
 
         pygame.display.update()
 
