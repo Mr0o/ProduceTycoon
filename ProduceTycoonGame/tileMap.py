@@ -35,6 +35,14 @@ class TileMap():
         # changing the x and y positions
         self.x_mov, self.y_mov = inputMovement(self.x, self.y)
 
+        # checking if mouse is hovering over tile
+        for i in range(self.rows):
+            for j in range(self.col):
+                if self.tileMap_grid[i][j].rect.collidepoint(pygame.mouse.get_pos()):
+                    self.tileMap_grid[i][j].isHighlighted = True
+                else:
+                    self.tileMap_grid[i][j].isHighlighted = False
+
     def update(self):
         for i in range(self.rows):
             for j in range(self.col):
