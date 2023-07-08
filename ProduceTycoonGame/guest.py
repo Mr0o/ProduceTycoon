@@ -13,8 +13,8 @@ class Guest():
         self.y = y
         self.tile_id = 101
         self.tileArr = []
-        self.width = 30
-        self.height = 45
+        self.width = 25
+        self.height = 25
         self.moving = False
         self.moving_left = False
         self.moving_right = False
