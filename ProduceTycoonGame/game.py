@@ -1,4 +1,5 @@
 import pygame
+import random
 
 # local imports
 from ProduceTycoonGame.tileMap import TileMap
@@ -24,7 +25,7 @@ class Game():
         self.tileMap = TileMap(self.screen, 0,0)
 
         self.guests: list[Guest] = []
-        self.guests.append(Guest(self.screen, WIDTH/2, HEIGHT/2))
+        self.guests.append(Guest(self.screen, self.tileMap.getTile(0).x, self.tileMap.getTile(0).y))
 
     def events(self):
         for event in pygame.event.get():
@@ -38,6 +39,7 @@ class Game():
         self.tileMap.events()
         
         for guest in self.guests:
+            guest.bestPath(guest.tile_id, 10)
             guest.events()
 
     def update(self):
