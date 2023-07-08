@@ -9,7 +9,6 @@ class Type(Enum):
     WALKABLE = 1
     INTERACTABLE = 2
     BOUNDARY = 3
-    STARTING_TILE = 4
 
 # global
 id = 0
@@ -31,8 +30,6 @@ class Tile():
         if self.type == Type.WALKABLE:
             self.tile_img = WALKABLE_TILE_IMG
         elif self.type == Type.INTERACTABLE:
-            self.tile_img = INTERACTABLE_TILE_IMG
-        elif self.type == Type.STARTING_TILE:
             self.tile_img = INTERACTABLE_TILE_IMG
         elif self.type == Type.BOUNDARY:
             self.tile_img = BOUNDARY_TILE_IMG
