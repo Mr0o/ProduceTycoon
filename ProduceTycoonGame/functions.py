@@ -23,7 +23,7 @@ def inputMovement(x: int, y: int) -> tuple[int, int]:
     # get mouse buttons
     mouseButtons = pygame.mouse.get_pressed()
     # if left mouse button is pressed
-    if mouse_buttons[0]:
+    if mouseButtons[0]:
         # scroll tileMap
         x += relMousePos[0]
         y += relMousePos[1]
