@@ -12,6 +12,9 @@ class TileMap():
         self.x_mov = 0
         self.y_mov = 0
 
+        global id
+        self.startingTile = 33
+
         self.width = self.screen.get_width()
         self.height = self.screen.get_height()
 
@@ -40,7 +43,10 @@ class TileMap():
         tileMap_grid: list[Tile] = []
         for i in range(numRows):
             for j in range(numCols):
-                if i == 0 or j == 0 or i == numRows-1 or j == numCols-1:
+                if id == self.startingTile:
+                    tileMap_grid.append(Tile(self.screen, tileMap_starting_pos[0] + j * tile_size,
+                               tileMap_starting_pos[0] + i * tile_size, tile_size, Type.STARTING_TILE))
+                elif i == 0 or j == 0 or i == numRows-1 or j == numCols-1:
                     tileMap_grid.append(Tile(self.screen, tileMap_starting_pos[0] + j * tile_size,
                                tileMap_starting_pos[0] + i * tile_size, tile_size, Type.BOUNDARY))
                 elif (i + j) % 2 == 0:
