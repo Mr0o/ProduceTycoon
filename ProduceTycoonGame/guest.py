@@ -9,6 +9,7 @@ class Guest():
     def __init__(self, screen: pygame.Surface, tile: Tile, tileMap: TileMap):
         self.screen = screen
         self.tile = tile
+        self.previousTile = tile
         self.tileMap = tileMap
         self.size = self.tile.size
         self.moving = False
@@ -25,7 +26,10 @@ class Guest():
             self.animation_count = 0
         self.animation_count += 1
 
+        self.previousTile = self.tile
         self.tile = changeTile(self)
+        if self.tile.type == Type.BOUNDARY:
+            self.tile = self.previousTile
         #self.x, self.y = inputMovement(self.x, self.y)
         
 
