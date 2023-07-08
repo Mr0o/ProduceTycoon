@@ -52,20 +52,29 @@ class TileMap():
 
         return tileMap_grid
 
-    def events(self):
+    def events(self, mouseClicked: bool = False):
         # changing the x and y positions
         self.x_mov, self.y_mov = inputMovement(self.x, self.y)
-
-        mouseClicked = pygame.mouse.get_pressed()[0]
 
         # checking if mouse is hovering over tile
         self.highlighted_tile = None
         for tile in self.tileMap_grid:
+            tile.isHighlighted = False
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
                 self.highlighted_tile = tile
                 tile.isHighlighted = True
-            else:
-                tile.isHighlighted = False
+                if mouseClicked:
+                    if self.selected_tile is not None:
+                        # deselecting selected tile
+                        self.selected_tile.isSelected = False
+                    if self.selected_tile == tile:
+                        # deselecting tile
+                        tile.isSelected = False
+                        self.selected_tile = None
+                    else:
+                        # selecting tile
+                        self.selected_tile = tile
+                        self.selected_tile.isSelected = True
 
     def update(self):
         for tile in self.tileMap_grid:
