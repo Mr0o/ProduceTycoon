@@ -19,7 +19,6 @@ py main.py
 
 - [X] Create a tile system
 - [X] Create tile types
-- [ ] Create display tiles (tomatoes, bananas, etc)
 - [ ] Make guests walk around
 - [ ] Make guests interact with tiles (collision and interactable tiles)
 - [ ] Create 2 different types of displays (Tomato and Banana)
