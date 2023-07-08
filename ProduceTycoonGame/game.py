@@ -25,7 +25,7 @@ class Game():
         self.tileMap = TileMap(self.screen, 0,0)
 
         self.guests: list[Guest] = []
-        self.guests.append(Guest(self.screen, self.tileMap.getTile(0).x, self.tileMap.getTile(0).y))
+        self.guests.append(Guest(self.screen, self.tileMap.getTile(101).x, self.tileMap.getTile(101).y))
 
     def events(self):
         for event in pygame.event.get():
@@ -39,7 +39,7 @@ class Game():
         self.tileMap.events()
         
         for guest in self.guests:
-            guest.bestPath(guest.tile_id, 10)
+            guest.bestPath(self.tileMap, self.tileMap.getTile(guest.tile_id), 102)
             guest.events()
 
     def update(self):
