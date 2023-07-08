@@ -28,3 +28,4 @@ def inputMovement(x: int, y: int) -> tuple[int, int]:
 
     # after all movement has been checked returns updated x and y positions
     return (x, y)
+
