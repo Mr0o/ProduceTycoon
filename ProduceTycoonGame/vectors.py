@@ -14,6 +14,10 @@ class Vector:
         self.y = y
         self.angleRad = atan2(self.y, self.x)  # find the angle of the vector in radians
 
+    # return a copy of the vector
+    def copy(self) -> 'Vector':
+        return Vector(self.x, self.y)
+
     def getMag(self) -> float:
         mag = abs((self.x * self.x) + (self.y * self.y))  # find the magnitude using pythagorean theorem
         mag = sqrt(mag)
