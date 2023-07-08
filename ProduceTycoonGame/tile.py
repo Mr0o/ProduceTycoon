@@ -26,18 +26,18 @@ class Tile():
 
         self.type = type
         
-        self.tile_img = None
+        self.tileImg = None
         if self.type == Type.WALKABLE:
-            self.tile_img = WALKABLE_TILE_IMG
+            self.tileImg = WALKABLE_TILE_IMG
         elif self.type == Type.INTERACTABLE:
-            self.tile_img = INTERACTABLE_TILE_IMG
+            self.tileImg = INTERACTABLE_TILE_IMG
         elif self.type == Type.BOUNDARY:
-            self.tile_img = BOUNDARY_TILE_IMG
+            self.tileImg = BOUNDARY_TILE_IMG
         else:
             raise Exception("Invalid tile type")
         
         # scale image to size
-        self.tile_img = pygame.transform.scale(self.tile_img, (self.size, self.size))
+        self.tileImg = pygame.transform.scale(self.tileImg, (self.size, self.size))
 
         self.rect = pygame.Rect((self.x, self.y), (self.size, self.size))
 
@@ -54,6 +54,6 @@ class Tile():
         
     def draw(self):
         if not self.isHighlighted:
-            self.screen.blit(self.tile_img, (self.x, self.y))
+            self.screen.blit(self.tileImg, (self.x, self.y))
         if self.isSelected:
             pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 4)

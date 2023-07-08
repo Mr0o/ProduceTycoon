@@ -81,13 +81,13 @@ class Game():
         self.screen.blit(text, (0, text.get_height()))
 
         # draw the highlighted tile id
-        if self.tileMap.highlighted_tile is not None:
-            text = self.debugFont.render("Tile ID: " + str(self.tileMap.highlighted_tile.id), True, (255, 255, 0))
+        if self.tileMap.highlightedTile is not None:
+            text = self.debugFont.render("Tile ID: " + str(self.tileMap.highlightedTile.id), True, (255, 255, 0))
             self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, 0))
 
         # draw the selected tile id
-        if self.tileMap.selected_tile is not None:
-            text = self.debugFont.render("Selected ID: " + str(self.tileMap.selected_tile.id), True, (255, 0, 255))
+        if self.tileMap.selectedTile is not None:
+            text = self.debugFont.render("Selected ID: " + str(self.tileMap.selectedTile.id), True, (255, 0, 255))
             self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height()))
 
         pygame.display.update()

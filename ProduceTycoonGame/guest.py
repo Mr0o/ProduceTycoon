@@ -11,22 +11,24 @@ class Guest():
         self.tile = tile
         self.tileMap = tileMap
 
+        global id
         self.previousTile = None
         self.size = self.tile.size
         self.movements = ["right", "right", "right", "down", "down"]
         self.movementCount = 0
         self.movementCountMax = len(self.movements) * 60 - 1
-        self.animation_images = [(0, 50, 0), (0, 100, 0), (0, 150, 0), (0, 200, 0), (0, 255, 0)]
-        self.animation_count = 0
+        self.animationImages = [(0, 50, 0), (0, 100, 0), (0, 150, 0), (0, 200, 0), (0, 255, 0)]
+        self.animationCount = 0
         self.rect = pygame.Rect((self.tile.x, self.tile.y), (self.size, self.size))
 
     def events(self):
         # counting the frames once we get to 49 we reset to 0 back to the first image in out animation
-        if self.animation_count >= 49:
-            self.animation_count = 0
-        self.animation_count += 1
+        if self.animationCount >= 49:
+            self.animationCount = 0
+        self.animationCount += 1
         if self.movementCount >= self.movementCountMax:
             self.movementCount = 0
+            self.movements = newPath(int(random.random() * id))
         self.movementCount += 1
         
 
@@ -48,9 +50,10 @@ class Guest():
     
     def update(self):   
         # Updating guest
+        self.movementCountMax = len(self.movements) * 60 - 1
         self.rect = pygame.Rect((self.tile.x, self.tile.y), (self.size, self.size))
 
     def draw(self):
         # Drawling guest
-        pygame.draw.rect(self.screen, self.animation_images[self.animation_count//10], self.rect)
+        pygame.draw.rect(self.screen, self.animationImages[self.animationCount//10], self.rect)
     

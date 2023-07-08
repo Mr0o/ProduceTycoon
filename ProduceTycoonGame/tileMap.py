@@ -9,8 +9,8 @@ class TileMap():
         self.screen = screen
         self.x = x
         self.y = y
-        self.x_mov = 0
-        self.y_mov = 0
+        self.xMov = 0
+        self.yMov = 0
 
         global id
         self.startingTile = 33
@@ -22,65 +22,62 @@ class TileMap():
 
         self.rows = self.screen.get_height() // 25
         self.col = self.screen.get_width() // 25
-        self.tileMap_starting_pos = (self.x, self.y)
+        self.tileMapStartingPos = (self.x, self.y)
         
         # create the grid of tiles
-        self.tileMap_grid = self.createTileGrid(self.zoom, self.rows, self.col, self.tileMap_starting_pos) 
+        self.tileMapGrid = self.createTileGrid(self.zoom, self.rows, self.col, self.tileMapStartingPos) 
 
         # creates rectangle size of screen for border
         self.rect = pygame.Rect((0, 0), (self.width, self.height))
 
         # highlighted tile
-        self.highlighted_tile = None
+        self.highlightedTile = None
 
         # selected tile
-        self.selected_tile = None
+        self.selectedTile = None
 
-    def createTileGrid(self, zoom: int, numRows: int, numCols: int, tileMap_starting_pos: tuple[int, int]):
+    def createTileGrid(self, zoom: int, numRows: int, numCols: int, tileMapStartingPos: tuple[int, int]):
         # create grid of tiles
-        tile_size = zoom // numCols
+        tileSize = zoom // numCols
 
-        tileMap_grid: list[Tile] = []
+        tileMapGrid: list[Tile] = []
         for i in range(numRows):
             for j in range(numCols):
-                if id == self.startingTile:
-                    tileMap_grid.append(Tile(self.screen, tileMap_starting_pos[0] + j * tile_size,
-                               tileMap_starting_pos[0] + i * tile_size, tile_size, Type.STARTING_TILE))
-                elif i == 0 or j == 0 or i == numRows-1 or j == numCols-1:
-                    tileMap_grid.append(Tile(self.screen, tileMap_starting_pos[0] + j * tile_size,
-                               tileMap_starting_pos[0] + i * tile_size, tile_size, Type.BOUNDARY))
+                if i == 0 or j == 0 or i == numRows-1 or j == numCols-1:
+                    tileMapGrid.append(Tile(self.screen, tileMapStartingPos[0] + j * tileSize,
+                               tileMapStartingPos[0] + i * tileSize, tileSize, Type.BOUNDARY))
                 elif (i + j) % 2 == 0:
-                    tileMap_grid.append(Tile(self.screen, tileMap_starting_pos[0] + j * tile_size,
-                               tileMap_starting_pos[0] + i * tile_size, tile_size, Type.INTERACTABLE))
+                    tileMapGrid.append(Tile(self.screen, tileMapStartingPos[0] + j * tileSize,
+                               tileMapStartingPos[0] + i * tileSize, tileSize, Type.INTERACTABLE))
                 else:
-                    tileMap_grid.append(Tile(self.screen, tileMap_starting_pos[0] + j * tile_size,
-                               tileMap_starting_pos[0] + i * tile_size, tile_size, Type.WALKABLE))
+                    tileMapGrid.append(Tile(self.screen, tileMapStartingPos[0] + j * tileSize,
+                               tileMapStartingPos[0] + i * tileSize, tileSize, Type.WALKABLE))
 
-        return tileMap_grid
+        return tileMapGrid
 
     def events(self, mouseClicked: bool = False):
         # changing the x and y positions
         #self.x_mov, self.y_mov = inputMovement(self.x, self.y)
 
         # checking if mouse is hovering over tile
-        self.highlighted_tile = None
-        for tile in self.tileMap_grid:
+        self.highlightedTile = None
+        for tile in self.tileMapGrid:
             tile.isHighlighted = False
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
-                self.highlighted_tile = tile
+                self.highlightedTile = tile
                 tile.isHighlighted = True
                 if mouseClicked:
-                    if self.selected_tile is not None:
+                    if self.selectedTile is not None:
                         # deselecting selected tile
-                        self.selected_tile.isSelected = False
-                    if self.selected_tile == tile:
+                        self.selectedTile.isSelected = False
+                    if self.selectedTile == tile:
                         # deselecting tile
                         tile.isSelected = False
-                        self.selected_tile = None
+                        self.selectedTile = None
                     else:
                         # selecting tile
-                        self.selected_tile = tile
-                        self.selected_tile.isSelected = True
+                        self.selectedTile = tile
+                        self.selectedTile.isSelected = True
 
     def update(self):
         # for tile in self.tileMap_grid:
@@ -92,34 +89,34 @@ class TileMap():
 
     def draw(self):
         # drawing tileMap
-        for tile in self.tileMap_grid:
+        for tile in self.tileMapGrid:
             tile.draw()
 
         # draws border
         pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
         
     def getTile(self, tileID: int):
-        for tile in self.tileMap_grid:
+        for tile in self.tileMapGrid:
             if tile.id == tileID:
                 return tile
     
     def getTileLeft(self, tileID: int):
-        for tile in self.tileMap_grid:
+        for tile in self.tileMapGrid:
             if tile.id == tileID - 1:
                 return tile 
 
     def getTileRight(self, tileID: int):
-        for tile in self.tileMap_grid:
+        for tile in self.tileMapGrid:
             if tile.id == tileID + 1:
                 return tile 
 
     def getTileUp(self, tileID: int):
-        for tile in self.tileMap_grid:
+        for tile in self.tileMapGrid:
             if tile.id == tileID - self.col:
                 return tile 
 
     def getTileDown(self, tileID: int):
-        for tile in self.tileMap_grid:
+        for tile in self.tileMapGrid:
             if tile.id == tileID + self.col:
                 return tile 
 

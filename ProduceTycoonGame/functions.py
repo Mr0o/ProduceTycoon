@@ -1,4 +1,5 @@
 import pygame
+import random
 
 
 def inputMovement(x: int, y: int) -> tuple[int, int]:
@@ -18,14 +19,14 @@ def inputMovement(x: int, y: int) -> tuple[int, int]:
         y -= 20
     
     # get relative mouse position
-    rel_mouse_pos = pygame.mouse.get_rel()
+    relMousePos = pygame.mouse.get_rel()
     # get mouse buttons
-    mouse_buttons = pygame.mouse.get_pressed()
+    mouseButtons = pygame.mouse.get_pressed()
     # if left mouse button is pressed
     if mouse_buttons[0]:
         # scroll tileMap
-        x += rel_mouse_pos[0]
-        y += rel_mouse_pos[1]
+        x += relMousePos[0]
+        y += relMousePos[1]
 
     # after all movement has been checked returns updated x and y positions
     return (x, y)
@@ -44,4 +45,22 @@ def changeTile(guest, movement):
     if movement == "down":
         return guest.tileMap.getTileDown(guest.tile.id)
 
+    # returns the current tile if movement equals anything else
     return guest.tile
+
+def newPath(guest, tileID: int, targetTile: int, append):
+    self.guest = guest
+    self.tileID = tileID
+    self.targetTile = targetTile
+    self.append = append
+    self.movements = [[]]
+
+    
+
+    if guest.tileMap.getTile(tileID).type == guest.Type.BOUNDARY:
+        return []
+
+    if tileID == targetID:
+        return self.movements
+
+    
