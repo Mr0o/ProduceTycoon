@@ -53,9 +53,9 @@ def newPath(guest, tileID: int, targetTile: int, append):
     self.tileID = tileID
     self.targetTile = targetTile
     self.append = append
-    self.movements = [[]]
+    self.movements = []
 
-    
+    self.movements.append(append)
 
     if guest.tileMap.getTile(tileID).type == guest.Type.BOUNDARY:
         return []
@@ -63,4 +63,10 @@ def newPath(guest, tileID: int, targetTile: int, append):
     if tileID == targetID:
         return self.movements
 
+    self.movements.append(newPath(guest, guest.tileMap.getTileLeft(tileID), tileID, "left"))
+    self.movements.append(newPath(guest, guest.tileMap.getTileRight(tileID), tileID, "right"))
+    self.movements.append(newPath(guest, guest.tileMap.getTileUp(tileID), tileID, "up"))
+    self.movements.append(newPath(guest, guest.tileMap.getTileDown(tileID), tileID, "down"))
+
+    return self.movements
     
