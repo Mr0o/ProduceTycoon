@@ -11,10 +11,11 @@ class Guest():
         self.tile = tile
         self.tileMap = tileMap
 
-        self.previousTile = self.tile
+        self.previousTile = None
         self.size = self.tile.size
         self.movements = ["right", "right", "right", "down", "down"]
         self.movementCount = 0
+        self.movementCountMax = len(self.movements) * 60 - 1
         self.animation_images = [(0, 50, 0), (0, 100, 0), (0, 150, 0), (0, 200, 0), (0, 255, 0)]
         self.animation_count = 0
         self.rect = pygame.Rect((self.tile.x, self.tile.y), (self.size, self.size))
@@ -24,7 +25,7 @@ class Guest():
         if self.animation_count >= 49:
             self.animation_count = 0
         self.animation_count += 1
-        if self.movementCount >= 299:
+        if self.movementCount >= self.movementCountMax:
             self.movementCount = 0
         self.movementCount += 1
         
