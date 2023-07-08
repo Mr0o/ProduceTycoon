@@ -43,7 +43,7 @@ class Game():
         self.tileMap.events(mouseClicked)
         
         for guest in self.guests:
-            guest.bestPath(self.tileMap, self.tileMap.getTile(guest.tile_id), 102)
+            #guest.bestPath(self.tileMap, self.tileMap.getTile(guest.tile_id), 102)
             guest.events()
 
     def update(self):
