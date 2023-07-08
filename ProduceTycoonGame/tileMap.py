@@ -54,7 +54,7 @@ class TileMap():
 
     def events(self, mouseClicked: bool = False):
         # changing the x and y positions
-        self.x_mov, self.y_mov = inputMovement(self.x, self.y)
+        #self.x_mov, self.y_mov = inputMovement(self.x, self.y)
 
         # checking if mouse is hovering over tile
         self.highlighted_tile = None
@@ -77,11 +77,12 @@ class TileMap():
                         self.selected_tile.isSelected = True
 
     def update(self):
-        for tile in self.tileMap_grid:
-            tile.update(self.x_mov, self.y_mov)
-        # updating borders x and y positions
-        self.rect.x += self.x_mov
-        self.rect.y += self.y_mov
+        # for tile in self.tileMap_grid:
+        #     tile.update(self.x_mov, self.y_mov)
+        # # updating borders x and y positions
+        # self.rect.x += self.x_mov
+        # self.rect.y += self.y_mov
+        pass
 
     def draw(self):
         # drawing tileMap
