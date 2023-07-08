@@ -25,7 +25,7 @@ class Game():
         self.tileMap = TileMap(self.screen, 0,0)
 
         self.guests: list[Guest] = []
-        self.guests.append(Guest(self.screen, self.tileMap.getTile(101).x, self.tileMap.getTile(101).y))
+        self.guests.append(Guest(self.screen, self.tileMap.getTile(self.tileMap.startingTile)))
 
     def events(self):
         mouseClicked = False
