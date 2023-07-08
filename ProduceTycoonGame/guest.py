@@ -1,7 +1,7 @@
 import pygame
 import random
 
-from ProduceTycoonGame.functions import changeTile
+from ProduceTycoonGame.functions import changeTile, newPath
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Tile, Type
 
@@ -28,7 +28,7 @@ class Guest():
         self.animationCount += 1
         if self.movementCount >= self.movementCountMax:
             self.movementCount = 0
-            self.movements = newPath(int(random.random() * id))
+            self.movements = newPath(self, self.tile.id, int(random.randint(0, id)))
         self.movementCount += 1
         
 
