@@ -1,15 +1,15 @@
 import pygame
 import random
 
-from ProduceTycoonGame.functions import inputMovement
+from ProduceTycoonGame.functions import changeTile
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Tile, Type
 
 class Guest():
-    def __init__(self, screen: pygame.Surface, tile: Tile):
+    def __init__(self, screen: pygame.Surface, tile: Tile, tileMap: TileMap):
         self.screen = screen
         self.tile = tile
-        self.tileArr = []
+        self.tileMap = tileMap
         self.size = self.tile.size
         self.moving = False
         self.moving_left = False
@@ -25,6 +25,7 @@ class Guest():
             self.animation_count = 0
         self.animation_count += 1
 
+        self.tile = changeTile(self)
         #self.x, self.y = inputMovement(self.x, self.y)
         
 
