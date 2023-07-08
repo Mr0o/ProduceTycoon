@@ -90,11 +90,9 @@ class TileMap():
 
         # draws border
         pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
+        
     def getTile(self, tileID: int):
-        for i in range(self.rows):
-            for j in range(self.col):
-                if i + j == tileID:
-                    return self.tileMap_grid[i][j]
-                else:
-                    return self.tileMap_grid[10][10]
+        for tile in self.tileMap_grid:
+            if tile.id == tileID:
+                return tile
 
