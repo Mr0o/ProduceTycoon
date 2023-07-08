@@ -1,5 +1,6 @@
 import pygame
 
+
 def inputMovement(x: int, y: int) -> tuple[int, int]:
     keys = pygame.key.get_pressed()
     # Each key moves the tileMap the oposite direction that we want our character to move.
