@@ -17,8 +17,8 @@ class TileMap():
 
         self.zoom = self.screen.get_width()
 
-        self.rows = self.screen.get_height() // 20
-        self.col = self.screen.get_width() // 20
+        self.rows = self.screen.get_height() // 25
+        self.col = self.screen.get_width() // 25
         self.tileMap_starting_pos = (self.x, self.y)
         
         # create the grid of tiles
