@@ -87,5 +87,5 @@ class TileMap():
                 if i + j == tileID:
                     return self.tileMap_grid[i][j]
                 else:
-                    return self
+                    return self.tileMap_grid[10][10]
 
