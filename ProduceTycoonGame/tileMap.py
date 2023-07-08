@@ -1,18 +1,16 @@
 import pygame
 
+from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.functions import inputMovement
 from ProduceTycoonGame.tile import Tile, Type
 
 
 class TileMap():
-    def __init__(self, screen: pygame.Surface, x: int, y: int):
+    def __init__(self, screen: pygame.Surface, pos: Vector):
         self.screen = screen
-        self.x = x
-        self.y = y
-        self.xMov = 0
-        self.yMov = 0
+        self.pos = pos
+        self.mov = Vector(0, 0)
 
-        global id
         self.startingTile = 33
 
         self.width = self.screen.get_width()
@@ -22,7 +20,7 @@ class TileMap():
 
         self.rows = self.screen.get_height() // 25
         self.col = self.screen.get_width() // 25
-        self.tileMapStartingPos = (self.x, self.y)
+        self.tileMapStartingPos = self.pos.copy()
         
         # create the grid of tiles
         self.tileMapGrid = self.createTileGrid(self.zoom, self.rows, self.col, self.tileMapStartingPos) 
@@ -36,28 +34,27 @@ class TileMap():
         # selected tile
         self.selectedTile = None
 
-    def createTileGrid(self, zoom: int, numRows: int, numCols: int, tileMapStartingPos: tuple[int, int]):
+    def createTileGrid(self, zoom: int, numRows: int, numCols: int, tileMapStartingPos: Vector):
         # create grid of tiles
         tileSize = zoom // numCols
 
         tileMapGrid: list[Tile] = []
         for i in range(numRows):
             for j in range(numCols):
+                pos = Vector(tileMapStartingPos.x + j * tileSize,
+                               tileMapStartingPos.x + i * tileSize)
                 if i == 0 or j == 0 or i == numRows-1 or j == numCols-1:
-                    tileMapGrid.append(Tile(self.screen, tileMapStartingPos[0] + j * tileSize,
-                               tileMapStartingPos[0] + i * tileSize, tileSize, Type.BOUNDARY))
+                    tileMapGrid.append(Tile(self.screen, pos, tileSize, Type.BOUNDARY))
                 elif (i + j) % 2 == 0:
-                    tileMapGrid.append(Tile(self.screen, tileMapStartingPos[0] + j * tileSize,
-                               tileMapStartingPos[0] + i * tileSize, tileSize, Type.INTERACTABLE))
+                    tileMapGrid.append(Tile(self.screen, pos, tileSize, Type.INTERACTABLE))
                 else:
-                    tileMapGrid.append(Tile(self.screen, tileMapStartingPos[0] + j * tileSize,
-                               tileMapStartingPos[0] + i * tileSize, tileSize, Type.WALKABLE))
+                    tileMapGrid.append(Tile(self.screen, pos, tileSize, Type.WALKABLE))
 
         return tileMapGrid
 
     def events(self, mouseClicked: bool = False):
         # changing the x and y positions
-        #self.x_mov, self.y_mov = inputMovement(self.x, self.y)
+        self.pos = inputMovement(self.pos)
 
         # checking if mouse is hovering over tile
         self.highlightedTile = None
@@ -80,12 +77,11 @@ class TileMap():
                         self.selectedTile.isSelected = True
 
     def update(self):
-        # for tile in self.tileMap_grid:
-        #     tile.update(self.x_mov, self.y_mov)
-        # # updating borders x and y positions
-        # self.rect.x += self.x_mov
-        # self.rect.y += self.y_mov
-        pass
+        for tile in self.tileMapGrid:
+            tile.update(self.mov)
+        # updating borders x and y positions
+        self.rect.x += self.mov.x
+        self.rect.y += self.mov.y
 
     def draw(self):
         # drawing tileMap

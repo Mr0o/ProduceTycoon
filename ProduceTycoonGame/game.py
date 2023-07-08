@@ -2,6 +2,7 @@ import pygame
 import random
 
 # local imports
+from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
 
@@ -22,10 +23,10 @@ class Game():
         # load font
         self.debugFont = pygame.font.SysFont('Arial', 15, bold=True)
 
-        self.tileMap = TileMap(self.screen, 0,0)
+        self.tileMap = TileMap(self.screen, Vector(0, 0))
 
         self.guests: list[Guest] = []
-        self.guests.append(Guest(self.screen, self.tileMap.getTile(self.tileMap.startingTile), self.tileMap))
+        self.guests.append(Guest(self.screen, self.tileMap.getTile(self.tileMap.startingTile)))
 
     def events(self):
         mouseClicked = False
