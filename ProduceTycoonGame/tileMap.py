@@ -102,4 +102,24 @@ class TileMap():
         for tile in self.tileMap_grid:
             if tile.id == tileID:
                 return tile
+    
+    def getTileLeft(self, tileID: int):
+        for tile in self.tileMap_grid:
+            if tile.id == tileID - 1:
+                return tile 
+
+    def getTileRight(self, tileID: int):
+        for tile in self.tileMap_grid:
+            if tile.id == tileID + 1:
+                return tile 
+
+    def getTileUp(self, tileID: int):
+        for tile in self.tileMap_grid:
+            if tile.id == tileID - self.col:
+                return tile 
+
+    def getTileDown(self, tileID: int):
+        for tile in self.tileMap_grid:
+            if tile.id == tileID + self.col:
+                return tile 
 
