@@ -7,10 +7,11 @@ from ProduceTycoonGame.tile import Tile, Type
 
 class Guest():
     def __init__(self, screen: pygame.Surface, x: int, y: int):
+        global id
         self.screen = screen
         self.x = x
         self.y = y
-        self.tile_id = 0
+        self.tile_id = 101
         self.tileArr = []
         self.width = 30
         self.height = 45
@@ -47,29 +48,32 @@ class Guest():
         # Drawling guest
         pygame.draw.rect(self.screen, self.animation_images[self.animation_count//10], self.rect)
     
-    def bestPath(currentTile: Tile, targetTile: int):
-        self.tiles = tiles
+    def bestPath(self, tileMap: TileMap, currentTile: Tile, targetTile: int):
+        self.tileMap = tileMap
         self.currentTile = currentTile
         self.targetTile = targetTile
         self.tileArr = []
         self.shortestPath = 10000
 
+        if self.currentTile.id < 0 or self.currentTile.id > id:
+            self.tileArr = []
+
         # if tile is a boundary tile or interactable tile you will not move onto it
-        if self.currentTile.type == BOUNDARY or self.currentTile.type == INTERACTABLE:
-            return []
+        if self.currentTile.type == Type.BOUNDARY or self.currentTile.type == Type.INTERACTABLE:
+            self.tileArr = []
 
         # if tile is the tile you are looking for return the array you are looking for.
         if self.currentTile.id == self.targetTile:
             if self.shortestPath < self.tileArr.length:
-                return []
+                Self.tileArr = []
             else:
-                self.shortestPath = self.tileArr
-                return self.tileArr
+                self.shortestPath = self.tileArr.length
+                self.tileArr = self.tileArr
 
-        self.tileArr = bestPath(self.guest, self.tiles, tiles.getTile(self.currentTile.id + 1), self.targetTile)
-        self.tileArr = bestPath(self.guest, self.tiles, tiles.getTile(self.currentTile.id - 1), self.targetTile)
-        self.tileArr = bestPath(self.guest, self.tiles, tiles.getTile(self.currentTile.id + 10), self.targetTile)
-        self.tileArr = bestPath(self.guest, self.tiles, tiles.getTile(self.currentTile.id - 10), self.targetTile)
+        self.tileArr = self.bestPath(self.tileMap, tileMap.getTile(self.currentTile.id + 1), self.targetTile)
+        self.tileArr = self.bestPath(self.tileMap, tileMap.getTile(self.currentTile.id - 1), self.targetTile)
+        self.tileArr = self.bestPath(self.tileMap, tileMap.getTile(self.currentTile.id + 10), self.targetTile)
+        self.tileArr = self.bestPath(self.tileMap, tileMap.getTile(self.currentTile.id - 10), self.targetTile)
 
-        print(self.tileArr)
+        print("10")
         return self.tileArr
