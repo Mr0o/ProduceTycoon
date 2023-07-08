@@ -63,7 +63,6 @@ class Game():
         for guest in self.guests:
             guest.draw()
 
-
         ## DEBUG STUFF ##
         # draw raw frametime
         ft = int(self.clock.get_rawtime())
