@@ -30,20 +30,18 @@ def inputMovement(x: int, y: int) -> tuple[int, int]:
     # after all movement has been checked returns updated x and y positions
     return (x, y)
 
-def changeTile(guest):
-    keys = pygame.key.get_pressed()
-    # Each key moves the tileMap the oposite direction that we want our character to move.
-    # Scroll left
-    if keys[pygame.K_a]:
+def changeTile(guest, movement):
+    # move left
+    if movement == "left":
         return guest.tileMap.getTileLeft(guest.tile.id)
-    # Scroll right
-    if keys[pygame.K_d]:
+    # move right
+    if movement == "right":
         return guest.tileMap.getTileRight(guest.tile.id)
-    # Scroll down
-    if keys[pygame.K_w]:
+    # move up
+    if movement == "up":
         return guest.tileMap.getTileUp(guest.tile.id)
-    # Scroll Up
-    if keys[pygame.K_s]:
+    # move down
+    if movement == "down":
         return guest.tileMap.getTileDown(guest.tile.id)
 
     return guest.tile
