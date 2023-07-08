@@ -53,7 +53,9 @@ class Tile():
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.size, self.size))
         
     def draw(self):
-        if not self.isHighlighted:
+        if self.isHighlighted:
+            pygame.draw.rect(self.screen, (0, 0, 0), self.rect)
+        elif self.isSelected:
+            pygame.draw.rect(self.screen, (255, 0, 0), self.rect)
+        else:
             self.screen.blit(self.tileImg, (self.pos.x, self.pos.y))
-        if self.isSelected:
-            pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 4)
