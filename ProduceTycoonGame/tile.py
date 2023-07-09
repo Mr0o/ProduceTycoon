@@ -28,14 +28,16 @@ class Tile():
         self.type = type
         
         self.tileImg = None
-        if self.type == Type.WALKABLE:
-            self.tileImg = WALKABLE_TILE_IMG
-        elif self.type == Type.INTERACTABLE:
-            self.tileImg = INTERACTABLE_TILE_IMG
-        elif self.type == Type.BOUNDARY:
-            self.tileImg = BOUNDARY_TILE_IMG
-        else:
-            raise Exception("Invalid tile type")
+        match self.type:
+            case Type.WALKABLE:
+                self.tileImg = WALKABLE_TILE_IMG
+            case Type.INTERACTABLE:
+                self.tileImg = INTERACTABLE_TILE_IMG
+            case Type.BOUNDARY:
+                self.tileImg = BOUNDARY_TILE_IMG
+            # default case
+            case _:
+                raise Exception("Invalid tile type: " + str(self.type) + " for tile: " + str(self.id))
         
         # scale image to size
         self.tileImg = pygame.transform.scale(self.tileImg, (self.size, self.size))
