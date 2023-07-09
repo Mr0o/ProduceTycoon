@@ -11,8 +11,6 @@ class TileMap():
         self.pos = pos
         self.mov = Vector(0, 0)
 
-        self.startingTile = 33
-
         self.width = self.screen.get_width()
         self.height = self.screen.get_height()
 
