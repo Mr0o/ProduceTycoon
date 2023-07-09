@@ -1,7 +1,6 @@
 import pygame
 
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.functions import inputMovement
 from ProduceTycoonGame.tile import Tile, Type
 
 
@@ -51,9 +50,6 @@ class TileMap():
         return tileMapGrid
 
     def events(self, mouseClicked: bool = False):
-        # changing the x and y positions
-        self.pos = inputMovement(self.pos)
-
         # checking if mouse is hovering over tile
         self.highlightedTile = None
         for tile in self.tileMapGrid:
@@ -76,10 +72,11 @@ class TileMap():
 
     def update(self):
         for tile in self.tileMapGrid:
-            tile.update(self.mov)
-        # updating borders x and y positions
-        self.rect.x += self.mov.x
-        self.rect.y += self.mov.y
+            tile.update()
+
+        # updating position of tileMap
+        self.rect.x = self.pos.x
+        self.rect.y = self.pos.y
 
     def draw(self):
         # drawing tileMap
