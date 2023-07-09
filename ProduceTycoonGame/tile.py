@@ -48,8 +48,7 @@ class Tile():
         # when the mouse has clicked on the tile
         self.isSelected = False
 
-    def update(self, mov: Vector):
-        self.pos.add(mov)
+    def update(self):
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.size, self.size))
         
     def draw(self):
