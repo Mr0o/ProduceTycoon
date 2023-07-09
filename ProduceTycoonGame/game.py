@@ -26,7 +26,7 @@ class Game():
         self.tileMap = TileMap(self.screen, Vector(0, 0))
 
         self.guests: list[Guest] = []
-        self.guests.append(Guest(self.screen, self.tileMap.getTile(self.tileMap.startingTile)))
+        self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
 
     def events(self):
         mouseClicked = False
@@ -42,6 +42,12 @@ class Game():
                     mouseClicked = True
         
         self.tileMap.events(mouseClicked)
+
+        # set target for guests (this is just for testing, not final implementation)
+        if mouseClicked:
+            for guest in self.guests:
+                guest.setTarget(self.tileMap.selectedTile)
+
         
         for guest in self.guests:
             guest.events()
