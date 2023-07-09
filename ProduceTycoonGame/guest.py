@@ -3,8 +3,7 @@ import random
 
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.functions import inputMovement
-from ProduceTycoonGame.tileMap import TileMap
-from ProduceTycoonGame.tile import Tile, Type
+from ProduceTycoonGame.tile import Tile
 
 class Guest():
     def __init__(self, screen: pygame.Surface, pos: Vector):
