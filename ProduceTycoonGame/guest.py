@@ -13,22 +13,13 @@ class Guest(Person):
         global id; id += 1
         super().__init__(screen, pos, id, name)
 
-    def setTarget(self, targetTile: Tile):
-        if targetTile != None:
-            # create a vector from the guest to the target tile
-            self.mov = Vector(targetTile.pos.x - self.pos.x, targetTile.pos.y - self.pos.y)
-            self.mov.setMag(5)
-
-        # set the target tile
-        self.targetTile = targetTile
-
     # draw
     def draw(self):
         super().draw()
         
+        # debugging stuff (Will be removed later)
         # load font
         debugFont = pygame.font.SysFont('Arial', 15, bold=True)
-
         # draw name
         nameText = debugFont.render(self.name, True, (0, 70, 0))
         self.screen.blit(nameText, (self.pos.x, self.pos.y - nameText.get_height()))
