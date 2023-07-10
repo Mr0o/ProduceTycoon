@@ -28,8 +28,8 @@ class Vector:
     def normalize(self) -> None:
         mag = self.getMag()
         if mag != 0:  # divide vector by magnitude to create a unit vector
-            self.x = self.x / mag
-            self.y = self.y / mag
+            self.x /= mag
+            self.y /= mag
 
     #  given a magnitude and components x and y, this will normalize and scale the given vector
     def setMag(self, mag: float) -> None:
