@@ -45,14 +45,14 @@ class Tile():
             pygame.draw.rect(self.screen, (255, 0, 0), self.rect)
         else:
             self.tileImg = None
-        match self.type:
-            case Type.WALKABLE:
-                WALKABLE_TILE_IMG_SCALED = pygame.transform.scale(WALKABLE_TILE_IMG.copy(), (self.size, self.size))
-                self.screen.blit(WALKABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
-            case Type.INTERACTABLE:
-                INTERACTABLE_TILE_IMG_SCALED = pygame.transform.scale(INTERACTABLE_TILE_IMG.copy(), (self.size, self.size))
-                self.screen.blit(INTERACTABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
-            case Type.BOUNDARY:
-                BOUNDARY_TILE_IMG_SCALED = pygame.transform.scale(BOUNDARY_TILE_IMG.copy(), (self.size, self.size))
-                self.screen.blit(BOUNDARY_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
+            match self.type:
+                case Type.WALKABLE:
+                    WALKABLE_TILE_IMG_SCALED = pygame.transform.scale(WALKABLE_TILE_IMG.copy(), (self.size, self.size))
+                    self.screen.blit(WALKABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
+                case Type.INTERACTABLE:
+                    INTERACTABLE_TILE_IMG_SCALED = pygame.transform.scale(INTERACTABLE_TILE_IMG.copy(), (self.size, self.size))
+                    self.screen.blit(INTERACTABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
+                case Type.BOUNDARY:
+                    BOUNDARY_TILE_IMG_SCALED = pygame.transform.scale(BOUNDARY_TILE_IMG.copy(), (self.size, self.size))
+                    self.screen.blit(BOUNDARY_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
             
