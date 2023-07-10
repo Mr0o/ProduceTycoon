@@ -36,7 +36,7 @@ class Person():
         self.tasks: list[str] = []
 
         # pathfinding variables
-        self.pathPoints: list[Vector] = []
+        self.path: list = []
         self.pathIndex: int = 0
 
     def events(self):

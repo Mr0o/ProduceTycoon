@@ -62,6 +62,22 @@ class Vector:
     def div(self, d: float) -> None:
         self.x /= d
         self.y /= d
+
+    # __add__ is a special method that allows us to use the + operator to add two vectors together
+    def __add__(self, vec: 'Vector') -> 'Vector':
+        return Vector(self.x + vec.x, self.y + vec.y)
+
+    # __sub__ is a special method that allows us to use the - operator to subtract two vectors
+    def __sub__(self, vec: 'Vector') -> 'Vector':
+        return Vector(self.x - vec.x, self.y - vec.y)
+
+    # __mul__ is a special method that allows us to use the * operator to multiply a vector by a scalar value
+    def __mul__(self, m: float) -> 'Vector':
+        return Vector(self.x * m, self.y * m)
+
+    # __truediv__ is a special method that allows us to use the / operator to divide a vector by a scalar value
+    def __truediv__(self, d: float) -> 'Vector':
+        return Vector(self.x / d, self.y / d)
     
     #  return the angle of the vector
     def getAngleRad(self) -> float:
