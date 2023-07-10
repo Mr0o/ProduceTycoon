@@ -86,28 +86,30 @@ class TileMap():
         # draws border
         pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
         
-    def getTile(self, tileID: int):
+
+    def getTileByID(self, tileID: int):
         for tile in self.tileMapGrid:
             if tile.id == tileID:
                 return tile
     
-    def getTileLeft(self, tileID: int):
+    def getTileByPos(self, pos: Vector):
         for tile in self.tileMapGrid:
-            if tile.id == tileID - 1:
-                return tile 
+            # if pos collides with tile rect
+            if tile.rect.collidepoint(pos.x, pos.y):
+                return tile
 
-    def getTileRight(self, tileID: int):
-        for tile in self.tileMapGrid:
-            if tile.id == tileID + 1:
-                return tile 
+    # returns the neighbors of a tile
+    def getNeighbors(self, tile: Tile) -> list[Tile]:
+        neighbors: list[Tile] = []
 
-    def getTileUp(self, tileID: int):
+        # create a rect around the tile and check if any of the tiles in the tileMapGrid collide with it
+        tileRect = pygame.Rect(tile.pos.x-tile.size, tile.pos.y-tile.size, tile.size*2, tile.size*2)
         for tile in self.tileMapGrid:
-            if tile.id == tileID - self.col:
-                return tile 
+            if tileRect.colliderect(tile.rect):
+                neighbors.append(tile)
 
-    def getTileDown(self, tileID: int):
-        for tile in self.tileMapGrid:
-            if tile.id == tileID + self.col:
-                return tile 
+        # remove the orignal tile from the neighbors list
+        # neighbors.remove(tile)
+
+        return neighbors
 
