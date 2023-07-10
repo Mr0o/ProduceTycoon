@@ -30,5 +30,5 @@ class Guest(Person):
         debugFont = pygame.font.SysFont('Arial', 15, bold=True)
 
         # draw name
-        nameText = debugFont.render(self.name, True, (0, 255, 0))
+        nameText = debugFont.render(self.name, True, (0, 70, 0))
         self.screen.blit(nameText, (self.pos.x, self.pos.y - nameText.get_height()))
