@@ -79,6 +79,14 @@ class TileMap():
         # drawing tileMap
         self.screen.blit(self.staticSurface, (self.pos.x, self.pos.y))
 
+        # drawing highlighted tile
+        if self.highlightedTile is not None:
+            self.highlightedTile.draw()
+
+        # drawing selected tile
+        if self.selectedTile is not None:
+            self.selectedTile.draw()
+
         # draws border
         pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
         
@@ -145,8 +153,13 @@ def createStaticTileSurface(tiles: list[Tile], width: int, height: int) -> pygam
     staticSurface = pygame.Surface((width, height))
     staticSurface.fill((0, 0, 0))
 
+    # get the original screen of the tiles
+    ogScreen = tiles[0].screen
+
     for tile in tiles:
         tile.screen = staticSurface
         tile.draw()
+        # restore the original screen of the tiles
+        tile.screen = ogScreen
 
     return staticSurface
