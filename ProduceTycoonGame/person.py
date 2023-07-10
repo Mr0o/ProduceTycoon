@@ -36,7 +36,7 @@ class Person():
         self.tasks: list[str] = []
 
         # pathfinding variables
-        self.path: list = []
+        self.path: list = [Tile]
         self.pathIndex: int = 0
 
     def events(self):
@@ -52,13 +52,10 @@ class Person():
 
     def update(self):
         # move towards the next point in the path
-        if self.targetTile != None:
-            # check if rects are colliding
-            if self.rect.colliderect(self.targetTile.rect):
-                self.targetTile = None
-                self.mov = Vector(0, 0)
-            else:
-                self.pos.add(self.mov)
+        if self.path != None:
+            # TODO: get the next tile in the path and set the mov vector to the direction of the next tile
+            pass
+                
 
         self.rect = pygame.Rect(
             (self.pos.x, self.pos.y), (self.size, self.size))
