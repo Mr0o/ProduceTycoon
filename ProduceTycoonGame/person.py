@@ -16,7 +16,8 @@ class Person():
         self.animationImages = [
             (0, 50, 0), (0, 100, 0), (0, 150, 0), (0, 200, 0), (0, 255, 0)]
         self.animationCount = 0
-        self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.size, self.size))
+        self.rect = pygame.Rect(
+            (self.pos.x, self.pos.y), (self.size, self.size))
 
         # person id
         self.id: int = id
@@ -28,19 +29,29 @@ class Person():
         # this is a string that will reflect the person's most recent thought (e.g. "It's too crowded here" or "I want to buy some apples")
         self.thought: str = ""
         # this is a string that will reflect the person's current state (e.g. "idle" or "shopping") usefule for changing the animation
-        self.state: str 
+        self.state: str
 
         # person task list
-        self.tasks: list[str] = [] # this is a list of strings that will reflect the person's current tasks (e.g. shopping list or job list)")
+        # this is a list of strings that will reflect the person's current tasks (e.g. shopping list or job list)")
+        self.tasks: list[str] = []
+
+        # pathfinding variables
+        self.pathPoints: list[Vector] = []
+        self.pathIndex: int = 0
 
     def events(self):
         # counting the frames once we get to 49 we reset to 0 back to the first image in out animation
         if self.animationCount >= 49:
             self.animationCount = 0
         self.animationCount += 1
-    
+
+    def setTarget(self, targetTile: Tile):
+        # set the target tile
+        self.targetTile = targetTile
+        self.pathIndex = 0
+
     def update(self):
-        # move towards target tile
+        # move towards the next point in the path
         if self.targetTile != None:
             # check if rects are colliding
             if self.rect.colliderect(self.targetTile.rect):
@@ -49,12 +60,9 @@ class Person():
             else:
                 self.pos.add(self.mov)
 
-        self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.size, self.size))
-    
+        self.rect = pygame.Rect(
+            (self.pos.x, self.pos.y), (self.size, self.size))
+
     def draw(self):
         pygame.draw.rect(
             self.screen, self.animationImages[self.animationCount//10], self.rect)
-
-    # prototype method (needs to be implemented in child classes)
-    def setTarget(self, targetTile: Tile):
-        ...
