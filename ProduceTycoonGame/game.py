@@ -4,6 +4,7 @@ import pygame
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
+from ProduceTycoonGame.button import Button
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -27,6 +28,8 @@ class Game():
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
 
+        self.button = Button(self.screen, Vector(100, 100))
+
     def events(self):
         mouseClicked = False
         for event in pygame.event.get():
@@ -39,8 +42,11 @@ class Game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     mouseClicked = True
+                else:
+                    mouseClicked = False
         
         self.tileMap.events(mouseClicked)
+        self.button.events(mouseClicked)
 
         # set target for guests (this is just for testing, not final implementation)
         if mouseClicked:
@@ -68,6 +74,8 @@ class Game():
         # drawing charachters
         for guest in self.guests:
             guest.draw()
+        
+        self.button.draw()
 
         ## DEBUG STUFF ##
         # draw raw frametime
