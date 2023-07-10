@@ -42,8 +42,6 @@ class Game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     mouseClicked = True
-                else:
-                    mouseClicked = False
         
         self.tileMap.events(mouseClicked)
         self.button.events(mouseClicked)
@@ -114,3 +112,6 @@ class Game():
             self.events()
             self.update()
             self.draw()
+
+        # exit pygame gracefully
+        pygame.quit()
