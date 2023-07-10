@@ -1,6 +1,6 @@
 import pygame
 
-from ProduceTycoonGame.functions import inputMovement
+from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tile import Tile, Type
 
 
@@ -56,9 +56,6 @@ class TileMap():
         return tileMapGrid
 
     def events(self, mouseClicked: bool = False):
-        # changing the x and y positions
-        #self.x_mov, self.y_mov = inputMovement(self.x, self.y)
-
         # checking if mouse is hovering over tile
         self.highlightedTile = None
         for tile in self.tileMapGrid:
@@ -80,12 +77,12 @@ class TileMap():
                         self.selectedTile.isSelected = True
 
     def update(self):
-        # for tile in self.tileMap_grid:
-        #     tile.update(self.x_mov, self.y_mov)
-        # # updating borders x and y positions
-        # self.rect.x += self.x_mov
-        # self.rect.y += self.y_mov
-        pass
+        for tile in self.tileMapGrid:
+            tile.update()
+
+        # updating position of tileMap
+        self.rect.x = self.pos.x
+        self.rect.y = self.pos.y
 
     def draw(self):
         # drawing tileMap
@@ -95,28 +92,60 @@ class TileMap():
         # draws border
         pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
         
-    def getTile(self, tileID: int):
+
+    def getTileByID(self, tileID: int):
         for tile in self.tileMapGrid:
             if tile.id == tileID:
                 return tile
     
-    def getTileLeft(self, tileID: int):
+    def getTileByPos(self, pos: Vector):
         for tile in self.tileMapGrid:
-            if tile.id == tileID - 1:
-                return tile 
+            # if pos collides with tile rect
+            if tile.rect.collidepoint(pos.x, pos.y):
+                return tile
 
-    def getTileRight(self, tileID: int):
-        for tile in self.tileMapGrid:
-            if tile.id == tileID + 1:
-                return tile 
+    # returns the neighbors of a tile
+    def getNeighbors(self, tile: Tile) -> list[Tile]:
+        neighbors: list[Tile] = []
 
-    def getTileUp(self, tileID: int):
-        for tile in self.tileMapGrid:
-            if tile.id == tileID - self.col:
-                return tile 
+        # get the tiles that collide with the tile
+        for tile2 in self.tileMapGrid:
+            if tile.rect.colliderect(tile2.rect):
+                neighbors.append(tile2)
+        
+        # get the tiles that are adjacent to the tile
+        for tile2 in self.tileMapGrid:
+            if tile2.rect.collidepoint(tile.pos.x + tile.size, tile.pos.y):
+                neighbors.append(tile2)
+            elif tile2.rect.collidepoint(tile.pos.x - tile.size, tile.pos.y):
+                neighbors.append(tile2)
+            elif tile2.rect.collidepoint(tile.pos.x, tile.pos.y + tile.size):
+                neighbors.append(tile2)
+            elif tile2.rect.collidepoint(tile.pos.x, tile.pos.y - tile.size):
+                neighbors.append(tile2)
+        
+        # get the tiles that are diagonal to the tile
+        for tile2 in self.tileMapGrid:
+            if tile2.rect.collidepoint(tile.pos.x + tile.size, tile.pos.y + tile.size):
+                neighbors.append(tile2)
+            elif tile2.rect.collidepoint(tile.pos.x - tile.size, tile.pos.y + tile.size):
+                neighbors.append(tile2)
+            elif tile2.rect.collidepoint(tile.pos.x + tile.size, tile.pos.y - tile.size):
+                neighbors.append(tile2)
+            elif tile2.rect.collidepoint(tile.pos.x - tile.size, tile.pos.y - tile.size):
+                neighbors.append(tile2)
 
-    def getTileDown(self, tileID: int):
+        # remove the orignal tile from the neighbors list
+        if tile in neighbors:
+            neighbors.remove(tile)
+
+        return neighbors
+
+        # get walkable tiles
+    def getWalkableTiles(self) -> list[Tile]:
+        walkableTiles: list[Tile] = []
         for tile in self.tileMapGrid:
-            if tile.id == tileID + self.col:
-                return tile 
+            if tile.type == Type.WALKABLE:
+                walkableTiles.append(tile)
+        return walkableTiles
 
