@@ -42,8 +42,6 @@ class TileMap():
                                tileMapStartingPos.x + i * tileSize)
                 if i == 0 or j == 0 or i == numRows-1 or j == numCols-1:
                     tileMapGrid.append(Tile(self.screen, pos, tileSize, Type.BOUNDARY))
-                elif (i + j) % 2 == 0:
-                    tileMapGrid.append(Tile(self.screen, pos, tileSize, Type.INTERACTABLE))
                 else:
                     tileMapGrid.append(Tile(self.screen, pos, tileSize, Type.WALKABLE))
 
