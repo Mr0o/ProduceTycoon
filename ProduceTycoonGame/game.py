@@ -63,6 +63,8 @@ class Game():
         for guest in self.guests:
             guest.update()
 
+        self.button.update()
+        
         pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
 
     def draw(self):

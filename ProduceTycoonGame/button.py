@@ -11,15 +11,21 @@ class Button():
         self.width = 21
         self.height = 20
         self.color = (0, 0, 255)
+        self.showRect = False
 
         self.rect = pygame.Rect(self.pos.x, self.pos.y, self.width, self.height)
+        self.interactableRect = pygame.Rect(0, 0, self.screen.get_height() // 25 * 3, self.screen.get_height() // 25 * 3)
         
     
     def events(self, mouseClicked: bool):
         if self.rect.collidepoint(pygame.mouse.get_pos()) and mouseClicked:
             self.color = (0, 123, 255)
+            self.showRect = True
         else:
             self.color = (0, 0, 255)
+
+    def update(self):
+        self.interactableRect.center = (pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
 
     def draw(self):
 
@@ -28,3 +34,6 @@ class Button():
 
         pygame.draw.rect(self.screen, self.color, self.rect)
         self.screen.blit(text, (self.pos.x, self.pos.y))
+
+        if self.showRect:
+            pygame.draw.rect(self.screen, self.color, self.interactableRect)
