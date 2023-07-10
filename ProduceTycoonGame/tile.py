@@ -1,6 +1,8 @@
 import pygame
 from enum import Enum
 
+from ProduceTycoonGame.vectors import Vector
+
 WALKABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/Walkable.jpg')
 INTERACTABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/Interactable.jpg')
 BOUNDARY_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/Barrier.png')
@@ -14,19 +16,18 @@ class Type(Enum):
 id = 0
 
 class Tile():
-    def __init__(self, screen: pygame.Surface, x: int, y: int, size: int, type: Type = Type.WALKABLE):
+    def __init__(self, screen: pygame.Surface, pos: Vector, size: int, type: Type = Type.WALKABLE):
         # create unique id for each tile
         global id; self.id = id; id += 1
 
         self.screen = screen
 
-        self.x = x
-        self.y = y
+        self.pos = pos
         self.size = size
 
         self.type: Type = type
 
-        self.rect = pygame.Rect((self.x, self.y), (self.size, self.size))
+        self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.size, self.size))
 
         # when the mouse is hovering over the tile
         self.isHighlighted = False
