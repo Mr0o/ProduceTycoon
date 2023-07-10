@@ -102,14 +102,44 @@ class TileMap():
     def getNeighbors(self, tile: Tile) -> list[Tile]:
         neighbors: list[Tile] = []
 
-        # create a rect around the tile and check if any of the tiles in the tileMapGrid collide with it
-        tileRect = pygame.Rect(tile.pos.x-tile.size, tile.pos.y-tile.size, tile.size*2, tile.size*2)
-        for tile in self.tileMapGrid:
-            if tileRect.colliderect(tile.rect):
-                neighbors.append(tile)
+        # get the tiles that collide with the tile
+        for tile2 in self.tileMapGrid:
+            if tile.rect.colliderect(tile2.rect):
+                neighbors.append(tile2)
+        
+        # get the tiles that are adjacent to the tile
+        for tile2 in self.tileMapGrid:
+            if tile2.rect.collidepoint(tile.pos.x + tile.size, tile.pos.y):
+                neighbors.append(tile2)
+            elif tile2.rect.collidepoint(tile.pos.x - tile.size, tile.pos.y):
+                neighbors.append(tile2)
+            elif tile2.rect.collidepoint(tile.pos.x, tile.pos.y + tile.size):
+                neighbors.append(tile2)
+            elif tile2.rect.collidepoint(tile.pos.x, tile.pos.y - tile.size):
+                neighbors.append(tile2)
+        
+        # get the tiles that are diagonal to the tile
+        for tile2 in self.tileMapGrid:
+            if tile2.rect.collidepoint(tile.pos.x + tile.size, tile.pos.y + tile.size):
+                neighbors.append(tile2)
+            elif tile2.rect.collidepoint(tile.pos.x - tile.size, tile.pos.y + tile.size):
+                neighbors.append(tile2)
+            elif tile2.rect.collidepoint(tile.pos.x + tile.size, tile.pos.y - tile.size):
+                neighbors.append(tile2)
+            elif tile2.rect.collidepoint(tile.pos.x - tile.size, tile.pos.y - tile.size):
+                neighbors.append(tile2)
 
         # remove the orignal tile from the neighbors list
-        # neighbors.remove(tile)
+        if tile in neighbors:
+            neighbors.remove(tile)
 
         return neighbors
+
+        # get walkable tiles
+    def getWalkableTiles(self) -> list[Tile]:
+        walkableTiles: list[Tile] = []
+        for tile in self.tileMapGrid:
+            if tile.type == Type.WALKABLE:
+                walkableTiles.append(tile)
+        return walkableTiles
 
