@@ -31,7 +31,10 @@ class TileMap():
         # selected tile
         self.selectedTile = None
 
-    def createTileGrid(self, zoom: int, numRows: int, numCols: int, tileMapStartingPos: Vector):
+        # static surface for drawing tileMap
+        self.staticSurface = createStaticTileSurface(self.tileMapGrid, self.width, self.height)
+
+    def createTileGrid(self, zoom: int, numRows: int, numCols: int, tileMapStartingPos: Vector) -> list[Tile]:
         # create grid of tiles
         tileSize = zoom // numCols
 
@@ -69,17 +72,12 @@ class TileMap():
                         self.selectedTile.isSelected = True
 
     def update(self):
-        for tile in self.tileMapGrid:
+        for tile in self.tileMapGrid:    
             tile.update()
-
-        # updating position of tileMap
-        self.rect.x = self.pos.x
-        self.rect.y = self.pos.y
 
     def draw(self):
         # drawing tileMap
-        for tile in self.tileMapGrid:
-            tile.draw()
+        self.screen.blit(self.staticSurface, (self.pos.x, self.pos.y))
 
         # draws border
         pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
@@ -140,3 +138,15 @@ class TileMap():
             if tile.type == Type.WALKABLE:
                 walkableTiles.append(tile)
         return walkableTiles
+
+
+# create a surface of Tiles that can be used statically (this will not reflect changes to the tileMap unless a new static surface is created)
+def createStaticTileSurface(tiles: list[Tile], width: int, height: int) -> pygame.Surface:
+    staticSurface = pygame.Surface((width, height))
+    staticSurface.fill((0, 0, 0))
+
+    for tile in tiles:
+        tile.screen = staticSurface
+        tile.draw()
+
+    return staticSurface
