@@ -10,33 +10,33 @@ class Button():
         self.pos = pos
         self.tileMap = tileMap
         self.text = text
-
-        self.width = 21
-        self.height = 20
+        size = tileMap.zoom // tileMap.col
+        self.width = size
+        self.height = size
         self.color = (0, 0, 255)
         self.showRect = False
         self.posInteractable = Vector(0, 0)
 
         self.rect = pygame.Rect(self.pos.x, self.pos.y, self.width, self.height)
         self.interactableRect = pygame.Rect(0, 0, self.screen.get_height() // 25 * 3, self.screen.get_height() // 25 * 3)
-    
-    def events(self, mouseClicked: bool, zeroClicked: bool):
+
+    def buttonClicked(self, mouseClicked: bool):
         if self.rect.collidepoint(pygame.mouse.get_pos()) and mouseClicked:
             self.color = (0, 123, 255)
             self.showRect = True
         else:
-            self.color = (0, 0, 255)
-
+            self.color = (100, 123, 0)
+    
+    def events(self, mouseClicked: bool):
+        self.buttonClicked(mouseClicked)
         if self.showRect:
             for tile in self.tileMap.tileMapGrid:
                 if tile.rect.collidepoint(pygame.mouse.get_pos()):
                     self.posInteractable.x = tile.pos.x + tile.size / 2 
                     self.posInteractable.y = tile.pos.y + tile.size / 2
-                    if self.interactableRect.colliderect(tile.rect):
-                        tile.type = Type.INTERACTABLE
-                        self.tileMap.staticSurface = createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
-        if zeroClicked:
-            self.showRect = False
+                if self.interactableRect.colliderect(tile.rect) and mouseClicked:
+                    tile.type = Type.INTERACTABLE
+                    self.tileMap.staticSurface = createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
         
 
 
