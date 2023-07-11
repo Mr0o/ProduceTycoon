@@ -35,6 +35,10 @@ class Tile():
         # when the mouse has clicked on the tile
         self.isSelected = False
 
+        self.WALKABLE_TILE_IMG_SCALED = pygame.transform.scale(WALKABLE_TILE_IMG.copy(), (self.size, self.size))
+        self.INTERACTABLE_TILE_IMG_SCALED = pygame.transform.scale(INTERACTABLE_TILE_IMG.copy(), (self.size, self.size))
+        self.BOUNDARY_TILE_IMG_SCALED = pygame.transform.scale(BOUNDARY_TILE_IMG.copy(), (self.size, self.size))
+
     def update(self):
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.size, self.size))
 
@@ -47,12 +51,9 @@ class Tile():
             self.tileImg = None
             match self.type:
                 case Type.WALKABLE:
-                    WALKABLE_TILE_IMG_SCALED = pygame.transform.scale(WALKABLE_TILE_IMG.copy(), (self.size, self.size))
-                    self.screen.blit(WALKABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
+                    self.screen.blit(self.WALKABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
                 case Type.INTERACTABLE:
-                    INTERACTABLE_TILE_IMG_SCALED = pygame.transform.scale(INTERACTABLE_TILE_IMG.copy(), (self.size, self.size))
-                    self.screen.blit(INTERACTABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
+                    self.screen.blit(self.INTERACTABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
                 case Type.BOUNDARY:
-                    BOUNDARY_TILE_IMG_SCALED = pygame.transform.scale(BOUNDARY_TILE_IMG.copy(), (self.size, self.size))
-                    self.screen.blit(BOUNDARY_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
+                    self.screen.blit(self.BOUNDARY_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
             
