@@ -43,13 +43,10 @@ class Game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     mouseClicked = True
-            if event.type == pygame.K_0:
-                if event.button == 1:
-                    zeroClicked = True
 
         
         self.tileMap.events(mouseClicked)
-        self.button.events(mouseClicked, zeroClicked)
+        self.button.events(mouseClicked)
 
         # set target for guests (this is just for testing, not final implementation)
         if mouseClicked:
