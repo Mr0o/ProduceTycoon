@@ -43,17 +43,20 @@ class Tile():
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.size, self.size))
 
     def draw(self):
+        self.tileImg = None
+        match self.type:
+            case Type.WALKABLE:
+                self.screen.blit(self.WALKABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
+            case Type.INTERACTABLE:
+                self.screen.blit(self.INTERACTABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
+            case Type.BOUNDARY:
+                self.screen.blit(self.BOUNDARY_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
+
         if self.isHighlighted:
-            pygame.draw.rect(self.screen, (0, 0, 0), self.rect)
+            pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
         elif self.isSelected:
-            pygame.draw.rect(self.screen, (255, 0, 0), self.rect)
-        else:
-            self.tileImg = None
-            match self.type:
-                case Type.WALKABLE:
-                    self.screen.blit(self.WALKABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
-                case Type.INTERACTABLE:
-                    self.screen.blit(self.INTERACTABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
-                case Type.BOUNDARY:
-                    self.screen.blit(self.BOUNDARY_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
+            pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
+        
+            
+            
             
