@@ -4,6 +4,7 @@ from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap, createStaticTileSurface
 from ProduceTycoonGame.tile import Type
 
+
 class Button():
     def __init__(self, screen: pygame.Surface, pos: Vector,tileMap: TileMap, text = "3x3"):
         self.screen = screen
