@@ -28,7 +28,7 @@ class Game():
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
 
-        self.button = Button(self.screen, Vector(100, 100))
+        self.button = Button(self.screen, Vector(100, 100), self.tileMap)
 
     def events(self):
         mouseClicked = False
