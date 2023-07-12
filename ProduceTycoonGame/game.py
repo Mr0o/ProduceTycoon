@@ -4,7 +4,7 @@ import pygame
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
-from ProduceTycoonGame.UserInterface.button import Button
+from ProduceTycoonGame.UserInterface.objectButton import ObjectButton
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -28,7 +28,7 @@ class Game():
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
 
-        self.button = Button(self.screen, Vector(100, 100), self.tileMap)
+        self.objectButton = ObjectButton(self.screen, Vector(100, 100), self.tileMap, "Button")
 
     def events(self):
         mouseClicked = False
@@ -46,7 +46,7 @@ class Game():
 
         
         self.tileMap.events(mouseClicked)
-        self.button.events(mouseClicked)
+        self.objectButton.events(mouseClicked)
 
         # set target for guests (this is just for testing, not final implementation)
         if mouseClicked:
@@ -63,7 +63,7 @@ class Game():
         for guest in self.guests:
             guest.update()
 
-        self.button.update()
+        self.objectButton.update()
         
         pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
 
@@ -77,7 +77,7 @@ class Game():
         for guest in self.guests:
             guest.draw()
         
-        self.button.draw()
+        self.objectButton.draw()
 
         ## DEBUG STUFF ##
         # draw raw frametime
