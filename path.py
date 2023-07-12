@@ -71,7 +71,6 @@ def getVector(tileMap: TileMap, tile: Tile) -> Vector:
     # get the neighbors of the tile
     neighbors = tileMap.getNeighbors(tile)
 
-    # create a vector
     vector = Vector(0, 0)
 
     neighboringVecs: list[Vector] = []
@@ -180,8 +179,25 @@ if __name__ == "__main__":
         if pygame.mouse.get_pressed()[2]:
             tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])).type = Type.BOUNDARY
 
+        # middle click to place guests
+        if pygame.mouse.get_pressed()[1]:
+            guest.pos = Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
+
 
         tileMap.events(pygame.mouse.get_pressed()[2])
+
+        # guest events
+        guest.events()
+
+        # set the force for the guest using the tile they reside on
+        currentTile = tileMap.getTileByPos(guest.pos)
+        if currentTile != None:
+            force = tileMap.getTileByPos(guest.pos).vector.copy()
+            force.setMag(0.2)
+            guest.applyForce(force)
+
+        # guest update
+        guest.update()
 
         # update
         tileMap.update()
@@ -207,6 +223,9 @@ if __name__ == "__main__":
         for tile in tileMap.tileMapGrid:
             if tile.type == Type.BOUNDARY:
                 screen.blit(tile.BOUNDARY_TILE_IMG_SCALED, (tile.pos.x, tile.pos.y))
+
+        # draw the guest
+        guest.draw()
 
         # draw the target tile
         pygame.draw.rect(screen, (0, 255, 0), targetTile.rect)
