@@ -12,33 +12,27 @@ class Button(Element):
 
         self.width = 50
         self.height = 20
-        self.color = (40, 120, 180)
         self.previousMouseClick = False
 
         self.rect = pygame.Rect(self.pos.x, self.pos.y, self.width, self.height)
-        
     
-    def events(self, mouseClicked: bool):
+    def events(self, mouseClicked: bool = False):
         if self.rect.collidepoint(pygame.mouse.get_pos()) and mouseClicked:
-            self.isSelected != self.isSelected
-            self.showRect = True
+            self.isSelected = True
         
         if self.isSelected:
-            self.color = (200, 120, 180)
+            pass
         
         self.previousMouseClick = mouseClicked
-        
-
 
     def update(self):
         pass
-        
 
     def draw(self):
         objectSize = pygame.font.SysFont('Arial', 15, bold=True)
         text = objectSize.render(self.text, True, (0, 0, 0))
 
-        pygame.draw.rect(self.screen, self.color, self.rect)
+        pygame.draw.rect(self.screen, (100, 100, 100), self.rect)
         pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
         self.screen.blit(text, (self.pos.x, self.pos.y))
 
