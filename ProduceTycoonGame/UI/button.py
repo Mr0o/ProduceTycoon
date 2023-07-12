@@ -29,7 +29,6 @@ class Button():
             self.color = (100, 123, 0)
     
     def events(self, mouseClicked: bool):
-        self.buttonClicked(mouseClicked)
         if self.showRect:
             for tile in self.tileMap.tileMapGrid:
                 if tile.rect.collidepoint(pygame.mouse.get_pos()):
@@ -38,6 +37,7 @@ class Button():
                 if self.interactableRect.colliderect(tile.rect) and mouseClicked:
                     tile.type = Type.INTERACTABLE
                     self.tileMap.staticSurface = createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
+        self.buttonClicked(mouseClicked)
         
 
 
