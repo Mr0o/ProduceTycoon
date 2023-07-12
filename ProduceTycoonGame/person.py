@@ -9,6 +9,7 @@ class Person():
         self.screen = screen
         self.pos = pos
         self.size = 15
+        self.maxForceMag = 2
 
         self.mov = Vector(0, 0)
         self.targetTile: Tile = None
@@ -44,7 +45,7 @@ class Person():
     # the force can anything, but in the context of this game, it will usually be a vector from the pathfinding algorithm
     def applyForce(self, force: Vector):
         self.mov += force
-        self.mov.limitMag(3)
+        self.mov.limitMag(self.maxForceMag)
         
 
     def update(self):
