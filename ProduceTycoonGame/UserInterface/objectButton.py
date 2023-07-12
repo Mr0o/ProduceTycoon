@@ -20,9 +20,10 @@ class ObjectButton(Button):
         self.lastObject = self.objects[0]
     
     def newObject(self):
-        self.objects.append(PlacableObject(self.screen, self.posObject, self.tileMap, self.widthObject, self.heightObject))
-
-        self.lastObject = self.objects[len(self.objects) - 1]
+        if self.create:
+            self.objects.append(PlacableObject(self.screen, self.posObject, self.tileMap, self.widthObject, self.heightObject))
+            self.lastObject = self.objects[len(self.objects) - 1]
+            self.create = False
     
     def events(self, mouseClicked: bool = False):
         collideBut = self.rect.collidepoint(pygame.mouse.get_pos())
@@ -30,11 +31,11 @@ class ObjectButton(Button):
         if self.isOn:
             if self.lastObject.isPlaced:
                 self.isOn = False
-                self.newObject()
             else:
                 self.lastObject.showRect = True
                 self.lastObject.events(mouseClicked, collideBut)
         super().events(mouseClicked)
+        self.newObject()
             
 
     def update(self):
@@ -51,9 +52,6 @@ class ObjectButton(Button):
         
 
     def draw(self):
-        i = 0
         for placableObject in self.objects:
-            i += 1
-            print(i)
             placableObject.draw()
         super().draw()

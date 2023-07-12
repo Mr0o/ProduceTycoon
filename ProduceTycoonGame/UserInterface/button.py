@@ -8,8 +8,9 @@ class Button(Element):
     def __init__(self, screen: pygame.Surface, pos: Vector, text: str):
         super().__init__(screen, pos)
         self.text = text
-        self.isSelected = False
 
+        self.isSelected = False
+        self.create = False
         self.width = 50
         self.height = 20
         self.isOn = False
@@ -20,6 +21,7 @@ class Button(Element):
     def events(self, mouseClicked: bool = False):
         if self.rect.collidepoint(pygame.mouse.get_pos()) and mouseClicked:
             self.isSelected = True
+            self.create = True
         if self.isSelected:
             self.isOn = True
             self.isSelected = False
