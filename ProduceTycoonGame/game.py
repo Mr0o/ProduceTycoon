@@ -26,7 +26,7 @@ class Game():
 
         self.tileMap = TileMap(self.screen, Vector(0, 0))
 
-        self.buttons: list[Button] = []
+        self.buttons: list[ObjectButton] = []
         self.buttons.append(ObjectButton(self.screen, Vector(100, 100), self.tileMap, "Button 3x3", 3, 3))
         self.buttons.append(ObjectButton(self.screen, Vector(100, 140), self.tileMap, "Button 1x1", 1, 1))
 
