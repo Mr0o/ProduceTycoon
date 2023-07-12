@@ -4,7 +4,7 @@ import pygame
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
-from ProduceTycoonGame.button import Button
+from ProduceTycoonGame.UserInterface.button import Button
 
 # this is the main game loop (events, update, draw)
 class Game():
