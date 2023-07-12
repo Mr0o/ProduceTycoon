@@ -51,4 +51,4 @@ class PlacableObject():
     def draw(self):
         if not self.showRect:
             return
-        pygame.draw.rect(self.screen, (0, 0, 0), self.objectRect)
+        pygame.draw.rect(self.screen, (200, 0, 40), self.objectRect)

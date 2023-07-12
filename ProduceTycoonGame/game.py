@@ -26,7 +26,9 @@ class Game():
 
         self.tileMap = TileMap(self.screen, Vector(0, 0))
 
-        self.objectButton = ObjectButton(self.screen, Vector(100, 100), self.tileMap, "Button")
+        self.buttons: list[Button] = []
+        self.buttons.append(ObjectButton(self.screen, Vector(100, 100), self.tileMap, "Button 3x3", 3, 3))
+        self.buttons.append(ObjectButton(self.screen, Vector(100, 140), self.tileMap, "Button 1x1", 1, 1))
 
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
@@ -47,7 +49,8 @@ class Game():
 
         
         self.tileMap.events(mouseClicked)
-        self.objectButton.events(mouseClicked)
+        for button in self.buttons:
+            button.events(mouseClicked)
 
         # set target for guests (this is just for testing, not final implementation)
         if mouseClicked:
@@ -64,7 +67,8 @@ class Game():
         for guest in self.guests:
             guest.update()
 
-        self.objectButton.update()
+        for button in self.buttons:
+            button.update()
         
         pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
 
@@ -78,7 +82,8 @@ class Game():
         for guest in self.guests:
             guest.draw()
         
-        self.objectButton.draw()
+        for button in self.buttons:
+            button.draw()
 
         ## DEBUG STUFF ##
         # draw raw frametime
