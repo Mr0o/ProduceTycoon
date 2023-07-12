@@ -1,3 +1,4 @@
+import random
 import pygame
 
 # local imports
@@ -51,7 +52,7 @@ class Game():
         # set target for guests (this is just for testing, not final implementation)
         if mouseClicked:
             for guest in self.guests:
-                guest.setTarget(self.tileMap.selectedTile)
+                guest.applyForce(Vector(0, 0))
 
         
         for guest in self.guests:

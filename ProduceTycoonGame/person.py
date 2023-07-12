@@ -8,7 +8,7 @@ class Person():
     def __init__(self, screen: pygame.Surface, pos: Vector, id: int, name: str = "Person"):
         self.screen = screen
         self.pos = pos
-        self.size = 50
+        self.size = 15
 
         self.mov = Vector(0, 0)
         self.targetTile: Tile = None
@@ -35,27 +35,21 @@ class Person():
         # this is a list of strings that will reflect the person's current tasks (e.g. shopping list or job list)")
         self.tasks: list[str] = []
 
-        # pathfinding variables
-        self.path: list = [Tile]
-        self.pathIndex: int = 0
-
     def events(self):
         # counting the frames once we get to 49 we reset to 0 back to the first image in out animation
         if self.animationCount >= 49:
             self.animationCount = 0
         self.animationCount += 1
 
-    def setTarget(self, targetTile: Tile):
-        # set the target tile
-        self.targetTile = targetTile
-        self.pathIndex = 0
+    # the force can anything, but in the context of this game, it will usually be a vector from the pathfinding algorithm
+    def applyForce(self, force: Vector):
+        self.mov += force
+        self.mov.limitMag(3)
+        
 
     def update(self):
-        # move towards the next point in the path
-        if self.path != None:
-            # TODO: get the next tile in the path and set the mov vector to the direction of the next tile
-            pass
-                
+        # apply the force to the person's position
+        self.pos += self.mov
 
         self.rect = pygame.Rect(
             (self.pos.x, self.pos.y), (self.size, self.size))
