@@ -7,30 +7,22 @@ from ProduceTycoonGame.UserInterface.elements import Element
 
 
 class Button(Element):
-    def __init__(self, screen: pygame.Surface, pos: Vector, tileMap: TileMap, text = "3x3"):
-        super().__init__(screen, pos, tileMap, text)
-        self.screen = screen
-        self.pos = pos
-        self.tileMap = tileMap
+    def __init__(self, screen: pygame.Surface, pos: Vector, tileMap: TileMap, isSelected: bool, text = "3x3"):
+        super().__init__(screen, pos, tileMap, isSelected)
         self.text = text
-
-        size = tileMap.zoom // tileMap.col
-        self.width = size
-        self.height = size
         self.color = (0, 0, 255)
         self.showRect = False
+        self.posBut = Vector(0, 0)
 
-        self.posInteractable = Vector(0, 0)
-
-        self.rect = pygame.Rect(self.pos.x, self.pos.y, self.width, self.height)
-        self.interactableRect = pygame.Rect(0, 0, self.screen.get_height() // 25 * 3, self.screen.get_height() // 25 * 3)
+        
+        self.interactableRect = pygame.Rect(0, 0, screen.get_height() // 25 * 3, screen.get_height() // 25 * 3)
     
     def events(self, mouseClicked: bool):
         if self.showRect:
             for tile in self.tileMap.tileMapGrid:
                 if tile.rect.collidepoint(pygame.mouse.get_pos()):
-                    self.posInteractable.x = tile.pos.x + tile.size / 2 
-                    self.posInteractable.y = tile.pos.y + tile.size / 2
+                    self.posBut.x = tile.pos.x + tile.size / 2 
+                    self.posBut.y = tile.pos.y + tile.size / 2
                 if self.interactableRect.colliderect(tile.rect) and mouseClicked:
                     tile.type = Type.INTERACTABLE
                     self.tileMap.staticSurface = createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
