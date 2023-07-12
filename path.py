@@ -3,153 +3,204 @@ from ProduceTycoonGame.tile import Tile, Type
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.vectors import Vector
 
-def distanceBetweenTiles(tile1: Tile, tile2: Tile) -> int:
-    return abs(tile1.pos.x - tile2.pos.x) + abs(tile1.pos.y - tile2.pos.y)
+# add cost and parent attributes to the tile class (temporarily)
+Tile.cost: int = 0
+Tile.parent: Tile = None
+Tile.vector: Vector = Vector(0, 0)
 
-# use the A* algorithm to find the shortest path between two tiles
-def findPath(tileMap: TileMap, startTile: Tile, endTile: Tile) -> list[Tile]:
-    # create a list of tiles that have been visited
-    visitedTiles: list[Tile] = []
-    # create a list of tiles that have not been visited
-    unvisitedTiles: list[Tile] = []
-    # add the starting tile to the unvisited list
-    unvisitedTiles.append(startTile)
-    # create a dictionary of tiles that will be used to keep track of the tiles that have been visited and the tile that was visited before it
-    previousTile: dict[Tile, Tile] = {}
-    # create a dictionary of tiles that will be used to keep track of the distance from the starting tile to the current tile
-    distanceFromStart: dict[Tile, int] = {}
-    # set the distance from the starting tile to the starting tile to 0
-    distanceFromStart[startTile] = 0
-    # create a dictionary of tiles that will be used to keep track of the distance from the current tile to the end tile
-    distanceToEnd: dict[Tile, int] = {}
-    # set the distance from the current tile to the end tile to the distance between the starting tile and the end tile
-    distanceToEnd[startTile] = distanceBetweenTiles(startTile, endTile)
-    # while there are still tiles that have not been visited
-    while len(unvisitedTiles) > 0:
-        # set the current tile to the first tile in the unvisited list
-        currentTile = unvisitedTiles[0]
+# the pathfinding algorithm of choice will be Goal Based Vector Field Pathfinding (VFP)
 
-        for tile in unvisitedTiles:
-            if distanceFromStart[tile] < distanceFromStart[currentTile]:
+# create a heatmap of the tilemap
+def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
+    # reset the cost and parent attributes of each tile
+    for tile in tileMap.tileMapGrid:
+        tile.cost = 0
+        tile.parent = None
+        tile.vector = Vector(0, 0)
+
+    # list of open tiles
+    openTiles: list[Tile] = []
+    
+    # list of closed tiles
+    closedTiles: list[Tile] = []
+
+    # add the target to the open tiles
+    openTiles.append(target)
+
+    # while there are still open tiles
+    while len(openTiles) > 0:
+        # get the current tile
+        currentTile = openTiles[0]
+
+        # for each tile in the open tiles
+        for tile in openTiles:
+            # if the tile has a lower cost than the current tile
+            if tile.cost < currentTile.cost:
+                # set the current tile to the tile
                 currentTile = tile
 
-        if currentTile == endTile:
-            path: list[Tile] = []
-            # set the current tile to the end tile
-            currentTile = endTile
-            # while the current tile is not the starting tile
-            while currentTile != startTile:
-                path.append(currentTile)
-                currentTile = previousTile[currentTile]
+        # remove the current tile from the open tiles
+        openTiles.remove(currentTile)
 
-            path.reverse()
-            return path
+        # add the current tile to the closed tiles
+        closedTiles.append(currentTile)
 
-        # remove the current tile from the unvisited list
-        unvisitedTiles.remove(currentTile)
-        visitedTiles.append(currentTile)
+        # get the neighbors of the current tile
+        neighbors = tileMap.getNeighbors(currentTile)
 
-        for neighbor in tileMap.getNeighbors(currentTile):
-            # if the neighbor has not been visited
-            if neighbor not in visitedTiles:
-                distanceFromStart[neighbor] = distanceFromStart[currentTile] + distanceBetweenTiles(currentTile, neighbor)
-                distanceToEnd[neighbor] = distanceBetweenTiles(neighbor, endTile)
-                previousTile[neighbor] = currentTile
+        # for each neighbor of the current tile
+        for neighbor in neighbors:
+            # if the neighbor is not a boundary tile
+            if neighbor.type != Type.BOUNDARY:
+                # if the neighbor is not in the closed tiles
+                if neighbor not in closedTiles:
+                    # if the neighbor is not in the open tiles
+                    if neighbor not in openTiles:
+                       # add the neighbor to the open tiles
+                        openTiles.append(neighbor)
+                        # set the cost of the neighbor to the cost of the current tile plus 1
+                        neighbor.cost = currentTile.cost + 1
+                        # set the parent of the neighbor to the current tile
+                        neighbor.parent = currentTile
 
-                if neighbor not in unvisitedTiles:
-                    unvisitedTiles.append(neighbor)
-            
-    # return an empty list if no path was found
-    return []
+    # return the closed tiles
+    return closedTiles
 
+# get the vector from neighboring tiles using kernel convolution
+def getVector(tileMap: TileMap, tile: Tile) -> Vector:
+    # get the neighbors of the tile
+    neighbors = tileMap.getNeighbors(tile)
+
+    # create a vector
+    vector = Vector(0, 0)
+
+    neighboringVecs: list[Vector] = []
     
-# test the findPath function
+    # for each neighbor of the tile
+    for neighbor in neighbors:
+        # if the neighbor is not a boundary tile
+        if neighbor.type != Type.BOUNDARY:
+            # if the neighbor has a parent
+            if neighbor.parent != None:
+                # get the vector from the neighbor to the parent
+                neighboringVecs.append(Vector(neighbor.parent.pos.x - neighbor.pos.x, neighbor.parent.pos.y - neighbor.pos.y))
+
+    # for each neighboring vector
+    for neighboringVec in neighboringVecs:
+        # add the neighboring vector to the vector
+        vector.add(neighboringVec)
+
+    vector.setMag(10)
+
+    # return the vector
+    return vector
+
+# create a vector field of the tilemap
+def createVectorField(tileMap: TileMap, heatmap: list[Tile]) -> list[Tile]:
+    # create a list of tiles that will be returned
+    vectorField: list[Vector] = []
+
+    # for each tile in the heatmap
+    for tile in heatmap:
+        # get the vector from neighboring tiles using kernel convolution
+        vector = getVector(tileMap, tile)
+
+        tile.vector = vector
+
+    # return the vector field
+    return vectorField
+
+
+# test the pathfinding algorithm
 if __name__ == "__main__":
     import pygame
     pygame.init()
-
     screen = pygame.display.set_mode((800, 600))
+    pygame.display.set_caption('Vector Field Pathfinding Testing')
     clock = pygame.time.Clock()
 
-    # create a tile map
+    # create a tilemap
     tileMap = TileMap(screen, Vector(0, 0))
-    # create a start tile
-    startTile = tileMap.getTileByPos(Vector(30, 30))
-    # create an end tile
-    endTile = tileMap.getTileByPos(Vector(250, 250))
 
     # create a guest
-    guest = Guest(screen, startTile.pos, "Test")
+    guest = Guest(screen, Vector(0, 0))
 
-    # create a path
-    path = None
+    # target tile
+    targetTile = tileMap.getTileByID(150)
 
+    # create a heatmap
+    print("Creating heatmap...")
+    heatmap = createHeatmap(tileMap, targetTile)
+
+    # create a vector field
+    print("Creating vector field...")
+    vectorField = createVectorField(tileMap, heatmap)
+
+    # main game loop
     running = True
-    while(running):
+    while running:
         # events
+        mouseClicked = False
         for event in pygame.event.get():
+            # will stop running and exit
             if event.type == pygame.QUIT:
                 running = False
-
-            # if the mouse is clicked
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    # get the tile that the mouse is hovering over
-                    tile = tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
-                    # if the tile is not None
-                    if tile != None:
-                        # set the start tile to the tile
-                        startTile = tile
-                        # set the guest's position to the tile's position
-                        guest.pos = tile.pos
-            
-                # if the mouse is right clicked, set the tile that the mouse is hovering over to a boundary tile
-                elif event.button == 3:
-                    tile = tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
-                    if tile != None:
-                        if tile.type == Type.BOUNDARY:
-                            tile.type = Type.WALKABLE
-                        else:
-                            tile.type = Type.BOUNDARY
+                    mouseClicked = True
 
-                
-                # find the path from the start tile to the end tile
-                path = findPath(tileMap, startTile, endTile)
-                # if the path is not empty
-                if len(path) > 0:
-                    # set the guest's path to the path
-                    guest.path = path
-                    # set the guest's path index to 0
-                    guest.pathIndex = 0
-                    # set the guest's target tile to the first tile in the path
-                    guest.targetTile = path[0]
+        # set the target tile at the mouse position
+        if mouseClicked:
+            targetTile = tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
+            # create a heatmap
+            print("Creating heatmap...")
+            heatmap = createHeatmap(tileMap, targetTile)
 
+            # create a vector field
+            print("Creating vector field...")
+            vectorField = createVectorField(tileMap, heatmap)
+        
+        # right click to set boundary tiles
+        if pygame.mouse.get_pressed()[2]:
+            tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])).type = Type.BOUNDARY
+
+
+        tileMap.events(pygame.mouse.get_pressed()[2])
 
         # update
         tileMap.update()
-        guest.update()
 
         # draw
         screen.fill((0, 0, 0))
-        tileMap.draw()
-        guest.draw()
 
-        # draw the path
-        if path != None:
-            for i in range(len(path) - 1):
-                pygame.draw.line(screen, (255, 0, 0), (path[i].pos.x + path[i].size // 2, path[i].pos.y + path[i].size // 2), (path[i + 1].pos.x + path[i + 1].size // 2, path[i + 1].pos.y + path[i + 1].size // 2), 5)
-                pygame.draw.circle(screen, (255, 0, 0), (path[i].pos.x + path[i].size // 2, path[i].pos.y + path[i].size // 2), 5)
+        # draw the heatmap and vector
+        for tile in heatmap:
+            # use cost to calculate color'
+            # red value must be between 0 and 255
+            rValue = (tile.cost / 50) * 255
+            color = (rValue, 0, 0)
+            pygame.draw.rect(screen, color, tile.rect)
+
+            # draw the vector
+            pygame.draw.line(screen, (100, 100, 100), (tile.pos.x + tile.size / 2, tile.pos.y + tile.size / 2), (tile.pos.x + tile.size / 2 + tile.vector.x, tile.pos.y + tile.size / 2 + tile.vector.y), 2)
 
 
-        # draw the start tile
-        pygame.draw.rect(screen, (255, 0, 0), (startTile.pos.x, startTile.pos.y, startTile.size, startTile.size))
+        # draw boundary tiles on top of heatmap
+        for tile in tileMap.tileMapGrid:
+            if tile.type == Type.BOUNDARY:
+                screen.blit(tile.BOUNDARY_TILE_IMG_SCALED, (tile.pos.x, tile.pos.y))
 
-        # draw the end tile
-        pygame.draw.rect(screen, (0, 255, 0), (endTile.pos.x, endTile.pos.y, endTile.size, endTile.size))
+        # draw the target tile
+        pygame.draw.rect(screen, (0, 255, 0), targetTile.rect)
 
-        # draw the neighbor tiles of the start tile
-        # for neighbor in tileMap.getNeighbors(startTile):
-        #     pygame.draw.rect(screen, (0, 0, 255), (neighbor.pos.x, neighbor.pos.y, neighbor.size, neighbor.size))
+        # update the caption to show fps
+        pygame.display.set_caption('Vector Field Pathfinding Testing | FPS: ' + str(int(clock.get_fps())) + ' | ' + str(clock.get_rawtime()) + ' ms')
 
-        pygame.display.flip()  
+        # update the display
+        pygame.display.update()
+
+        # set the fps
         clock.tick(60)
