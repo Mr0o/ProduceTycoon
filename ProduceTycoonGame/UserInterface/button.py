@@ -3,30 +3,27 @@ import pygame
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap, createStaticTileSurface
 from ProduceTycoonGame.tile import Type
+from ProduceTycoonGame.UserInterface.elements import Element
 
 
-class Button():
-    def __init__(self, screen: pygame.Surface, pos: Vector,tileMap: TileMap, text = "3x3"):
+class Button(Element):
+    def __init__(self, screen: pygame.Surface, pos: Vector, tileMap: TileMap, text = "3x3"):
+        super().__init__(screen, pos, tileMap, text)
         self.screen = screen
         self.pos = pos
         self.tileMap = tileMap
         self.text = text
+
         size = tileMap.zoom // tileMap.col
         self.width = size
         self.height = size
         self.color = (0, 0, 255)
         self.showRect = False
+
         self.posInteractable = Vector(0, 0)
 
         self.rect = pygame.Rect(self.pos.x, self.pos.y, self.width, self.height)
         self.interactableRect = pygame.Rect(0, 0, self.screen.get_height() // 25 * 3, self.screen.get_height() // 25 * 3)
-
-    def buttonClicked(self, mouseClicked: bool):
-        if self.rect.collidepoint(pygame.mouse.get_pos()) and mouseClicked:
-            self.color = (0, 123, 255)
-            self.showRect = True
-        else:
-            self.color = (100, 123, 0)
     
     def events(self, mouseClicked: bool):
         if self.showRect:
@@ -37,7 +34,12 @@ class Button():
                 if self.interactableRect.colliderect(tile.rect) and mouseClicked:
                     tile.type = Type.INTERACTABLE
                     self.tileMap.staticSurface = createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
-        self.buttonClicked(mouseClicked)
+                    self.showRect = False
+        if self.rect.collidepoint(pygame.mouse.get_pos()) and mouseClicked:
+            self.color = (0, 123, 255)
+            self.showRect = True
+        else:
+            self.color = (100, 123, 0)
         
 
 
