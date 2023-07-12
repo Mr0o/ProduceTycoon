@@ -12,6 +12,7 @@ class Button(Element):
 
         self.width = 50
         self.height = 20
+        self.isOn = False
         self.previousMouseClick = False
 
         self.rect = pygame.Rect(self.pos.x, self.pos.y, self.width, self.height)
@@ -19,9 +20,9 @@ class Button(Element):
     def events(self, mouseClicked: bool = False):
         if self.rect.collidepoint(pygame.mouse.get_pos()) and mouseClicked:
             self.isSelected = True
-        
         if self.isSelected:
-            pass
+            self.isOn = True
+            self.isSelected = False
         
         self.previousMouseClick = mouseClicked
 

@@ -13,6 +13,7 @@ class PlacableObject():
         self.height = height
 
         self.showRect = False
+        self.isPlaced = False
 
         self.objectRect = pygame.Rect(self.pos.x, self.pos.y, self.width, self.height)
 
@@ -23,6 +24,8 @@ class PlacableObject():
 
 
     def events(self, mouseClicked: bool = False, collideBut: bool = False):
+        if self.isPlaced:
+            pass
         for tile in self.tileMap.tileMapGrid:
             # changes center of object object to center of current tile
             conditionMouse = tile.rect.collidepoint(pygame.mouse.get_pos())
@@ -34,9 +37,11 @@ class PlacableObject():
             if self.objectRect.colliderect(tile.rect) and mouseClicked and not(collideBut):
                 tile.type = Type.INTERACTABLE
                 self.tileMap.staticSurface = createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
-                self.showRect = False
+                self.isPlaced = True
 
     def update(self):
+        if self.isPlaced:
+            pass
         self.objectRect.center = (self.pos.x, self.pos.y)
         createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
 
