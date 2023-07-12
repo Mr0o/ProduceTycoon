@@ -2,6 +2,7 @@ from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Tile, Type
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.vectors import Vector
+from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
 
 # add cost and parent attributes to the tile class (temporarily)
 Tile.cost: int = 0
@@ -193,11 +194,18 @@ if __name__ == "__main__":
         currentTile = tileMap.getTileByPos(guest.pos)
         if currentTile != None:
             force = tileMap.getTileByPos(guest.pos).vector.copy()
-            force.setMag(0.2)
+            force.setMag(0.4)
             guest.applyForce(force)
 
         # guest update
         guest.update()
+
+        # guest collision
+        # check if the guest is colliding with a boundary tile
+        for tile in tileMap.tileMapGrid:
+            if tile.type == Type.BOUNDARY:
+                if isGuestTouchingTile(guest, tile):
+                    guest = resolveCollision(guest, tile)
 
         # update
         tileMap.update()
