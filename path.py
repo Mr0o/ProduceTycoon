@@ -148,6 +148,19 @@ if __name__ == "__main__":
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     running = False
+                if event.key == pygame.K_SPACE:
+                    print("Creating new tilemap...")
+                    # reset the tilemap (clears boundary tiles)
+                    tileMap = TileMap(screen, Vector(0, 0))
+
+                    # create a heatmap
+                    print("Creating heatmap...")
+                    heatmap = createHeatmap(tileMap, targetTile)
+
+                    # create a vector field
+                    print("Creating vector field...")
+                    vectorField = createVectorField(tileMap, heatmap)
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     mouseClicked = True
