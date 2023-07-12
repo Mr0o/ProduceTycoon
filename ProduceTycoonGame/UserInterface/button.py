@@ -7,15 +7,16 @@ from ProduceTycoonGame.UserInterface.elements import Element
 
 
 class Button(Element):
-    def __init__(self, screen: pygame.Surface, pos: Vector, tileMap: TileMap, isSelected: bool, text = "3x3"):
-        super().__init__(screen, pos, tileMap, isSelected)
+    def __init__(self, screen: pygame.Surface, pos: Vector, tileMap: TileMap, isSelected = False, text = "3x3"):
+        super().__init__(screen, pos, tileMap)
+        self.isSelected = isSelected
         self.text = text
-        self.color = (0, 0, 255)
+        self.color = (40, 120, 180)
         self.showRect = False
         self.posBut = Vector(0, 0)
 
-        
-        self.interactableRect = pygame.Rect(0, 0, screen.get_height() // 25 * 3, screen.get_height() // 25 * 3)
+        self.rect = pygame.Rect(self.pos.x, self.pos.y, self.size, self.size)
+        self.interactableRect = pygame.Rect(0, 0, self.screen.get_height() // 25 * 3, self.screen.get_height() // 25 * 3)
     
     def events(self, mouseClicked: bool):
         if self.showRect:
@@ -23,20 +24,22 @@ class Button(Element):
                 if tile.rect.collidepoint(pygame.mouse.get_pos()):
                     self.posBut.x = tile.pos.x + tile.size / 2 
                     self.posBut.y = tile.pos.y + tile.size / 2
-                if self.interactableRect.colliderect(tile.rect) and mouseClicked:
+                if self.interactableRect.colliderect(tile.rect) and mouseClicked and not(self.rect.collidepoint(pygame.mouse.get_pos())):
                     tile.type = Type.INTERACTABLE
                     self.tileMap.staticSurface = createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
                     self.showRect = False
+
         if self.rect.collidepoint(pygame.mouse.get_pos()) and mouseClicked:
-            self.color = (0, 123, 255)
+            self.isSelected != self.isSelected
             self.showRect = True
-        else:
-            self.color = (100, 123, 0)
+        
+        if self.isSelected:
+            self.color = (200, 120, 180)
         
 
 
     def update(self):
-        self.interactableRect.center = (self.posInteractable.x, self.posInteractable.y)
+        self.interactableRect.center = (self.posBut.x, self.posBut.y)
         createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
         
 
@@ -44,8 +47,11 @@ class Button(Element):
         objectSize = pygame.font.SysFont('Arial', 15, bold=True)
         text = objectSize.render(self.text, True, (0, 0, 0))
 
-        pygame.draw.rect(self.screen, self.color, self.rect)
-        self.screen.blit(text, (self.pos.x, self.pos.y))
-
         if self.showRect:
             pygame.draw.rect(self.screen, self.color, self.interactableRect)
+
+        pygame.draw.rect(self.screen, self.color, self.rect)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
+        self.screen.blit(text, (self.pos.x, self.pos.y))
+
+        
