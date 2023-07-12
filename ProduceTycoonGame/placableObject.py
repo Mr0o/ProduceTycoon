@@ -4,6 +4,8 @@ from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap, createStaticTileSurface
 from ProduceTycoonGame.tile import Type
 
+id = 0
+
 class PlacableObject():
     def __init__(self, screen: pygame.Surface, pos: Vector, tileMap: TileMap, width: int, height: int):
         self.screen = screen
@@ -24,8 +26,8 @@ class PlacableObject():
 
 
     def events(self, mouseClicked: bool = False, collideBut: bool = False):
-        if self.isPlaced:
-            pass
+        if self.isPlaced or not self.showRect:
+            return
         for tile in self.tileMap.tileMapGrid:
             # changes center of object object to center of current tile
             conditionMouse = tile.rect.collidepoint(pygame.mouse.get_pos())
@@ -40,10 +42,13 @@ class PlacableObject():
                 self.isPlaced = True
 
     def update(self):
-        if self.isPlaced:
-            pass
+        if self.isPlaced or not self.showRect:
+            return
+        
         self.objectRect.center = (self.pos.x, self.pos.y)
         createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
 
     def draw(self):
+        if not self.showRect:
+            return
         pygame.draw.rect(self.screen, (0, 0, 0), self.objectRect)

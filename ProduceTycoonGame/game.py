@@ -25,10 +25,10 @@ class Game():
 
         self.tileMap = TileMap(self.screen, Vector(0, 0))
 
+        self.objectButton = ObjectButton(self.screen, Vector(100, 100), self.tileMap, "Button")
+
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
-
-        self.objectButton = ObjectButton(self.screen, Vector(100, 100), self.tileMap, "Button")
 
     def events(self):
         mouseClicked = False

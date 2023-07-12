@@ -5,10 +5,10 @@ from ProduceTycoonGame.UserInterface.elements import Element
 
 
 class Button(Element):
-    def __init__(self, screen: pygame.Surface, pos: Vector, text: str, isSelected: bool = False):
+    def __init__(self, screen: pygame.Surface, pos: Vector, text: str):
         super().__init__(screen, pos)
         self.text = text
-        self.isSelected = isSelected
+        self.isSelected = False
 
         self.width = 50
         self.height = 20
