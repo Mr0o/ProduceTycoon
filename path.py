@@ -181,6 +181,8 @@ if __name__ == "__main__":
             # use cost to calculate color'
             # red value must be between 0 and 255
             rValue = (tile.cost / 50) * 255
+            if rValue > 255:
+                rValue = 255
             color = (rValue, 0, 0)
             pygame.draw.rect(screen, color, tile.rect)
 
