@@ -32,7 +32,8 @@ class TileMap():
         self.selectedTile = None
 
         # static surface for drawing tileMap
-        self.staticSurface = createStaticTileSurface(self.tileMapGrid, self.width, self.height)
+        self.staticSurface: pygame.Surface
+        self.updateStaticImage()
 
     def createTileGrid(self, zoom: int, numRows: int, numCols: int, tileMapStartingPos: Vector) -> list[Tile]:
         # create grid of tiles
@@ -74,6 +75,10 @@ class TileMap():
     def update(self):
         for tile in self.tileMapGrid:    
             tile.update()
+
+    # update the static surface, use this instead of importing createStaticTileSurface in other files
+    def updateStaticImage(self):
+        self.staticSurface = createStaticTileSurface(self.tileMapGrid, self.width, self.height)
 
     def draw(self):
         # drawing tileMap
