@@ -14,7 +14,6 @@ class Button(Element):
         self.width = 50
         self.height = 20
         self.isOn = False
-        self.previousMouseClick = False
 
         self.rect = pygame.Rect(self.pos.x, self.pos.y, self.width, self.height)
     
@@ -22,14 +21,11 @@ class Button(Element):
         if self.rect.collidepoint(pygame.mouse.get_pos()) and mouseClicked:
             self.isSelected = True
             self.create = True
+
+    def update(self):
         if self.isSelected:
             self.isOn = True
             self.isSelected = False
-        
-        self.previousMouseClick = mouseClicked
-
-    def update(self):
-        pass
 
     def draw(self):
         objectSize = pygame.font.SysFont('Arial', 15, bold=True)
