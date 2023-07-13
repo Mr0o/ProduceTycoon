@@ -1,6 +1,7 @@
 from math import sqrt
 
 import pygame
+from ProduceTycoonGame.vectors import Vector
 
 # detect collision between two pygame rects
 def isGuestTouchingTile(guest, tile) -> bool:
@@ -18,18 +19,18 @@ def resolveCollision(person, tile):
     \nReturns <person> with the updated position
     """
 
-    #find the distance between the closest points on the two rects
-    distance = sqrt((person.pos.x - person.size / 2 - tile.pos.x - tile.size / 2) ** 2 + (person.pos.y - person.size / 2 - tile.pos.y - tile.size / 2) ** 2)
-    #find the amount of overlap between the person and tile
-    overlap =  person.size / 2 + tile.size / 2 - distance
+    # get the distance between the two tiles
+    distance = sqrt((person.pos.x - tile.pos.x)**2 + (person.pos.y - tile.pos.y)**2)
 
-    #prevent division by zero
-    if (distance == 0):
-        distance = 0.0001  # arbitrary small number
+    # get the direction of the collision
+    direction = Vector(tile.pos.x - person.pos.x, tile.pos.y - person.pos.y)
+    direction.normalize()
 
-    #displace the person
-    person.pos.x += (person.pos.x - tile.pos.x) / distance * overlap
-    person.pos.y += (person.pos.y - tile.pos.y) / distance * overlap
+    # get the displacement
+    displacement = direction * distance
+
+    # apply the displacement to the person
+    person.pos -= Vector(displacement.x, displacement.y)
 
     return person
     
