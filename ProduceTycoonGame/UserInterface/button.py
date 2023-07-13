@@ -12,12 +12,14 @@ class Button():
         self.width = 50
         self.height = 20
         self.isOn = False
+        self.create = False
 
         self.rect = pygame.Rect(self.pos.x, self.pos.y, self.width, self.height)
     
     def events(self, mouseClicked: bool = False):
         if self.rect.collidepoint(pygame.mouse.get_pos()) and mouseClicked:
             self.isSelected = True
+            self.create = True
 
     def update(self):
         if self.isSelected:
