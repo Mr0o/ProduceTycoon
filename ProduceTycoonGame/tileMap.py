@@ -151,6 +151,13 @@ class TileMap():
             if tile.type == Type.WALKABLE:
                 walkableTiles.append(tile)
         return walkableTiles
+    
+    def getNonWalkableTiles(self) -> list[Tile]:
+        boundaryTiles: list[Tile] = []
+        for tile in self.tileMapGrid:
+            if tile.type != Type.WALKABLE:
+                boundaryTiles.append(tile)
+        return boundaryTiles
 
 
 # create a surface of Tiles that can be used statically (this will not reflect changes to the tileMap unless a new static surface is created)

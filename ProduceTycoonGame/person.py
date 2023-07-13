@@ -1,4 +1,5 @@
 import pygame
+import pymunk
 
 from ProduceTycoonGame.tile import Tile
 from ProduceTycoonGame.vectors import Vector
@@ -19,6 +20,12 @@ class Person():
         self.animationCount = 0
         self.rect = pygame.Rect(
             (self.pos.x, self.pos.y), (self.size, self.size))
+        
+        # pymunk body and shape
+        self.body = pymunk.Body(body_type=pymunk.Body.STATIC)
+        self.body.position = (self.pos.x + self.size / 2, self.pos.y + self.size / 2)
+        self.shape = pymunk.Poly.create_box(self.body, (self.size, self.size))
+        self.shape.friction = 1
 
         # person id
         self.id: int = id
@@ -37,21 +44,14 @@ class Person():
         self.tasks: list[str] = []
 
     def events(self):
-        # counting the frames once we get to 49 we reset to 0 back to the first image in out animation
+        # counting the frames once we get to 49 we reset to 0 back to the first image in our animation
         if self.animationCount >= 49:
             self.animationCount = 0
         self.animationCount += 1
 
-    # the force can anything, but in the context of this game, it will usually be a vector from the pathfinding algorithm
-    def applyForce(self, force: Vector):
-        self.mov += force
-        self.mov.limitMag(self.maxForceMag)
-        
-
     def update(self):
-        # apply the force to the person's position
-        self.pos += self.mov
-
+        # get the position of the person in pymunk space
+        self.pos = Vector(self.body.position.x - self.size / 2, self.body.position.y - self.size / 2)
         self.rect = pygame.Rect(
             (self.pos.x, self.pos.y), (self.size, self.size))
 

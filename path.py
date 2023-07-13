@@ -2,7 +2,7 @@ from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Tile, Type
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
+from ProduceTycoonGame.collision import Physics
 
 # add cost and parent attributes to the tile class (temporarily)
 Tile.cost: int = 0
@@ -10,6 +10,8 @@ Tile.parent: Tile = None
 Tile.vector: Vector = Vector(0, 0)
 
 # the pathfinding algorithm of choice will be Goal Based Vector Field Pathfinding (VFP)
+# NOTE: There is a high performance cost when creating the heatmap and vector field, so this needs to be done as few times as possible
+# We could either design the game around this or try to speed things up with optimizations, perhaps by using c++ ???
 
 # create a heatmap of the tilemap
 def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
@@ -123,7 +125,7 @@ if __name__ == "__main__":
     tileMap = TileMap(screen, Vector(0, 0))
 
     # create a guest
-    guest = Guest(screen, Vector(0, 0))
+    guest = Guest(screen, Vector(25, 25))
 
     # target tile
     targetTile = tileMap.getTileByID(150)
@@ -135,6 +137,8 @@ if __name__ == "__main__":
     # create a vector field
     print("Creating vector field...")
     vectorField = createVectorField(tileMap, heatmap)
+
+    physics = Physics(tileMap.getNonWalkableTiles(), [guest])
 
     # main game loop
     running = True
@@ -161,6 +165,9 @@ if __name__ == "__main__":
                     print("Creating vector field...")
                     vectorField = createVectorField(tileMap, heatmap)
 
+                    # reset the physics
+                    physics = Physics(tileMap.getNonWalkableTiles(), [guest])
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     mouseClicked = True
@@ -178,7 +185,11 @@ if __name__ == "__main__":
         
         # right click to set boundary tiles
         if pygame.mouse.get_pressed()[2]:
-            tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])).type = Type.BOUNDARY
+            tileAtPos = tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
+            if tileAtPos != None and tileAtPos.type != Type.BOUNDARY:
+                tileAtPos.type = Type.BOUNDARY
+                # add tile to physics
+                physics.addTile(tileAtPos)
 
         # middle click to place guests
         if pygame.mouse.get_pressed()[1]:
@@ -193,22 +204,14 @@ if __name__ == "__main__":
         # set the force for the guest using the tile they reside on
         currentTile = tileMap.getTileByPos(guest.pos)
         if currentTile != None:
-            force = tileMap.getTileByPos(guest.pos).vector.copy()
-            force.setMag(0.4)
-            guest.applyForce(force)
-
-        # guest update
-        guest.update()
-
-        # guest collision
-        # check if the guest is colliding with a boundary tile
-        for tile in tileMap.tileMapGrid:
-            if tile.type == Type.BOUNDARY:
-                if isGuestTouchingTile(guest, tile):
-                    guest = resolveCollision(guest, tile)
+            # apply the force to the guest in pymunk space
+            physics.applyForce(guest, currentTile.vector)
 
         # update
         tileMap.update()
+
+        # physics update
+        physics.update(clock.get_time())
 
         # draw
         screen.fill((0, 0, 0))
