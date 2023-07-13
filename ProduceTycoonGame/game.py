@@ -1,4 +1,3 @@
-import random
 import pygame
 
 # local imports
@@ -7,6 +6,7 @@ from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.dropdownButton import DropdownButton
 from ProduceTycoonGame.UserInterface.objectButton import ObjectButton
+from ProduceTycoonGame.collision import Physics
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -35,9 +35,12 @@ class Game():
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
 
+        # physics (pymunk)
+        nonWalkableTiles = self.tileMap.getNonWalkableTiles()
+        self.physics = Physics(nonWalkableTiles, self.guests)
+
     def events(self):
         mouseClicked = False
-        zeroClicked = False
         for event in pygame.event.get():
             # will stop running and exit
             if event.type == pygame.QUIT:
@@ -55,10 +58,9 @@ class Game():
             button.events(mouseClicked)
 
         # set target for guests (this is just for testing, not final implementation)
-        if mouseClicked:
-            for guest in self.guests:
-                guest.applyForce(Vector(0, 0))
-
+        # if mouseClicked:
+        #     for guest in self.guests:
+        #         pass
         
         for guest in self.guests:
             guest.events()
@@ -71,6 +73,9 @@ class Game():
 
         for button in self.dropdownButtons:
             button.update()
+
+        # physics update
+        self.physics.update(self.clock.get_time())
         
         pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
 
