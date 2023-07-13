@@ -1,4 +1,5 @@
 import pygame
+import pymunk
 from enum import Enum
 
 from ProduceTycoonGame.vectors import Vector
@@ -24,6 +25,12 @@ class Tile():
 
         self.pos = pos
         self.size = size
+
+        # pymunk body and shape
+        self.body = pymunk.Body(body_type=pymunk.Body.STATIC)
+        self.body.position = (self.pos.x + self.size / 2, self.pos.y + self.size / 2)
+        self.shape = pymunk.Poly.create_box(self.body, (self.size, self.size))
+        self.shape.friction = 1
 
         self.type: Type = type
 
