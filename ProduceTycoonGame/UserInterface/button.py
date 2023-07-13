@@ -1,16 +1,14 @@
 import pygame
 
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.UserInterface.elements import Element
 
-
-class Button(Element):
+class Button():
     def __init__(self, screen: pygame.Surface, pos: Vector, text: str):
-        super().__init__(screen, pos)
+        self.screen = screen
+        self.pos = pos
         self.text = text
 
         self.isSelected = False
-        self.create = False
         self.width = 50
         self.height = 20
         self.isOn = False
@@ -20,7 +18,6 @@ class Button(Element):
     def events(self, mouseClicked: bool = False):
         if self.rect.collidepoint(pygame.mouse.get_pos()) and mouseClicked:
             self.isSelected = True
-            self.create = True
 
     def update(self):
         if self.isSelected:
