@@ -10,6 +10,8 @@ Tile.parent: Tile = None
 Tile.vector: Vector = Vector(0, 0)
 
 # the pathfinding algorithm of choice will be Goal Based Vector Field Pathfinding (VFP)
+# NOTE: There is a high performance cost when creating the heatmap and vector field, so this needs to be done as few times as possible
+# We could either design the game around this or try to speed things up with optimizations, perhaps by using c++ ???
 
 # create a heatmap of the tilemap
 def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
