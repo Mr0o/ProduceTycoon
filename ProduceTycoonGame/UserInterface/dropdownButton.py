@@ -8,7 +8,7 @@ class DropdownButton(Button):
     def __init__(self, screen: pygame.Surface, pos: Vector, text: str):
         super().__init__(screen, pos, text)
 
-        self.buttons: list[ObjectButton] = []
+        self.buttons = []
 
     def events(self, mouseClicked: bool = False):
         if self.isOn:
