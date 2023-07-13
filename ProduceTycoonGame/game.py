@@ -5,6 +5,7 @@ import pygame
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
+from ProduceTycoonGame.UserInterface.dropdownButton import DropdownButton
 from ProduceTycoonGame.UserInterface.objectButton import ObjectButton
 
 # this is the main game loop (events, update, draw)
@@ -26,9 +27,10 @@ class Game():
 
         self.tileMap = TileMap(self.screen, Vector(0, 0))
 
-        self.buttons: list[ObjectButton] = []
-        self.buttons.append(ObjectButton(self.screen, Vector(100, 100), self.tileMap, "Button 3x3", 3, 3))
-        self.buttons.append(ObjectButton(self.screen, Vector(100, 140), self.tileMap, "Button 1x1", 1, 1))
+        self.dropdownButtons: list[DropdownButton] = []
+        self.dropdownButtons.append(DropdownButton(self.screen, Vector(50, 50), "Objects"))
+        self.dropdownButtons[0].buttons.append(ObjectButton(self.screen, Vector(100, 100), self.tileMap, "Button 3x3", 3, 3))
+        self.dropdownButtons[0].buttons.append(ObjectButton(self.screen, Vector(100, 140), self.tileMap, "Button 1x1", 1, 1))
 
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
@@ -49,7 +51,7 @@ class Game():
 
         
         self.tileMap.events(mouseClicked)
-        for button in self.buttons:
+        for button in self.dropdownButtons:
             button.events(mouseClicked)
 
         # set target for guests (this is just for testing, not final implementation)
@@ -67,7 +69,7 @@ class Game():
         for guest in self.guests:
             guest.update()
 
-        for button in self.buttons:
+        for button in self.dropdownButtons:
             button.update()
         
         pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
@@ -82,7 +84,7 @@ class Game():
         for guest in self.guests:
             guest.draw()
         
-        for button in self.buttons:
+        for button in self.dropdownButtons:
             button.draw()
 
         ## DEBUG STUFF ##
