@@ -6,7 +6,7 @@ from ProduceTycoonGame.vectors import Vector
 
 # super class for guests and employees
 class Person():
-    def __init__(self, screen: pygame.Surface, pos: Vector, id: int, name: str = "Person"):
+    def __init__(self, screen: pygame.Surface, space: pymunk.Space, pos: Vector, id: int, name: str = "Person"):
         self.screen = screen
         self.pos = pos
         self.size = 15
