@@ -22,6 +22,7 @@ class Button():
         
         if not mouseClicked:
             self.isSelected = False
+            
 
         return action
 
