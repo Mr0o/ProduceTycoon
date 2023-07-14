@@ -1,14 +1,18 @@
 import pygame
+import pymunk
 
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tile import Tile, Type
 
 
 class TileMap():
-    def __init__(self, screen: pygame.Surface, pos: Vector):
+    def __init__(self, screen: pygame.Surface, space: pymunk.Space, pos: Vector):
         self.screen = screen
         self.pos = pos
         self.mov = Vector(0, 0)
+
+        # pymunk space
+        self.space = space
 
         self.width = self.screen.get_width()
         self.height = self.screen.get_height()
@@ -45,9 +49,9 @@ class TileMap():
                 pos = Vector(tileMapStartingPos.x + j * tileSize,
                                tileMapStartingPos.x + i * tileSize)
                 if i == 0 or j == 0 or i == numRows-1 or j == numCols-1:
-                    tileMapGrid.append(Tile(self.screen, pos, tileSize, Type.BOUNDARY))
+                    tileMapGrid.append(Tile(self.screen, self.space, pos, tileSize, Type.BOUNDARY))
                 else:
-                    tileMapGrid.append(Tile(self.screen, pos, tileSize, Type.WALKABLE))
+                    tileMapGrid.append(Tile(self.screen, self.space, pos, tileSize, Type.WALKABLE))
 
         return tileMapGrid
 
@@ -97,9 +101,7 @@ class TileMap():
         
 
     def getTileByID(self, tileID: int):
-        for tile in self.tileMapGrid:
-            if tile.id == tileID:
-                return tile
+        return self.tileMapGrid[tileID]
     
     def getTileByPos(self, pos: Vector):
         for tile in self.tileMapGrid:
@@ -111,36 +113,32 @@ class TileMap():
     def getNeighbors(self, tile: Tile) -> list[Tile]:
         neighbors: list[Tile] = []
 
-        # get the tiles that collide with the tile
-        for tile2 in self.tileMapGrid:
-            if tile.rect.colliderect(tile2.rect):
-                neighbors.append(tile2)
-        
-        # get the tiles that are adjacent to the tile
-        for tile2 in self.tileMapGrid:
-            if tile2.rect.collidepoint(tile.pos.x + tile.size, tile.pos.y):
-                neighbors.append(tile2)
-            elif tile2.rect.collidepoint(tile.pos.x - tile.size, tile.pos.y):
-                neighbors.append(tile2)
-            elif tile2.rect.collidepoint(tile.pos.x, tile.pos.y + tile.size):
-                neighbors.append(tile2)
-            elif tile2.rect.collidepoint(tile.pos.x, tile.pos.y - tile.size):
-                neighbors.append(tile2)
-        
-        # get the tiles that are diagonal to the tile
-        for tile2 in self.tileMapGrid:
-            if tile2.rect.collidepoint(tile.pos.x + tile.size, tile.pos.y + tile.size):
-                neighbors.append(tile2)
-            elif tile2.rect.collidepoint(tile.pos.x - tile.size, tile.pos.y + tile.size):
-                neighbors.append(tile2)
-            elif tile2.rect.collidepoint(tile.pos.x + tile.size, tile.pos.y - tile.size):
-                neighbors.append(tile2)
-            elif tile2.rect.collidepoint(tile.pos.x - tile.size, tile.pos.y - tile.size):
-                neighbors.append(tile2)
+        # determine the neighbors by using the id
+        # top left
+        if tile.id - self.col - 1 >= 0:
+            neighbors.append(self.getTileByID(tile.id - self.col - 1))
+        # top center
+        if tile.id - self.col >= 0:
+            neighbors.append(self.getTileByID(tile.id - self.col))
+        # top right
+        if tile.id - self.col + 1 >= 0:
+            neighbors.append(self.getTileByID(tile.id - self.col + 1))
+        # left center
+        if tile.id - 1 >= 0:
+            neighbors.append(self.getTileByID(tile.id - 1))
+        # right
+        if tile.id + 1 < len(self.tileMapGrid):
+            neighbors.append(self.getTileByID(tile.id + 1))
 
-        # remove the orignal tile from the neighbors list
-        if tile in neighbors:
-            neighbors.remove(tile)
+        # bottom left
+        if tile.id + self.col - 1 < len(self.tileMapGrid):
+            neighbors.append(self.getTileByID(tile.id + self.col - 1))
+        # bottom
+        if tile.id + self.col < len(self.tileMapGrid):
+            neighbors.append(self.getTileByID(tile.id + self.col))
+        # bottom right
+        if tile.id + self.col + 1 < len(self.tileMapGrid):
+            neighbors.append(self.getTileByID(tile.id + self.col + 1))
 
         return neighbors
 
