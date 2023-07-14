@@ -1,17 +1,16 @@
 import pygame
-import random
+import pymunk
 
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.tile import Tile
 from ProduceTycoonGame.person import Person
 
 # global
 id = 0
 
 class Guest(Person):
-    def __init__(self, screen: pygame.Surface, pos: Vector, name: str = "Guest"):
+    def __init__(self, screen: pygame.Surface, space: pymunk.Space, pos: Vector, name: str = "Guest"):
         global id; id += 1
-        super().__init__(screen, pos, id, name)
+        super().__init__(screen, space, pos, id, name)
 
     # draw
     def draw(self):
