@@ -4,8 +4,8 @@ import pygame
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
-from ProduceTycoonGame.UserInterface.dropdownButton import DropdownButton
-from ProduceTycoonGame.UserInterface.objectButton import ObjectButton
+from ProduceTycoonGame.UserInterface.button import Button
+from ProduceTycoonGame.placableObject import PlacableObject
 from ProduceTycoonGame.physics import Physics
 
 # this is the main game loop (events, update, draw)
@@ -27,10 +27,13 @@ class Game():
 
         self.tileMap = TileMap(self.screen, Vector(0, 0))
 
-        self.dropdownButtons: list[DropdownButton] = []
-        self.dropdownButtons.append(DropdownButton(self.screen, Vector(50, 50), "Objects"))
-        self.dropdownButtons[0].buttons.append(ObjectButton(self.screen, Vector(100, 100), self.tileMap, "Button 3x3", 3, 3))
-        self.dropdownButtons[0].buttons.append(ObjectButton(self.screen, Vector(100, 140), self.tileMap, "Button 1x1", 1, 1))
+        # buttons
+        self.buttons = []
+        self.button3x3 = Button(self.screen, Vector(100, 100), "3x3 Tile", 60, 20)
+        self.button1x1 = Button(self.screen, Vector(100, 120), "1x1 Tile", 60, 20)
+
+        # placed objects
+        self.placedObjects: list[PlacableObjects] = []
 
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
@@ -54,8 +57,15 @@ class Game():
 
         
         self.tileMap.events(mouseClicked)
-        for button in self.dropdownButtons:
-            button.events(mouseClicked)
+
+        if self.button3x3.events(mouseClicked):
+            self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 60, 60))
+        if self.button1x1.events(mouseClicked):
+            self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20))
+
+        for placedObject in self.placedObjects:
+            placedObject.events()
+
 
         # set target for guests (this is just for testing, not final implementation)
         # if mouseClicked:
@@ -71,8 +81,8 @@ class Game():
         for guest in self.guests:
             guest.update()
 
-        for button in self.dropdownButtons:
-            button.update()
+        for placedObject in self.placedObjects:
+            placedObject.update()
 
         # physics update
         self.physics.update(self.clock.get_time())
@@ -89,8 +99,11 @@ class Game():
         for guest in self.guests:
             guest.draw()
         
-        for button in self.dropdownButtons:
-            button.draw()
+        self.button1x1.draw()
+        self.button3x3.draw()
+
+        for placedObject in self.placedObjects:
+            placedObject.draw()
 
         ## DEBUG STUFF ##
         # draw raw frametime
