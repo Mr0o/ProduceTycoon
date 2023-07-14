@@ -121,11 +121,13 @@ if __name__ == "__main__":
     pygame.display.set_caption('Vector Field Pathfinding Testing')
     clock = pygame.time.Clock()
 
+    physics = Physics()
+
     # create a tilemap
-    tileMap = TileMap(screen, Vector(0, 0))
+    tileMap = TileMap(screen, physics.space, Vector(0, 0))
 
     # create a guest
-    guest = Guest(screen, Vector(25, 25))
+    guest = Guest(screen, physics.space, Vector(25, 25))
 
     # target tile
     targetTile = tileMap.getTileByID(150)
@@ -137,8 +139,6 @@ if __name__ == "__main__":
     # create a vector field
     print("Creating vector field...")
     vectorField = createVectorField(tileMap, heatmap)
-
-    physics = Physics(tileMap.getNonWalkableTiles(), [guest])
 
     # main game loop
     running = True
@@ -189,7 +189,7 @@ if __name__ == "__main__":
             if tileAtPos != None and tileAtPos.type != Type.BOUNDARY:
                 tileAtPos.type = Type.BOUNDARY
                 # add tile to physics
-                physics.addTile(tileAtPos)
+                tileAtPos.addToPhysics()
 
         # middle click to place guests
         if pygame.mouse.get_pressed()[1]:
