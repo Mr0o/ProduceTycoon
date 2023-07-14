@@ -6,7 +6,7 @@ from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.dropdownButton import DropdownButton
 from ProduceTycoonGame.UserInterface.objectButton import ObjectButton
-from ProduceTycoonGame.collision import Physics
+from ProduceTycoonGame.physics import Physics
 
 # this is the main game loop (events, update, draw)
 class Game():

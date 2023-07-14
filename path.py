@@ -2,7 +2,7 @@ from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Tile, Type
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.collision import Physics
+from ProduceTycoonGame.physics import Physics
 
 # add cost and parent attributes to the tile class (temporarily)
 Tile.cost: int = 0
