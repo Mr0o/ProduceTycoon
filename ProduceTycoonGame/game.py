@@ -33,7 +33,7 @@ class Game():
         self.button1x1 = Button(self.screen, Vector(100, 120), "1x1 Tile", 60, 20)
 
         # placed objects
-        self.placedObjects: list[PlacableObjects] = []
+        self.placedObjects: list[PlacableObject] = []
 
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
