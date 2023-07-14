@@ -17,7 +17,7 @@ class Type(Enum):
 id = 0
 
 class Tile():
-    def __init__(self, screen: pygame.Surface, pos: Vector, size: int, type: Type = Type.WALKABLE):
+    def __init__(self, screen: pygame.Surface, space: pymunk.Space, pos: Vector, size: int, type: Type = Type.WALKABLE):
         # create unique id for each tile
         global id; self.id = id; id += 1
 
@@ -25,14 +25,21 @@ class Tile():
 
         self.pos = pos
         self.size = size
+        
+        self.type: Type = type
 
-        # pymunk body and shape
+        # physics (pymunk)
+        self.space = space
+
+        # create pymunk body and shape
         self.body = pymunk.Body(body_type=pymunk.Body.STATIC)
         self.body.position = (self.pos.x + self.size / 2, self.pos.y + self.size / 2)
         self.shape = pymunk.Poly.create_box(self.body, (self.size, self.size))
         self.shape.friction = 1
 
-        self.type: Type = type
+        # add to pymunk space
+        if type == Type.BOUNDARY:
+            self.addToPhysics()
 
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.size, self.size))
 
@@ -47,7 +54,11 @@ class Tile():
         self.BOUNDARY_TILE_IMG_SCALED = pygame.transform.scale(BOUNDARY_TILE_IMG.copy(), (self.size, self.size))
 
     def update(self):
-        self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.size, self.size))
+        pass
+        # get the position of the tile in pymunk space
+        # self.pos = Vector(self.body.position.x - self.size / 2, self.body.position.y - self.size / 2)
+        # # update the rect
+        # self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.size, self.size))
 
     def draw(self):
         self.tileImg = None
@@ -63,6 +74,15 @@ class Tile():
             pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
         elif self.isSelected:
             pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
+
+    def addToPhysics(self):
+        self.space.add(self.body, self.shape)
+
+    def removeFromPhysics(self):
+        self.space.remove(self.body, self.shape)
+        self.body = None
+        self.shape = None
+        self.space = None
         
             
             
