@@ -41,10 +41,6 @@ class Game():
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, self.physics.space, Vector(WIDTH/2, HEIGHT/2)))
 
-        # physics (pymunk)
-        nonWalkableTiles = self.tileMap.getNonWalkableTiles()
-        self.physics = Physics()
-
     def events(self):
         mouseClicked = False
         for event in pygame.event.get():
