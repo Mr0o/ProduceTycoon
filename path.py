@@ -85,7 +85,7 @@ def getVector(tileMap: TileMap, tile: Tile) -> Vector:
             # if the neighbor has a parent
             if neighbor.parent != None:
                 # get the vector from the neighbor to the parent
-                neighboringVecs.append(Vector(neighbor.parent.pos.x - neighbor.pos.x, neighbor.parent.pos.y - neighbor.pos.y))
+                neighboringVecs.append(Vector(neighbor.parent.pos.x + neighbor.size / 2, neighbor.parent.pos.y + neighbor.size / 2) - Vector(neighbor.pos.x + neighbor.size / 2, neighbor.pos.y + neighbor.size / 2))
 
     # for each neighboring vector
     for neighboringVec in neighboringVecs:
@@ -194,7 +194,8 @@ if __name__ == "__main__":
         # middle click to place guests
         if pygame.mouse.get_pressed()[1]:
             guest.pos = Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
-
+            # set guest body position
+            guest.body.position = (guest.pos.x + guest.size / 2, guest.pos.y + guest.size / 2)
 
         tileMap.events(pygame.mouse.get_pressed()[2])
 
@@ -211,7 +212,7 @@ if __name__ == "__main__":
         tileMap.update()
 
         # physics update
-        physics.update(clock.get_time())
+        physics.update(clock.get_time() / 1000)
 
         # draw
         screen.fill((0, 0, 0))
