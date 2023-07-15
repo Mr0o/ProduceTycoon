@@ -1,18 +1,14 @@
 import pygame
-import pymunk
 
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.tile import Tile, Type
+from ProduceTycoonGame.tile import Tile, Type, resetIDtiles
 
 
 class TileMap():
-    def __init__(self, screen: pygame.Surface, space: pymunk.Space, pos: Vector):
+    def __init__(self, screen: pygame.Surface, pos: Vector):
         self.screen = screen
         self.pos = pos
         self.mov = Vector(0, 0)
-
-        # pymunk space
-        self.space = space
 
         self.width = self.screen.get_width()
         self.height = self.screen.get_height()
@@ -40,6 +36,7 @@ class TileMap():
         self.updateStaticImage()
 
     def createTileGrid(self, zoom: int, numRows: int, numCols: int, tileMapStartingPos: Vector) -> list[Tile]:
+        resetIDtiles()
         # create grid of tiles
         tileSize = zoom // numCols
 
@@ -49,9 +46,9 @@ class TileMap():
                 pos = Vector(tileMapStartingPos.x + j * tileSize,
                                tileMapStartingPos.x + i * tileSize)
                 if i == 0 or j == 0 or i == numRows-1 or j == numCols-1:
-                    tileMapGrid.append(Tile(self.screen, self.space, pos, tileSize, Type.BOUNDARY))
+                    tileMapGrid.append(Tile(self.screen, pos, tileSize, Type.BOUNDARY))
                 else:
-                    tileMapGrid.append(Tile(self.screen, self.space, pos, tileSize, Type.WALKABLE))
+                    tileMapGrid.append(Tile(self.screen, pos, tileSize, Type.WALKABLE))
 
         return tileMapGrid
 

@@ -1,12 +1,11 @@
 import pygame
-import pymunk
 
 from ProduceTycoonGame.tile import Tile
 from ProduceTycoonGame.vectors import Vector
 
 # super class for guests and employees
 class Person():
-    def __init__(self, screen: pygame.Surface, space: pymunk.Space, pos: Vector, id: int, name: str = "Person"):
+    def __init__(self, screen: pygame.Surface, pos: Vector, id: int, name: str = "Person"):
         self.screen = screen
         self.pos = pos
         self.size = 15
@@ -20,12 +19,6 @@ class Person():
         self.animationCount = 0
         self.rect = pygame.Rect(
             (self.pos.x, self.pos.y), (self.size, self.size))
-        
-        # pymunk body and shape
-        self.body = pymunk.Body(body_type=pymunk.Body.STATIC)
-        self.body.position = (self.pos.x + self.size / 2, self.pos.y + self.size / 2)
-        self.shape = pymunk.Poly.create_box(self.body, (self.size, self.size))
-        self.shape.friction = 1
 
         # person id
         self.id: int = id
@@ -50,8 +43,6 @@ class Person():
         self.animationCount += 1
 
     def update(self):
-        # get the position of the person in pymunk space
-        self.pos = Vector(self.body.position.x - self.size / 2, self.body.position.y - self.size / 2)
         self.rect = pygame.Rect(
             (self.pos.x, self.pos.y), (self.size, self.size))
 

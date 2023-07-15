@@ -6,7 +6,6 @@ from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.placableObject import PlacableObject
-from ProduceTycoonGame.physics import Physics
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -25,10 +24,7 @@ class Game():
         # load font
         self.debugFont = pygame.font.SysFont('Arial', 15, bold=True)
 
-        # instantiate physics
-        self.physics = Physics()
-
-        self.tileMap = TileMap(self.screen, self.physics.space, Vector(0, 0))
+        self.tileMap = TileMap(self.screen, Vector(0, 0))
 
         # buttons
         self.buttons = []
@@ -39,7 +35,7 @@ class Game():
         self.placedObjects: list[PlacableObject] = []
 
         self.guests: list[Guest] = []
-        self.guests.append(Guest(self.screen, self.physics.space, Vector(WIDTH/2, HEIGHT/2)))
+        self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
 
     def events(self):
         mouseClicked = False
@@ -82,9 +78,6 @@ class Game():
 
         for placedObject in self.placedObjects:
             placedObject.update()
-
-        # physics update
-        self.physics.update(self.clock.get_time())
         
         pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
 
