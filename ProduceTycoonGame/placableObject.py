@@ -34,7 +34,7 @@ class PlacableObject():
             if self.objectRect.colliderect(tile.rect):
                 rect = tile.rect
                 pygame.draw.rect(self.screen, (255, 0, 0), rect, 2)
-                if pygame.mouse.get_pressed()[0] and not pygame.mouse.get_pressed()[0]:
+                if False:
                     tile.type = Type.INTERACTABLE
                     self.tileMap.staticSurface = createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
                     self.isPlaced = True
