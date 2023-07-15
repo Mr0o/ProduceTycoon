@@ -25,7 +25,10 @@ class Game():
         # load font
         self.debugFont = pygame.font.SysFont('Arial', 15, bold=True)
 
-        self.tileMap = TileMap(self.screen, Vector(0, 0))
+        # instantiate physics
+        self.physics = Physics()
+
+        self.tileMap = TileMap(self.screen, self.physics.space, Vector(0, 0))
 
         # buttons
         self.buttons = []
@@ -36,11 +39,11 @@ class Game():
         self.placedObjects: list[PlacableObject] = []
 
         self.guests: list[Guest] = []
-        self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
+        self.guests.append(Guest(self.screen, self.physics.space, Vector(WIDTH/2, HEIGHT/2)))
 
         # physics (pymunk)
         nonWalkableTiles = self.tileMap.getNonWalkableTiles()
-        self.physics = Physics(nonWalkableTiles, self.guests)
+        self.physics = Physics()
 
     def events(self):
         mouseClicked = False
