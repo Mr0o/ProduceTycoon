@@ -43,4 +43,7 @@ class PlacableObject():
         createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
 
     def draw(self):
-        pygame.draw.rect(self.screen, (240, 180, 212, 0.5), self.objectRect)
+        if self.isPlaced:
+            pygame.draw.rect(self.screen, (240, 180, 212), self.objectRect)
+        else:
+            pygame.draw.rect(self.screen, (240, 180, 212, 0.5), self.objectRect)
