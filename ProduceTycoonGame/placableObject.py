@@ -7,15 +7,19 @@ from ProduceTycoonGame.tile import Type
 id = 0
 
 class PlacableObject():
-    def __init__(self, screen: pygame.Surface, pos: Vector, tileMap: TileMap, width: int, height: int):
+    def __init__(self, screen: pygame.Surface, pos: Vector, tileMap: TileMap, width: int, height: int, rows: int = 1, cols: int = 1):
         self.screen = screen
         self.pos = pos
         self.tileMap = tileMap
         self.width = width
         self.height = height
+        self.rows = rows
+        self.cols = cols
+
+        size = self.tileMap.zoom // self.tileMap.col
 
         self.isPlaced = False
-        self.objectRect = pygame.Rect(self.pos.x, self.pos.y, self.width, self.height)
+        self.objectRect = pygame.Rect(self.pos.x, self.pos.y, size * self.rows, size * self.cols)
 
     def events(self):
         if self.isPlaced:
@@ -30,7 +34,7 @@ class PlacableObject():
             if self.objectRect.colliderect(tile.rect):
                 rect = tile.rect
                 pygame.draw.rect(self.screen, (255, 0, 0), rect, 2)
-                if pygame.mouse.get_pressed()[0]:
+                if pygame.mouse.get_pressed()[0] and not pygame.mouse.get_pressed()[0]:
                     tile.type = Type.INTERACTABLE
                     self.tileMap.staticSurface = createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
                     self.isPlaced = True
@@ -46,4 +50,4 @@ class PlacableObject():
         if self.isPlaced:
             pygame.draw.rect(self.screen, (240, 180, 212), self.objectRect)
         else:
-            pygame.draw.rect(self.screen, (240, 180, 212, 0.5), self.objectRect)
+            pygame.draw.rect(self.screen, (240, 180, 212, 0.1), self.objectRect)
