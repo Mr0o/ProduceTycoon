@@ -186,8 +186,8 @@ if __name__ == "__main__":
         # middle click to place guests
         if pygame.mouse.get_pressed()[1]:
             guest.pos = Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
-            # set guest body position
-            guest.body.position = (guest.pos.x + guest.size / 2, guest.pos.y + guest.size / 2)
+            guest.vel = Vector(0, 0)
+            guest.acc = Vector(0, 0)
 
         tileMap.events(pygame.mouse.get_pressed()[2])
 
@@ -198,7 +198,9 @@ if __name__ == "__main__":
         currentTile = tileMap.getTileByPos(guest.pos)
         if currentTile != None:
             # apply the force to the guest
-            pass
+            force = currentTile.vector.copy()
+            force.normalize()
+            guest.applyForce(currentTile.vector)
 
         guest.update()
 
