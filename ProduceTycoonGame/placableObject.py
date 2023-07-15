@@ -29,7 +29,7 @@ class PlacableObject():
             # changes tile type to object if objectRect collides with tile and mouse is clicked
             if self.objectRect.colliderect(tile.rect):
                 rect = tile.rect
-                pygame.draw.rect(self.screen, (255, 0, 0), rect)
+                pygame.draw.rect(self.screen, (255, 0, 0), rect, 2)
                 if pygame.mouse.get_pressed()[0]:
                     tile.type = Type.INTERACTABLE
                     self.tileMap.staticSurface = createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
