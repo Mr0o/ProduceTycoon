@@ -7,11 +7,13 @@ from ProduceTycoonGame.vectors import Vector
 class Person():
     def __init__(self, screen: pygame.Surface, pos: Vector, id: int, name: str = "Person"):
         self.screen = screen
-        self.pos = pos
-        self.size = 15
-        self.maxForceMag = 2
 
-        self.mov = Vector(0, 0)
+        self.pos = pos
+        self.vel = Vector(0, 0)
+        self.acc = Vector(0, 0)
+        self.size = 15
+        self.maxForceMag = 1
+
         self.targetTile: Tile = None
 
         self.animationImages = [
@@ -23,13 +25,13 @@ class Person():
         # person id
         self.id: int = id
 
-        # person variables
+        ## person variables
         self.name: str = name + str(id)
         # this is a percentage; 100% is happy, 0% is unhappy;
         self.happyScore: int = 100
         # this is a string that will reflect the person's most recent thought (e.g. "It's too crowded here" or "I want to buy some apples")
         self.thought: str = ""
-        # this is a string that will reflect the person's current state (e.g. "idle" or "shopping") usefule for changing the animation
+        # this is a string that will reflect the person's current state (e.g. "idle" or "shopping") useful for changing the animation
         self.state: str
 
         # person task list
@@ -43,8 +45,19 @@ class Person():
         self.animationCount += 1
 
     def update(self):
+        # position is derived from the velocity and velocity is derived from the acceleration
+        self.vel.add(self.acc)
+        # limit the velocity
+        self.vel.limitMag(self.maxForceMag)
+        self.pos.add(self.vel)
+        self.acc.mult(0)
+        # update the rect
         self.rect = pygame.Rect(
             (self.pos.x, self.pos.y), (self.size, self.size))
+        
+    def applyForce(self, force : Vector):
+        fcopy = force.copy() # create a copy of the force
+        self.vel.add(fcopy)
 
     def draw(self):
         pygame.draw.rect(
