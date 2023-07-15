@@ -10,8 +10,6 @@ Tile.parent: Tile = None
 Tile.vector: Vector = Vector(0, 0)
 
 # the pathfinding algorithm of choice will be Goal Based Vector Field Pathfinding (VFP)
-# NOTE: There is a high performance cost when creating the heatmap and vector field, so this needs to be done as few times as possible
-# We could either design the game around this or try to speed things up with optimizations, perhaps by using c++ ???
 
 # create a heatmap of the tilemap
 def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
@@ -80,12 +78,13 @@ def getVector(tileMap: TileMap, tile: Tile) -> Vector:
     
     # for each neighbor of the tile
     for neighbor in neighbors:
-        # if the neighbor is not a boundary tile
         if neighbor.type != Type.BOUNDARY:
             # if the neighbor has a parent
             if neighbor.parent != None:
-                # get the vector from the neighbor to the parent
-                neighboringVecs.append(Vector(neighbor.parent.pos.x + neighbor.size / 2, neighbor.parent.pos.y + neighbor.size / 2) - Vector(neighbor.pos.x + neighbor.size / 2, neighbor.pos.y + neighbor.size / 2))
+                # get the vector from the neighbor to the parent using the centers of the tiles
+                vec = Vector(neighbor.parent.pos.x + neighbor.parent.size - neighbor.pos.x - neighbor.size, neighbor.parent.pos.y + neighbor.parent.size - neighbor.pos.y - neighbor.size)
+                vec.setMag(neighbor.cost)
+                neighboringVecs.append(vec)
 
     # for each neighboring vector
     for neighboringVec in neighboringVecs:
@@ -166,7 +165,7 @@ if __name__ == "__main__":
                     vectorField = createVectorField(tileMap, heatmap)
 
                     # reset the physics
-                    physics = Physics(tileMap.getNonWalkableTiles(), [guest])
+                    physics = Physics()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -224,7 +223,7 @@ if __name__ == "__main__":
             rValue = (tile.cost / 50) * 255
             if rValue > 255:
                 rValue = 255
-            color = (rValue, 0, 0)
+            color = (rValue, 150, 60)
             pygame.draw.rect(screen, color, tile.rect)
 
             # draw the vector
