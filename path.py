@@ -2,7 +2,6 @@ from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Tile, Type
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.physics import Physics
 
 # add cost and parent attributes to the tile class (temporarily)
 Tile.cost: int = 0
@@ -120,13 +119,11 @@ if __name__ == "__main__":
     pygame.display.set_caption('Vector Field Pathfinding Testing')
     clock = pygame.time.Clock()
 
-    physics = Physics()
-
     # create a tilemap
-    tileMap = TileMap(screen, physics.space, Vector(0, 0))
+    tileMap = TileMap(screen, Vector(0, 0))
 
     # create a guest
-    guest = Guest(screen, physics.space, Vector(25, 25))
+    guest = Guest(screen, Vector(25, 25))
 
     # target tile
     targetTile = tileMap.getTileByID(150)
@@ -154,7 +151,8 @@ if __name__ == "__main__":
                 if event.key == pygame.K_SPACE:
                     print("Creating new tilemap...")
                     # reset the tilemap (clears boundary tiles)
-                    tileMap = TileMap(screen, Vector(0, 0))
+                    for tile in tileMap.tileMapGrid:
+                        tile.type = Type.WALKABLE
 
                     # create a heatmap
                     print("Creating heatmap...")
@@ -163,9 +161,6 @@ if __name__ == "__main__":
                     # create a vector field
                     print("Creating vector field...")
                     vectorField = createVectorField(tileMap, heatmap)
-
-                    # reset the physics
-                    physics = Physics()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -187,8 +182,6 @@ if __name__ == "__main__":
             tileAtPos = tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
             if tileAtPos != None and tileAtPos.type != Type.BOUNDARY:
                 tileAtPos.type = Type.BOUNDARY
-                # add tile to physics
-                tileAtPos.addToPhysics()
 
         # middle click to place guests
         if pygame.mouse.get_pressed()[1]:
@@ -204,14 +197,13 @@ if __name__ == "__main__":
         # set the force for the guest using the tile they reside on
         currentTile = tileMap.getTileByPos(guest.pos)
         if currentTile != None:
-            # apply the force to the guest in pymunk space
-            physics.applyForce(guest, currentTile.vector)
+            # apply the force to the guest
+            pass
+
+        guest.update()
 
         # update
         tileMap.update()
-
-        # physics update
-        physics.update(clock.get_time() / 1000)
 
         # draw
         screen.fill((0, 0, 0))
