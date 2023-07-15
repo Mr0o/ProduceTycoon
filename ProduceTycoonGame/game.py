@@ -45,8 +45,11 @@ class Game():
         nonWalkableTiles = self.tileMap.getNonWalkableTiles()
         self.physics = Physics()
 
+        self.mouseClicked = False
+
     def events(self):
-        mouseClicked = False
+        previousMouseClick = self.mouseClicked
+        self.mouseClicked = False
         for event in pygame.event.get():
             # will stop running and exit
             if event.type == pygame.QUIT:
@@ -56,22 +59,22 @@ class Game():
                     self.running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    mouseClicked = True
+                    self.mouseClicked = True
 
         
-        self.tileMap.events(mouseClicked)
+        self.tileMap.events(self.mouseClicked)
 
-        if self.button3x3.events(mouseClicked):
-            self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 60, 60))
-        if self.button1x1.events(mouseClicked):
-            self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20))
+        if self.button3x3.events(self.mouseClicked):
+            self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 60, 60, 3, 3))
+        if self.button1x1.events(self.mouseClicked):
+            self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20, 1, 1))
 
         for placedObject in self.placedObjects:
             placedObject.events()
 
 
         # set target for guests (this is just for testing, not final implementation)
-        # if mouseClicked:
+        # if self.mouseClicked:
         #     for guest in self.guests:
         #         pass
         
