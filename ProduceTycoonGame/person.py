@@ -12,7 +12,7 @@ class Person():
         self.vel = Vector(0, 0)
         self.acc = Vector(0, 0)
         self.size = 15
-        self.maxForceMag = 1
+        self.movSpeed = 1.0
 
         self.targetTile: Tile = None
 
@@ -47,8 +47,8 @@ class Person():
     def update(self):
         # position is derived from the velocity and velocity is derived from the acceleration
         self.vel.add(self.acc)
-        # limit the velocity
-        self.vel.limitMag(self.maxForceMag)
+        # force velocity to be a certain speed (magnitude)
+        self.vel.setMag(self.movSpeed)
         self.pos.add(self.vel)
         self.acc.mult(0)
         # update the rect
