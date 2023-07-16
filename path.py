@@ -2,11 +2,16 @@ from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Tile, Type
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.vectors import Vector
+from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
 
 # add cost and parent attributes to the tile class (temporarily)
 Tile.cost: int = 0
 Tile.parent: Tile = None
 Tile.vector: Vector = Vector(0, 0)
+
+# temporarily add mass to the guest and tile classes
+Guest.mass: int = 1
+Tile.mass: int = 1
 
 # the pathfinding algorithm of choice will be Goal Based Vector Field Pathfinding (VFP)
 
@@ -204,6 +209,12 @@ if __name__ == "__main__":
 
         guest.update()
 
+        # check for collisions
+        for tile in tileMap.tileMapGrid:
+            if tile.type == Type.BOUNDARY or tile == targetTile:
+                if isGuestTouchingTile(guest, tile):
+                    guest = resolveCollision(guest, tile)
+
         # update
         tileMap.update()
 
@@ -226,11 +237,15 @@ if __name__ == "__main__":
 
         # draw boundary tiles on top of heatmap
         for tile in tileMap.tileMapGrid:
-            if tile.type == Type.BOUNDARY:
+            if tile.type == Type.BOUNDARY or tile == targetTile:
                 screen.blit(tile.BOUNDARY_TILE_IMG_SCALED, (tile.pos.x, tile.pos.y))
 
         # draw the guest
         guest.draw()
+
+        # print the guest velocity
+        text = pygame.font.SysFont('Arial', 15, bold=True).render("Guest Velocity: " + str(guest.vel.getMag()), True, (255, 255, 255))
+        screen.blit(text, (0, 0))
 
         # draw the target tile
         pygame.draw.rect(screen, (0, 255, 0), targetTile.rect)
