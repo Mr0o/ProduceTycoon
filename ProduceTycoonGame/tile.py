@@ -38,6 +38,9 @@ class Tile():
         # when the mouse has clicked on the tile
         self.isSelected = False
 
+        # when the tile type has changed
+        self.changed = False
+
         self.WALKABLE_TILE_IMG_SCALED = pygame.transform.scale(WALKABLE_TILE_IMG.copy(), (self.size, self.size))
         self.INTERACTABLE_TILE_IMG_SCALED = pygame.transform.scale(INTERACTABLE_TILE_IMG.copy(), (self.size, self.size))
         self.BOUNDARY_TILE_IMG_SCALED = pygame.transform.scale(BOUNDARY_TILE_IMG.copy(), (self.size, self.size))
@@ -63,6 +66,10 @@ class Tile():
             pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
         elif self.isSelected:
             pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
+
+    def setTileType(self, type: Type):
+        self.type = type
+        self.changed = True
         
             
             
