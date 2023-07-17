@@ -16,12 +16,12 @@ class PlacableObject():
         self.rows = rows
         self.cols = cols
 
-        size = self.tileMap.zoom // self.tileMap.col
+        self.size = self.tileMap.zoom // self.tileMap.col - 1
 
         self.isPlaced = False
-        self.objectRect = pygame.Rect(self.pos.x, self.pos.y, size * self.rows, size * self.cols)
+        self.objectRect = pygame.Rect(self.pos.x - 1000, self.pos.y - 1000, self.size * self.rows, self.size * self.cols)
 
-    def events(self):
+    def events(self, mouseClicked: bool = False):
         if self.isPlaced:
             return
         for tile in self.tileMap.tileMapGrid:
@@ -32,9 +32,9 @@ class PlacableObject():
 
             # changes tile type to object if objectRect collides with tile and mouse is clicked
             if self.objectRect.colliderect(tile.rect):
-                rect = tile.rect
-                pygame.draw.rect(self.screen, (255, 0, 0), rect, 2)
-                if False:
+                # rect = tile.rect
+                # pygame.draw.rect(self.screen, (255, 0, 0), rect, 2)
+                if mouseClicked:
                     tile.type = Type.INTERACTABLE
                     self.tileMap.staticSurface = createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
                     self.isPlaced = True
@@ -42,12 +42,8 @@ class PlacableObject():
     def update(self):
         if self.isPlaced:
             return
-        
         self.objectRect.center = (self.pos.x, self.pos.y)
         createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
 
     def draw(self):
-        if self.isPlaced:
-            pygame.draw.rect(self.screen, (240, 180, 212), self.objectRect)
-        else:
-            pygame.draw.rect(self.screen, (240, 180, 212, 0.1), self.objectRect)
+        pygame.draw.rect(self.screen, (240, 180, 212), self.objectRect)

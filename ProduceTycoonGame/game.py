@@ -29,7 +29,9 @@ class Game():
         # buttons
         self.buttons = []
         self.button3x3 = Button(self.screen, Vector(100, 100), "3x3 Tile", 60, 20)
+        self.buttons.append(self.button3x3)
         self.button1x1 = Button(self.screen, Vector(100, 120), "1x1 Tile", 60, 20)
+        self.buttons.append(self.button1x1)
 
         # placed objects
         self.placedObjects: list[PlacableObject] = []
@@ -37,11 +39,9 @@ class Game():
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
 
-        self.mouseClicked = False
-
     def events(self):
-        previousMouseClick = self.mouseClicked
-        self.mouseClicked = False
+        buttonClicked = False
+        mouseClicked = False
         for event in pygame.event.get():
             # will stop running and exit
             if event.type == pygame.QUIT:
@@ -51,22 +51,28 @@ class Game():
                     self.running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    self.mouseClicked = True
+                    mouseClicked = True
 
         
-        self.tileMap.events(self.mouseClicked)
+        self.tileMap.events(mouseClicked)
 
-        if self.button3x3.events(self.mouseClicked):
+        if self.button3x3.events(mouseClicked):
             self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 60, 60, 3, 3))
-        if self.button1x1.events(self.mouseClicked):
+        if self.button1x1.events(mouseClicked):
             self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20, 1, 1))
+        
+        for button in self.buttons:
+            if button.isSelected:
+                buttonClicked = True
 
-        for placedObject in self.placedObjects:
-            placedObject.events()
+        if not buttonClicked:
+            for placedObject in self.placedObjects:
+                placedObject.events(mouseClicked)
+
 
 
         # set target for guests (this is just for testing, not final implementation)
-        # if self.mouseClicked:
+        # if mouseClicked:
         #     for guest in self.guests:
         #         pass
         
