@@ -6,6 +6,7 @@ from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.placableObject import PlacableObject
+from ProduceTycoonGame.clock import Clock
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -38,6 +39,8 @@ class Game():
 
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
+
+        self.displayClock = Clock(self.clock, self.screen, Vector(WIDTH - 100, 0))
 
     def events(self):
         buttonClicked = False
@@ -79,6 +82,8 @@ class Game():
         for guest in self.guests:
             guest.events()
 
+        self.displayClock.events()
+
     def update(self):
         self.tileMap.update()
 
@@ -87,6 +92,8 @@ class Game():
 
         for placedObject in self.placedObjects:
             placedObject.update()
+
+        self.displayClock.update()
         
         pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
 
@@ -105,6 +112,8 @@ class Game():
 
         for placedObject in self.placedObjects:
             placedObject.draw()
+
+        self.displayClock.draw()
 
         ## DEBUG STUFF ##
         # draw raw frametime
