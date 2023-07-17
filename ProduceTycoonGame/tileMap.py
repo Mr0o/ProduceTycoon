@@ -74,8 +74,18 @@ class TileMap():
                         self.selectedTile.isSelected = True
 
     def update(self):
+        changed = False
         for tile in self.tileMapGrid:    
             tile.update()
+            # check for any changes to tiles
+            if tile.changed:
+                tile.changed = False
+                changed = True
+
+        # update static surface if any tiles changed
+        if changed:
+            self.updateStaticImage()
+
 
     # update the static surface, use this instead of importing createStaticTileSurface in other files
     def updateStaticImage(self):
@@ -153,6 +163,10 @@ class TileMap():
             if tile.type != Type.WALKABLE:
                 boundaryTiles.append(tile)
         return boundaryTiles
+    
+    def setTileType(self, tile: Tile, type: Type):
+        tile.type = type
+        self.updateStaticImage
 
 
 # create a surface of Tiles that can be used statically (this will not reflect changes to the tileMap unless a new static surface is created)
