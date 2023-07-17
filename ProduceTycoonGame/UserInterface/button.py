@@ -32,6 +32,7 @@ class Button():
 
         pygame.draw.rect(self.screen, (202, 228, 240), self.rect)
         pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
-        self.screen.blit(text, (self.pos.x, self.pos.y))
+        # center the text using the width and height of the text rect
+        self.screen.blit(text, (self.pos.x + (self.width/2 - text.get_width()/2), self.pos.y + (self.height/2 - text.get_height()/2)))
 
         
