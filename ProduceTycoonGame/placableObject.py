@@ -36,14 +36,16 @@ class PlacableObject():
                 # pygame.draw.rect(self.screen, (255, 0, 0), rect, 2)
                 if mouseClicked:
                     tile.type = Type.INTERACTABLE
-                    self.tileMap.staticSurface = createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
+                    # update tileMap static image to reflect changes 
+                    # (I don't like that this is being done outside of the tileMap class)
+                    # TODO: Have the tileMap class detect changes and update itself automatically
+                    self.tileMap.updateStaticImage()
                     self.isPlaced = True
 
     def update(self):
         if self.isPlaced:
             return
         self.objectRect.center = (self.pos.x, self.pos.y)
-        createStaticTileSurface(self.tileMap.tileMapGrid, self.tileMap.width, self.tileMap.height)
 
     def draw(self):
         pygame.draw.rect(self.screen, (240, 180, 212), self.objectRect)
