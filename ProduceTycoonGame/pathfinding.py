@@ -4,15 +4,6 @@ from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
 
-# add cost and parent attributes to the tile class (temporarily)
-Tile.cost: int = 0
-Tile.parent: Tile = None
-Tile.vector: Vector = Vector(0, 0)
-
-# temporarily add mass to the guest and tile classes
-Guest.mass: int = 1
-Tile.mass: int = 1
-
 # the pathfinding algorithm of choice will be Goal Based Vector Field Pathfinding (VFP)
 
 # create a heatmap of the tilemap
