@@ -21,7 +21,6 @@ class PlacableObject():
 
         self.isPlaced = False
         self.canPlace = True
-        self.placeAgain = False
         self.rect = pygame.Rect(self.pos.x - 1000, self.pos.y - 1000, self.size * self.rows, self.size * self.cols)
 
     def checkIfCanPlace(self):
@@ -45,7 +44,7 @@ class PlacableObject():
 
     def events(self, mouseClicked: bool = False, previousMouseClick: bool = False):
         if self.isPlaced:
-            return
+            return False
 
         self.checkIfCanPlace()
         for tile in self.tileMap.tileMapGrid:
@@ -57,7 +56,7 @@ class PlacableObject():
             if self.rect.colliderect(tile.rect) and self.canPlace and not mouseClicked and previousMouseClick:
                 tile.setTileType(Type.INTERACTABLE)
                 self.isPlaced = True
-                return False
+            
         return True
 
     def update(self):

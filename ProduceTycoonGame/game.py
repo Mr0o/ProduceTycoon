@@ -83,6 +83,7 @@ class Game():
 
         if self.hideGUI and not self.moveObject:
             self.hideGUI = False
+            
         for placedObject in self.placedObjects:
             self.hideGUI = self.hideGUI or placedObject.events(self.mouseClicked, self.previousMouseClicked)
 
