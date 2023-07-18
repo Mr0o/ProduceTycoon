@@ -2,6 +2,7 @@ import pygame
 
 from ProduceTycoonGame.tile import Tile
 from ProduceTycoonGame.vectors import Vector
+from ProduceTycoonGame.eventTriggers import TimedEvent
 
 # super class for guests and employees
 class Person():
@@ -13,6 +14,10 @@ class Person():
         self.acc = Vector(0, 0)
         self.size = 15
         self.movSpeed = 1.0
+
+        # stuck timer
+        self.stuckTimer = TimedEvent()
+        self.isStuck = False
 
         self.targetTile: Tile = None
 
@@ -55,9 +60,25 @@ class Person():
         self.rect = pygame.Rect(
             (self.pos.x, self.pos.y), (self.size, self.size))
         
+        self.checkIfStuck()
+        
     def applyForce(self, force : Vector):
         fcopy = force.copy() # create a copy of the force
         self.vel.add(fcopy)
+
+    def checkIfStuck(self):
+        self.stuckTimer.update()
+        # if the velocity is less than 0.9 then we start the stuck timer
+        if self.vel.getMag() < 0.9 and self.stuckTimer.isActive == False:
+            self.stuckTimer.setTimer(3)
+        
+        # if the stuck timer is active then we check if it has reached the end
+        if self.stuckTimer.isActive:
+            if self.stuckTimer.isTriggered:
+                if self.vel.getMag() < 0.9:
+                    self.isStuck = True
+            else:
+                self.isStuck = False
 
     def draw(self):
         pygame.draw.rect(
