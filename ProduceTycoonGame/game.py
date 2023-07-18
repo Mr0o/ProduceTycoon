@@ -45,10 +45,13 @@ class Game():
         self.displayClock = Clock(self.clock, self.screen, Vector(WIDTH - 100, 0))
 
         self.hideGUI = False
+        self.mouseClicked = False
+        self.previousMouseClicked = False
 
     def events(self):
-        buttonClicked = False
-        mouseClicked = False
+        self.previousMouseClicked = self.mouseClicked
+        self.mouseClicked = False
+        
         for event in pygame.event.get():
             # will stop running and exit
             if event.type == pygame.QUIT:
@@ -58,38 +61,34 @@ class Game():
                     self.running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    mouseClicked = True
+                    self.mouseClicked = True
 
         
-        self.tileMap.events(mouseClicked)
+        self.tileMap.events(self.mouseClicked)
         if not self.hideGUI:
-            if self.button3x3.events(mouseClicked):
+            if self.button3x3.events(self.mouseClicked):
                 self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 60, 60, 3, 3, self.elements))
-            if self.button1x1.events(mouseClicked):
+            if self.button1x1.events(self.mouseClicked):
                 self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20, 1, 1, self.elements))
-            if self.movePlacableObjects.events(mouseClicked):
+            if self.movePlacableObjects.events(self.mouseClicked):
                 self.hideGUI = True
                 for placedObject in self.placedObjects:
-                    print("wsfd")
                     placedObject.moveToNewPos()
+                    print(placedObject.isPlaced)
             
         for button in self.buttons:
             if self.hideGUI:
                 button.hide = True
             else:
                 button.hide = False
-                if button.isSelected:
-                    buttonClicked = True
 
-        self.hideGUI = False
-        if not buttonClicked:
-            for placedObject in self.placedObjects:
-                placedObject.events(mouseClicked)
+        for placedObject in self.placedObjects:
+            placedObject.events(self.mouseClicked, self.previousMouseClicked)
 
-                self.hideGUI = self.hideGUI or not placedObject.isPlaced
+            self.hideGUI = not placedObject.isPlaced
 
         # set target for guests (this is just for testing, not final implementation)
-        # if mouseClicked:
+        # if self.mouseClicked:
         #     for guest in self.guests:
         #         pass
         

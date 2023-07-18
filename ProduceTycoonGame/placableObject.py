@@ -34,10 +34,17 @@ class PlacableObject():
 
     def moveToNewPos(self):
         self.isPlaced = False
+        self.canPlace = True
+        print(self.isPlaced)
+        for tile in self.tileMap.tileMapGrid:
+            if tile.rect.colliderect(self.rect):
+                tile.setTileType(Type.WALKABLE)
 
-    def events(self, mouseClicked: bool = False):
+    def events(self, mouseClicked: bool = False, previousMouseClick: bool = False):
         if self.isPlaced:
+            print(self.isPlaced)
             return
+        print(self.isPlaced)
 
         self.checkIfCanPlace()
         for tile in self.tileMap.tileMapGrid:
@@ -46,14 +53,17 @@ class PlacableObject():
                 self.pos.x = tile.pos.x + tile.size / 2
                 self.pos.y = tile.pos.y + tile.size / 2
             # changes tile type to object if rect collides with tile and mouse is clicked
-            if self.rect.colliderect(tile.rect) and self.canPlace and mouseClicked:
+            if self.rect.colliderect(tile.rect) and self.canPlace and not mouseClicked and previousMouseClick:
                 tile.setTileType(Type.INTERACTABLE)
                 self.isPlaced = True
+                self.canPlace = False
 
     def update(self):
         if self.isPlaced:
+            print(2)
             return
         self.rect.center = (self.pos.x, self.pos.y)
+        print(1)
 
     def draw(self):
         pygame.draw.rect(self.screen, (240, 180, 212), self.rect)
