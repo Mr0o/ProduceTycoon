@@ -3,7 +3,7 @@ import pygame
 from ProduceTycoonGame.vectors import Vector
 
 class Clock():
-    def __init__(self, clock, screen: pygame.Surface, pos: Vector):
+    def __init__(self, clock: pygame.time.Clock, screen: pygame.Surface, pos: Vector):
         self.clock = clock
         self.screen = screen
         self.pos = pos
