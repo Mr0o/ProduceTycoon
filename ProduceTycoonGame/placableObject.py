@@ -32,6 +32,9 @@ class PlacableObject():
             else:
                 self.canPlace = True
 
+    def moveToNewPos(self):
+        self.isPlaced = False
+
     def events(self, mouseClicked: bool = False):
         if self.isPlaced:
             return

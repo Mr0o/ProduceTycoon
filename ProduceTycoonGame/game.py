@@ -68,9 +68,10 @@ class Game():
             if self.button1x1.events(mouseClicked):
                 self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20, 1, 1, self.elements))
             if self.movePlacableObjects.events(mouseClicked):
+                self.hideGUI = True
                 for placedObject in self.placedObjects:
-                    if placedObject.rect.collidepoint(pygame.mouse.get_pos()):
-                        placedObject.isPlaced = False
+                    print("wsfd")
+                    placedObject.moveToNewPos()
             
         for button in self.buttons:
             if self.hideGUI:
@@ -79,12 +80,13 @@ class Game():
                 button.hide = False
                 if button.isSelected:
                     buttonClicked = True
+
         self.hideGUI = False
         if not buttonClicked:
             for placedObject in self.placedObjects:
                 placedObject.events(mouseClicked)
 
-                self.hideGUI |= not placedObject.isPlaced
+                self.hideGUI = self.hideGUI or not placedObject.isPlaced
 
         # set target for guests (this is just for testing, not final implementation)
         # if mouseClicked:
