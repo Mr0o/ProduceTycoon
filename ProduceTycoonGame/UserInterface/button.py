@@ -12,8 +12,12 @@ class Button():
 
         self.isSelected = False
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
+
+        self.hide = False
     
     def events(self, mouseClicked: bool = False):
+        if self.hide:
+            return
         action = False
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             if mouseClicked and not self.isSelected:
@@ -27,6 +31,8 @@ class Button():
         return action
 
     def draw(self):
+        if self.hide:
+            return
         objectSize = pygame.font.SysFont('Arial', 15, bold=True)
         text = objectSize.render(self.text, True, (0, 0, 0))
 

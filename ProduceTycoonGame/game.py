@@ -42,6 +42,8 @@ class Game():
 
         self.displayClock = Clock(self.clock, self.screen, Vector(WIDTH - 100, 0))
 
+        self.hideGUI = False
+
     def events(self):
         buttonClicked = False
         mouseClicked = False
@@ -58,21 +60,28 @@ class Game():
 
         
         self.tileMap.events(mouseClicked)
-
-        if self.button3x3.events(mouseClicked):
-            self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 60, 60, 3, 3))
-        if self.button1x1.events(mouseClicked):
-            self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20, 1, 1))
-        
+        if not self.hideGUI:
+            if self.button3x3.events(mouseClicked):
+                self.hideGUI = True
+                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 60, 60, 3, 3))
+            if self.button1x1.events(mouseClicked):
+                self.hideGUI = True
+                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20, 1, 1))
+            
         for button in self.buttons:
-            if button.isSelected:
-                buttonClicked = True
+            if self.hideGUI:
+                button.hide = True
+            else:
+                button.hide = False
+                if button.isSelected:
+                    buttonClicked = True
 
         if not buttonClicked:
             for placedObject in self.placedObjects:
                 placedObject.events(mouseClicked)
 
-
+        if len(self.placedObjects) > 0 and self.placedObjects[-1].isPlaced:
+            self.hideGUI = False
 
         # set target for guests (this is just for testing, not final implementation)
         # if mouseClicked:
@@ -92,8 +101,6 @@ class Game():
 
         for placedObject in self.placedObjects:
             placedObject.update()
-
-        self.displayClock.update()
         
         pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
 
@@ -107,13 +114,15 @@ class Game():
         for guest in self.guests:
             guest.draw()
         
-        self.button1x1.draw()
-        self.button3x3.draw()
+
+        for button in self.buttons:
+            button.draw()
 
         for placedObject in self.placedObjects:
             placedObject.draw()
 
-        self.displayClock.draw()
+        if not self.hideGUI:
+            self.displayClock.draw()
 
         ## DEBUG STUFF ##
         # draw raw frametime
