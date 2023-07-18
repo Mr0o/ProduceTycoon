@@ -204,7 +204,6 @@ if __name__ == "__main__":
         if currentTile != None:
             # apply the force to the guest
             force = currentTile.vector.copy()
-            force.normalize()
             guest.applyForce(currentTile.vector)
 
         guest.update()
@@ -214,6 +213,21 @@ if __name__ == "__main__":
             if tile.type == Type.BOUNDARY or tile == targetTile:
                 if isGuestTouchingTile(guest, tile):
                     guest = resolveCollision(guest, tile)
+
+        # check if the guest is stuck (velocity is less than 0.9)
+        if guest.isStuck:
+            # get untsuck
+            guest.vel = Vector(0, 0)
+            guest.acc = Vector(0, 0)
+            # find a neighboring tile that is not a boundary tile and teleport the guest to that tile
+            neighbors = tileMap.getNeighbors(currentTile)
+            for neighbor in neighbors:
+                if neighbor.type != Type.BOUNDARY:
+                    guest.pos = neighbor.pos.copy()
+                    break
+
+        print(guest.stuckTimer.timeRemaining)
+        print(guest.stuckTimer.isActive)
 
         # update
         tileMap.update()
