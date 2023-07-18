@@ -63,10 +63,10 @@ class Game():
         if not self.hideGUI:
             if self.button3x3.events(mouseClicked):
                 self.hideGUI = True
-                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 60, 60, 3, 3))
+                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 60, 60, 3, 3, self.elements))
             if self.button1x1.events(mouseClicked):
                 self.hideGUI = True
-                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20, 1, 1))
+                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20, 1, 1, self.elements))
             
         for button in self.buttons:
             if self.hideGUI:
@@ -92,6 +92,12 @@ class Game():
             guest.events()
 
         self.displayClock.events()
+
+        self.elements = []
+        self.elements.extend(self.buttons)
+        self.elements.extend(self.placedObjects)
+        self.elements.extend(self.guests)
+        self.elements.append(self.displayClock)
 
     def update(self):
         self.tileMap.update()
