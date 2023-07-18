@@ -17,11 +17,11 @@ class PlacableObject():
         self.cols = cols
         self.elements = elements
 
-
         self.size = self.tileMap.zoom // self.tileMap.col - 1
 
         self.isPlaced = False
         self.canPlace = True
+        self.placeAgain = False
         self.rect = pygame.Rect(self.pos.x - 1000, self.pos.y - 1000, self.size * self.rows, self.size * self.cols)
 
     def checkIfCanPlace(self):
@@ -32,19 +32,20 @@ class PlacableObject():
             else:
                 self.canPlace = True
 
-    def moveToNewPos(self):
-        self.isPlaced = False
-        self.canPlace = True
-        print(self.isPlaced)
-        for tile in self.tileMap.tileMapGrid:
-            if tile.rect.colliderect(self.rect):
-                tile.setTileType(Type.WALKABLE)
+    def moveToNewPos(self, mouseClicked: bool = False, previousMouseClick: bool = False):
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
+            self.isPlaced = False
+            self.placeAgain = True
+            for tile in self.tileMap.tileMapGrid:
+                if tile.rect.colliderect(self.rect):
+                    tile.setTileType(Type.WALKABLE)
+            return False
+
+        return True
 
     def events(self, mouseClicked: bool = False, previousMouseClick: bool = False):
         if self.isPlaced:
-            print(self.isPlaced)
             return
-        print(self.isPlaced)
 
         self.checkIfCanPlace()
         for tile in self.tileMap.tileMapGrid:
@@ -56,14 +57,13 @@ class PlacableObject():
             if self.rect.colliderect(tile.rect) and self.canPlace and not mouseClicked and previousMouseClick:
                 tile.setTileType(Type.INTERACTABLE)
                 self.isPlaced = True
-                self.canPlace = False
+                return False
+        return True
 
     def update(self):
         if self.isPlaced:
-            print(2)
             return
         self.rect.center = (self.pos.x, self.pos.y)
-        print(1)
 
     def draw(self):
         pygame.draw.rect(self.screen, (240, 180, 212), self.rect)

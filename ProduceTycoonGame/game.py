@@ -47,6 +47,7 @@ class Game():
         self.hideGUI = False
         self.mouseClicked = False
         self.previousMouseClicked = False
+        self.moveObject = False
 
     def events(self):
         self.previousMouseClicked = self.mouseClicked
@@ -72,9 +73,7 @@ class Game():
                 self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20, 1, 1, self.elements))
             if self.movePlacableObjects.events(self.mouseClicked):
                 self.hideGUI = True
-                for placedObject in self.placedObjects:
-                    placedObject.moveToNewPos()
-                    print(placedObject.isPlaced)
+                self.moveObject = True
             
         for button in self.buttons:
             if self.hideGUI:
@@ -82,10 +81,15 @@ class Game():
             else:
                 button.hide = False
 
+        if self.hideGUI and not self.moveObject:
+            self.hideGUI = False
         for placedObject in self.placedObjects:
-            placedObject.events(self.mouseClicked, self.previousMouseClicked)
+            self.hideGUI = self.hideGUI or placedObject.events(self.mouseClicked, self.previousMouseClicked)
 
-            self.hideGUI = not placedObject.isPlaced
+            if self.moveObject and not self.mouseClicked and self.previousMouseClicked:
+                self.moveObject = placedObject.moveToNewPos()
+                
+                
 
         # set target for guests (this is just for testing, not final implementation)
         # if self.mouseClicked:
