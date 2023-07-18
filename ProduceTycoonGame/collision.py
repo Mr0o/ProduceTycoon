@@ -1,8 +1,8 @@
+from math import sqrt
+
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.tile import Tile
-
-from math import sqrt
 
 def isGuestTouchingTile(guest: Guest, tile: Tile) -> bool:
     """
@@ -64,11 +64,14 @@ def resolveCollision(guest: Guest, tile: Tile) -> Guest:
     #dot product normal
     dpNorm1 = guest.vel.x * nx + guest.vel.y * ny
 
+    # since we only are concerned with collision displacement, the momentum calculation is not useful, so we can ignore it
     #conservation of momentum in 1D
-    m = (dpNorm1 * (guest.mass - tile.mass) + 2.0 * tile.mass * 0) / (guest.mass + tile.mass)
+    # tileMass = 1
+    # guestMass = 1
+    # m = (dpNorm1 * (guestMass - tileMass) + 2.0 * tileMass * 0) / (guestMass + tileMass)
 
     #update velocity of the ball
-    guest.vel.x = tx * dpTan + nx * m
-    guest.vel.y = ty * dpTan + ny * m   
+    guest.vel.x = tx * dpTan + nx #* m
+    guest.vel.y = ty * dpTan + ny #* m   
 
     return guest

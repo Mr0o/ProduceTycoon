@@ -1,7 +1,7 @@
 import pygame
 
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.tileMap import TileMap, createStaticTileSurface
+from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Type
 
 id = 0

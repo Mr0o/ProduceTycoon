@@ -41,6 +41,11 @@ class Tile():
         # when the tile type has changed
         self.changed = False
 
+        # pathfinding variables
+        self.cost: int = 0
+        self.parent: Tile = None
+        self.vector = Vector(0, 0)
+
         self.WALKABLE_TILE_IMG_SCALED = pygame.transform.scale(WALKABLE_TILE_IMG.copy(), (self.size, self.size))
         self.INTERACTABLE_TILE_IMG_SCALED = pygame.transform.scale(INTERACTABLE_TILE_IMG.copy(), (self.size, self.size))
         self.BOUNDARY_TILE_IMG_SCALED = pygame.transform.scale(BOUNDARY_TILE_IMG.copy(), (self.size, self.size))
