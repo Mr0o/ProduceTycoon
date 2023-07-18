@@ -24,30 +24,28 @@ class PlacableObject():
         self.canPlace = True
         self.rect = pygame.Rect(self.pos.x - 1000, self.pos.y - 1000, self.size * self.rows, self.size * self.cols)
 
-    def events(self, mouseClicked: bool = False):
-        if self.isPlaced:
-            return
-        
+    def checkIfCanPlace(self):
         for element in self.elements:
             if element.rect.colliderect(self.rect):
                 self.canPlace = False
                 break
             else:
                 self.canPlace = True
-        
+
+    def events(self, mouseClicked: bool = False):
+        if self.isPlaced:
+            return
+
+        self.checkIfCanPlace()
         for tile in self.tileMap.tileMapGrid:
             # changes center of object object to center of current tile
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
                 self.pos.x = tile.pos.x + tile.size / 2
                 self.pos.y = tile.pos.y + tile.size / 2
-
             # changes tile type to object if rect collides with tile and mouse is clicked
-            if self.rect.colliderect(tile.rect) and self.canPlace:
-                # rect = tile.rect
-                # pygame.draw.rect(self.screen, (255, 0, 0), rect, 2)
-                if mouseClicked:
-                    tile.setTileType(Type.INTERACTABLE)
-                    self.isPlaced = True
+            if self.rect.colliderect(tile.rect) and self.canPlace and mouseClicked:
+                tile.setTileType(Type.INTERACTABLE)
+                self.isPlaced = True
 
     def update(self):
         if self.isPlaced:

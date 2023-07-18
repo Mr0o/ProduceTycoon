@@ -31,8 +31,10 @@ class Game():
         self.buttons = []
         self.button3x3 = Button(self.screen, Vector(100, 100), "3x3 Tile", 60, 20)
         self.buttons.append(self.button3x3)
-        self.button1x1 = Button(self.screen, Vector(100, 120), "1x1 Tile", 60, 20)
+        self.button1x1 = Button(self.screen, Vector(100, 123), "1x1 Tile", 60, 20)
         self.buttons.append(self.button1x1)
+        self.movePlacableObjects = Button(self.screen, Vector(100, 146), "Move Objects", 60, 20)
+        self.buttons.append(self.movePlacableObjects)
 
         # placed objects
         self.placedObjects: list[PlacableObject] = []
@@ -62,11 +64,13 @@ class Game():
         self.tileMap.events(mouseClicked)
         if not self.hideGUI:
             if self.button3x3.events(mouseClicked):
-                self.hideGUI = True
                 self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 60, 60, 3, 3, self.elements))
             if self.button1x1.events(mouseClicked):
-                self.hideGUI = True
                 self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20, 1, 1, self.elements))
+            if self.movePlacableObjects.events(mouseClicked):
+                for placedObject in self.placedObjects:
+                    if placedObject.rect.collidepoint(pygame.mouse.get_pos()):
+                        placedObject.isPlaced = False
             
         for button in self.buttons:
             if self.hideGUI:
@@ -75,13 +79,12 @@ class Game():
                 button.hide = False
                 if button.isSelected:
                     buttonClicked = True
-
+        self.hideGUI = False
         if not buttonClicked:
             for placedObject in self.placedObjects:
                 placedObject.events(mouseClicked)
 
-        if len(self.placedObjects) > 0 and self.placedObjects[-1].isPlaced:
-            self.hideGUI = False
+                self.hideGUI |= not placedObject.isPlaced
 
         # set target for guests (this is just for testing, not final implementation)
         # if mouseClicked:

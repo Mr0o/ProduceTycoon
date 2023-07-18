@@ -9,10 +9,10 @@ class Button():
         self.text = text
         self.width = width
         self.height = height
-
-        self.isSelected = False
+        
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
 
+        self.isSelected = False
         self.hide = False
     
     def events(self, mouseClicked: bool = False):
@@ -26,8 +26,6 @@ class Button():
         
         if not mouseClicked:
             self.isSelected = False
-            
-
         return action
 
     def draw(self):
