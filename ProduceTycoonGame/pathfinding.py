@@ -92,7 +92,7 @@ def getVector(tileMap: TileMap, tile: Tile) -> Vector:
     return vector
 
 # create a vector field of the tilemap
-def createVectorField(tileMap: TileMap, heatmap: list[Tile]) -> list[Tile]:
+def createVectorField(tileMap: TileMap, heatmap: list[Tile]) -> list[Vector]:
     # create a list of tiles that will be returned
     vectorField: list[Vector] = []
 
@@ -105,3 +105,22 @@ def createVectorField(tileMap: TileMap, heatmap: list[Tile]) -> list[Tile]:
 
     # return the vector field
     return vectorField
+
+
+# used to store the vector field of each placed object
+# a guest will aquire the vector field for tile they are targeting
+class VectorFields():
+    def __init__(self, tileMap: TileMap, target: Tile):
+        # create a vectorFeild for each tile in the tileMap
+        self.vectorFields: list[Vector] = self.createVectorField(tileMap, target)
+
+
+    def createVectorField(self, tileMap: TileMap, target: Tile) -> list[Tile]:
+        # create a heatmap of the tilemap
+        heatmap = createHeatmap(tileMap, target)
+
+        # create a vector field of the tilemap
+        vectorField = createVectorField(tileMap, heatmap)
+
+        # return the vector field
+        return vectorField
