@@ -92,13 +92,13 @@ class TileMap():
         # drawing tileMap
         self.screen.blit(self.staticSurface, (self.pos.x, self.pos.y))
 
-        # drawing highlighted tile
-        if self.highlightedTile is not None:
-            self.highlightedTile.draw()
+        # # drawing highlighted tile
+        # if self.highlightedTile is not None:
+        #     self.highlightedTile.draw()
 
-        # drawing selected tile
-        if self.selectedTile is not None:
-            self.selectedTile.draw()
+        # # drawing selected tile
+        # if self.selectedTile is not None:
+        #     self.selectedTile.draw()
 
         # draws border
         pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)

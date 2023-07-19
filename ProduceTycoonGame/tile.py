@@ -67,10 +67,10 @@ class Tile():
             case Type.BOUNDARY:
                 self.screen.blit(self.BOUNDARY_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
 
-        if self.isHighlighted:
-            pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
-        elif self.isSelected:
-            pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
+        # if self.isHighlighted:
+        #     pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
+        # elif self.isSelected:
+        #     pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
 
     def setTileType(self, type: Type):
         self.type = type
