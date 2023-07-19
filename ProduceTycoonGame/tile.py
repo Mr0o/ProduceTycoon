@@ -3,7 +3,7 @@ from enum import Enum
 
 from ProduceTycoonGame.vectors import Vector
 
-WALKABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/Walkable.jpg')
+WALKABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/FloorTile.png')
 INTERACTABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/Interactable.jpg')
 BOUNDARY_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/Barrier.png')
 
