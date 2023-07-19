@@ -29,11 +29,11 @@ class Game():
 
         # buttons
         self.buttons = []
-        self.button3x3 = Button(self.screen, Vector(100, 100), "3x3 Tile", 60, 20)
+        self.button3x3 = Button(self.screen, Vector(60, 0), "3x3 Tile", 60, 20)
         self.buttons.append(self.button3x3)
-        self.button1x1 = Button(self.screen, Vector(100, 123), "1x1 Tile", 60, 20)
+        self.button1x1 = Button(self.screen, Vector(120, 0), "1x1 Tile", 60, 20)
         self.buttons.append(self.button1x1)
-        self.movePlacableObjects = Button(self.screen, Vector(100, 146), "Move Objects", 60, 20)
+        self.movePlacableObjects = Button(self.screen, Vector(180, 0), "Move Objects", 120, 20)
         self.buttons.append(self.movePlacableObjects)
 
         # placed objects
