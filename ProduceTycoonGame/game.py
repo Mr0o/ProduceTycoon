@@ -6,7 +6,7 @@ from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.placableObject import PlacableObject
-from ProduceTycoonGame.clock import Clock
+from ProduceTycoonGame.UserInterface.clock import Clock
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -68,9 +68,9 @@ class Game():
         self.tileMap.events(self.mouseClicked)
         if not self.hideGUI:
             if self.button3x3.events(self.mouseClicked):
-                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 60, 60, 3, 3, self.elements))
+                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 3, 3, self.elements))
             if self.button1x1.events(self.mouseClicked):
-                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 20, 20, 1, 1, self.elements))
+                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 1, 1, self.elements))
             if self.movePlacableObjects.events(self.mouseClicked):
                 self.hideGUI = True
                 self.moveObject = True

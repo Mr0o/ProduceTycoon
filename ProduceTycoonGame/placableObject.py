@@ -7,17 +7,18 @@ from ProduceTycoonGame.tile import Type
 id = 0
 
 class PlacableObject():
-    def __init__(self, screen: pygame.Surface, pos: Vector, tileMap: TileMap, width: int, height: int, rows: int = 1, cols: int = 1, elements: list = []):
+    def __init__(self, screen: pygame.Surface, pos: Vector, tileMap: TileMap, rows: int = 1, cols: int = 1, elements: list = []):
         self.screen = screen
         self.pos = pos
         self.tileMap = tileMap
-        self.width = width
-        self.height = height
         self.rows = rows
         self.cols = cols
         self.elements = elements
 
         self.size = self.tileMap.zoom // self.tileMap.col - 1
+
+        self.imageBanana = pygame.image.load('Banana_ProduceTycoon.png')
+        self.imageBanana = pygame.transform.scale(self.imageBanana, (self.rows * self.size, self.cols * self.size))
 
         self.isPlaced = False
         self.canPlace = True
@@ -66,3 +67,4 @@ class PlacableObject():
 
     def draw(self):
         pygame.draw.rect(self.screen, (240, 180, 212), self.rect)
+        self.screen.blit(self.imageBanana, (self.pos.x - self.imageBanana.get_width() / 2, self.pos.y - self.imageBanana.get_height() / 2))
