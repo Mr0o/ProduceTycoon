@@ -76,12 +76,9 @@ class Game():
                 self.moveObject = True
             
         for button in self.buttons:
-            if self.hideGUI:
-                button.hide = True
-            else:
-                button.hide = False
+            button.hide = self.hideGUI
 
-        if self.hideGUI and not self.moveObject:
+        if self.hideGUI and not self.moveObject or self.placedObjects == []:
             self.hideGUI = False
             
         for placedObject in self.placedObjects:
@@ -89,13 +86,7 @@ class Game():
 
             if self.moveObject and not self.mouseClicked and self.previousMouseClicked:
                 self.moveObject = placedObject.moveToNewPos()
-                
-                
 
-        # set target for guests (this is just for testing, not final implementation)
-        # if self.mouseClicked:
-        #     for guest in self.guests:
-        #         pass
         
         for guest in self.guests:
             guest.events()
