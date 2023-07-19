@@ -40,15 +40,12 @@ class TileMap():
         # create grid of tiles
         tileSize = zoom // numCols
 
+        # create a list of tiles (skipping the first row, to make room for buttons at the top)
         tileMapGrid: list[Tile] = []
-        for i in range(numRows):
-            for j in range(numCols):
-                pos = Vector(tileMapStartingPos.x + j * tileSize,
-                               tileMapStartingPos.x + i * tileSize)
-                if i == 0 or j == 0 or i == numRows-1 or j == numCols-1:
-                    tileMapGrid.append(Tile(self.screen, pos, tileSize, Type.BOUNDARY))
-                else:
-                    tileMapGrid.append(Tile(self.screen, pos, tileSize, Type.WALKABLE))
+        for row in range(1, numRows):
+            for col in range(numCols):
+                tileMapGrid.append(Tile(self.screen, Vector(tileMapStartingPos.x + col * tileSize, tileMapStartingPos.y + row * tileSize), tileSize))
+        
 
         return tileMapGrid
 
