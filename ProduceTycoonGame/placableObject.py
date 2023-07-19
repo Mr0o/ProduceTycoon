@@ -15,14 +15,14 @@ class PlacableObject():
         self.cols = cols
         self.elements = elements
 
-        self.size = self.tileMap.zoom // self.tileMap.col - 1
+        self.size = self.tileMap.tileMapGrid[0].size
 
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, (self.rows * self.size, self.cols * self.size))
 
         self.isPlaced = False
         self.canPlace = True
-        self.rect = pygame.Rect(self.pos.x - 1000, self.pos.y - 1000, self.size * self.rows, self.size * self.cols)
+        self.rect = self.image.get_rect()
 
     def checkIfCanPlace(self):
         for element in self.elements:
@@ -52,8 +52,9 @@ class PlacableObject():
         for tile in self.tileMap.tileMapGrid:
             # changes center of object object to center of current tile
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
-                self.pos.x = tile.pos.x + tile.size / 2
-                self.pos.y = tile.pos.y + tile.size / 2
+                self.pos.x = tile.pos.x - self.rows * self.size // 4
+                self.pos.y = tile.pos.y - self.cols * self.size // 4
+                
             # changes tile type to object if rect collides with tile and mouse is clicked
             if self.rect.colliderect(tile.rect) and self.canPlace and not mouseClicked and previousMouseClick:
                 tile.setTileType(Type.INTERACTABLE)
@@ -64,8 +65,17 @@ class PlacableObject():
     def update(self):
         if self.isPlaced:
             return
-        self.rect.center = (self.pos.x, self.pos.y)
+        if self.cols % 2 == 1 and self.rows % 2 == 1:
+            self.pos.x += self.size * 3 // 4
+            self.pos.y -= 1
+        if self.cols % 2 == 1:
+            self.pos.y += self.size * 3 / 4 - 1
+        elif self.rows % 2 == 1:
+            self.pos.x -= 1
+            self.pos.x += self.size * 3 / 4
+        self.rect.topleft = (self.pos.x, self.pos.y)
 
     def draw(self):
         pygame.draw.rect(self.screen, (240, 180, 212), self.rect)
-        self.screen.blit(self.image, (self.pos.x - self.image.get_width() / 2, self.pos.y - self.image.get_height() / 2))
+        self.screen.blit(self.image, self.rect.topleft)
+
