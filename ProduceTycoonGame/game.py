@@ -32,11 +32,11 @@ class Game():
 
         # buttons
         self.buttons = []
-        self.button3x3 = Button(self.screen, Vector(60, 0), "3x3 Tile", 60, 20)
+        self.button3x3 = Button(self.screen, Vector(0, 0), "3x3 Tile", 60, 20)
         self.buttons.append(self.button3x3)
-        self.button1x1 = Button(self.screen, Vector(120, 0), "1x1 Tile", 60, 20)
+        self.button1x1 = Button(self.screen, Vector(60, 0), "1x1 Tile", 60, 20)
         self.buttons.append(self.button1x1)
-        self.movePlacableObjects = Button(self.screen, Vector(180, 0), "Move Objects", 120, 20)
+        self.movePlacableObjects = Button(self.screen, Vector(120, 0), "Move Objects", 120, 20)
         self.buttons.append(self.movePlacableObjects)
 
         # placed objects
@@ -151,11 +151,11 @@ class Game():
             else:
                 ftColor = (0, 255, 0)
             text = self.debugFont.render(str(ft) + " ms", True, ftColor)
-            self.screen.blit(text, (0, 0))
+            self.screen.blit(text, (0, 20))
 
             # draw fps
             text = self.debugFont.render(str(int(self.clock.get_fps())) + " FPS ", True, (255, 255, 255))
-            self.screen.blit(text, (0, text.get_height()))
+            self.screen.blit(text, (0, text.get_height() + 20))
 
             # draw the highlighted tile id
             if self.tileMap.highlightedTile is not None:
