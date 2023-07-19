@@ -25,6 +25,9 @@ class Game():
         # load font
         self.debugFont = pygame.font.SysFont('Arial', 15, bold=True)
 
+        # debug variable that when true will enable debug features (fps, frametime, etc.)
+        self.debug = False
+
         self.tileMap = TileMap(self.screen, Vector(0, 0))
 
         # buttons
@@ -60,6 +63,9 @@ class Game():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
+                # press '1' to toggle debug
+                if event.key == pygame.K_1:
+                    self.debug = not self.debug
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.mouseClicked = True
@@ -108,7 +114,10 @@ class Game():
         for placedObject in self.placedObjects:
             placedObject.update()
         
-        pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
+        if self.debug:
+            pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
+        else:
+            pygame.display.set_caption('Produce Tycoon')
 
     def draw(self):
         self.screen.fill((0, 0, 0))
@@ -131,31 +140,32 @@ class Game():
             self.displayClock.draw()
 
         ## DEBUG STUFF ##
-        # draw raw frametime
-        ft = int(self.clock.get_rawtime())
-        # change color based on frametime to indicate performance (green = good, yellow = ok, red = bad)
-        if ft > 16:
-            ftColor = (255, 0, 0)
-        elif ft > 8:
-            ftColor = (255, 255, 0)
-        else:
-            ftColor = (0, 255, 0)
-        text = self.debugFont.render(str(ft) + " ms", True, ftColor)
-        self.screen.blit(text, (0, 0))
+        if self.debug:
+            # draw raw frametime
+            ft = int(self.clock.get_rawtime())
+            # change color based on frametime to indicate performance (green = good, yellow = ok, red = bad)
+            if ft > 16:
+                ftColor = (255, 0, 0)
+            elif ft > 8:
+                ftColor = (255, 255, 0)
+            else:
+                ftColor = (0, 255, 0)
+            text = self.debugFont.render(str(ft) + " ms", True, ftColor)
+            self.screen.blit(text, (0, 0))
 
-        # draw fps
-        text = self.debugFont.render(str(int(self.clock.get_fps())) + " FPS ", True, (255, 255, 255))
-        self.screen.blit(text, (0, text.get_height()))
+            # draw fps
+            text = self.debugFont.render(str(int(self.clock.get_fps())) + " FPS ", True, (255, 255, 255))
+            self.screen.blit(text, (0, text.get_height()))
 
-        # draw the highlighted tile id
-        if self.tileMap.highlightedTile is not None:
-            text = self.debugFont.render("Tile ID: " + str(self.tileMap.highlightedTile.id), True, (255, 255, 0))
-            self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, 0))
+            # draw the highlighted tile id
+            if self.tileMap.highlightedTile is not None:
+                text = self.debugFont.render("Tile ID: " + str(self.tileMap.highlightedTile.id), True, (255, 255, 0))
+                self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, 0))
 
-        # draw the selected tile id
-        if self.tileMap.selectedTile is not None:
-            text = self.debugFont.render("Selected ID: " + str(self.tileMap.selectedTile.id), True, (255, 0, 255))
-            self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height()))
+            # draw the selected tile id
+            if self.tileMap.selectedTile is not None:
+                text = self.debugFont.render("Selected ID: " + str(self.tileMap.selectedTile.id), True, (255, 0, 255))
+                self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height()))
 
         pygame.display.update()
 
