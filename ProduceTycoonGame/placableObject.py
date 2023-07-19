@@ -17,7 +17,7 @@ class PlacableObject():
 
         self.size = self.tileMap.zoom // self.tileMap.col - 1
 
-        self.imageBanana = pygame.image.load('Banana_ProduceTycoon.png')
+        self.imageBanana = pygame.image.load('./Resources/Images/Banana_ProduceTycoon.png')
         self.imageBanana = pygame.transform.scale(self.imageBanana, (self.rows * self.size, self.cols * self.size))
 
         self.isPlaced = False
@@ -48,6 +48,7 @@ class PlacableObject():
             return False
 
         self.checkIfCanPlace()
+        self.pos.x, self.pos.y = pygame.mouse.get_pos()
         for tile in self.tileMap.tileMapGrid:
             # changes center of object object to center of current tile
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
