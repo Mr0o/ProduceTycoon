@@ -51,7 +51,7 @@ class PlacableObject():
         if self.isPlaced:
             if mouseClicked and self.rect.collidepoint(pygame.mouse.get_pos()):
                 self.slider.hidden = not self.slider.hidden
-            self.slider.events()
+            self.slider.events(mouseClicked)
             return False
 
         self.checkIfCanPlace()
