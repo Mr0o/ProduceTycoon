@@ -5,7 +5,7 @@ from ProduceTycoonGame.vectors import Vector
 
 class Button():
     def __init__(self, screen: pygame.Surface, pos: Vector, text: str, width: int, height: int, color: tuple[int, int, int] | pygame.Color = (202, 228, 240)):
-        
+
         self.screen = screen
         self.pos = pos
         self.text = text
@@ -30,6 +30,7 @@ class Button():
         
         if not mouseClicked:
             self.isSelected = False
+            
         return self.isSelected
 
     def draw(self):

@@ -79,12 +79,15 @@ class Game():
             if self.button1x1.events(self.mouseClicked):
                 self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 1, 1, self.elements, './Resources/Images/Tomato.png'))
             if self.movePlacableObjects.events(self.mouseClicked):
+                self.hideGUI = True
                 self.moveObject = True
             
         self.checkIfHidden()
         self.hideGUI = False
         for placedObject in self.placedObjects:
             self.hideGUI = placedObject.events(self.mouseClicked, self.previousMouseClicked)
+            if placedObject.exitButton.events(self.mouseClicked) and not placedObject.isPlaced:
+                self.placedObjects.remove(placedObject)
 
             if self.moveObject and not self.mouseClicked and self.previousMouseClicked:
                 self.moveObject = placedObject.moveToNewPos()

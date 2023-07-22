@@ -3,6 +3,7 @@ import pygame
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Type
+from ProduceTycoonGame.UserInterface.button import Button
 
 id = 0
 
@@ -23,6 +24,8 @@ class PlacableObject():
         self.isPlaced = False
         self.canPlace = True
         self.rect = self.image.get_rect()
+
+        self.exitButton = Button(self.screen, Vector(0, 0), 'X', 20, 20, (255, 0, 0))
 
     def checkIfCanPlace(self):
         for element in self.elements:
@@ -52,8 +55,10 @@ class PlacableObject():
         for tile in self.tileMap.tileMapGrid:
             # changes center of object object to center of current tile
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
-                self.pos.x = tile.pos.x - self.rows * self.size // 4
-                self.pos.y = tile.pos.y - self.cols * self.size // 4
+                newPosX = tile.pos.x - self.rows * self.size // 4
+                newPosY = tile.pos.y - self.cols * self.size // 4
+                self.pos.x = newPosX
+                self.pos.y = newPosY
                 
             # changes tile type to object if rect collides with tile and mouse is clicked
             if self.rect.colliderect(tile.rect) and self.canPlace and not mouseClicked and previousMouseClick:
@@ -65,6 +70,8 @@ class PlacableObject():
     def update(self):
         if self.isPlaced:
             return
+
+        # will figure out later works for now lol
         if self.cols % 2 == 1 and self.rows % 2 == 1:
             self.pos.x += self.size * 3 // 4
             self.pos.y -= 1
@@ -76,6 +83,8 @@ class PlacableObject():
         self.rect.topleft = (self.pos.x, self.pos.y)
 
     def draw(self):
+        if not self.isPlaced:
+            self.exitButton.draw()
         pygame.draw.rect(self.screen, (240, 180, 212), self.rect)
         self.screen.blit(self.image, self.rect.topleft)
 
