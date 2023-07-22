@@ -32,7 +32,7 @@ class PlacableObject():
             else:
                 self.canPlace = True
 
-    def moveToNewPos(self, mouseClicked: bool = False, previousMouseClick: bool = False):
+    def moveToNewPos(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             self.isPlaced = False
             self.placeAgain = True

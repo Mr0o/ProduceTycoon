@@ -72,17 +72,19 @@ class Game():
 
         
         self.tileMap.events(self.mouseClicked)
+
         if not self.hideGUI:
             if self.button3x3.events(self.mouseClicked):
+                self.hideGUI = True
                 self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 4, 4, self.elements, './Resources/Images/WatermelonBin.png'))
             if self.button1x1.events(self.mouseClicked):
+                self.hideGUI = True
                 self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 1, 1, self.elements, './Resources/Images/Tomato.png'))
             if self.movePlacableObjects.events(self.mouseClicked):
                 self.hideGUI = True
                 self.moveObject = True
             
-        for button in self.buttons:
-            button.hide = self.hideGUI
+        Button.hide = self.hideGUI
 
         if self.hideGUI and not self.moveObject or self.placedObjects == []:
             self.hideGUI = False

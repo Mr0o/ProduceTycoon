@@ -49,6 +49,21 @@ class TileMap():
 
         return tileMapGrid
 
+    def selectTile(self, tile: Tile, mouseClicked: bool = False):
+        if mouseClicked:
+            if self.selectedTile is not None:
+                # deselecting selected tile
+                self.selectedTile.isSelected = False
+            if self.selectedTile == tile:
+                # deselecting tile
+                tile.isSelected = False
+                self.selectedTile = None
+            else:
+                # selecting tile
+                self.selectedTile = tile
+                self.selectedTile.isSelected = True
+        
+
     def events(self, mouseClicked: bool = False):
         # checking if mouse is hovering over tile
         self.highlightedTile = None
@@ -57,18 +72,7 @@ class TileMap():
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
                 self.highlightedTile = tile
                 tile.isHighlighted = True
-                if mouseClicked:
-                    if self.selectedTile is not None:
-                        # deselecting selected tile
-                        self.selectedTile.isSelected = False
-                    if self.selectedTile == tile:
-                        # deselecting tile
-                        tile.isSelected = False
-                        self.selectedTile = None
-                    else:
-                        # selecting tile
-                        self.selectedTile = tile
-                        self.selectedTile.isSelected = True
+                self.selectTile(tile, mouseClicked)
 
     def update(self):
         changed = False
