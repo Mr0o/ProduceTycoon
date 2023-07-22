@@ -83,7 +83,7 @@ class Game():
                 self.moveObject = True
             
         self.checkIfHidden()
-        self.hideGUI = False
+
         for placedObject in self.placedObjects:
             self.hideGUI = placedObject.events(self.mouseClicked, self.previousMouseClicked)
             if placedObject.exitButton.events(self.mouseClicked) and not placedObject.isPlaced:

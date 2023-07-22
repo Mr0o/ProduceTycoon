@@ -4,6 +4,7 @@ from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Type
 from ProduceTycoonGame.UserInterface.button import Button
+from ProduceTycoonGame.UserInterface.slider import Slider
 
 id = 0
 
@@ -26,7 +27,7 @@ class PlacableObject():
         self.rect = self.image.get_rect()
 
         self.exitButton = Button(self.screen, Vector(0, 0), 'X', 20, 20, (255, 0, 0))
-
+        self.slider = Slider(self.screen, Vector(100, 200), 100, 20, (0, 100, 50))
     def checkIfCanPlace(self):
         for element in self.elements:
             if element.rect.colliderect(self.rect):
@@ -48,6 +49,9 @@ class PlacableObject():
 
     def events(self, mouseClicked: bool = False, previousMouseClick: bool = False):
         if self.isPlaced:
+            if mouseClicked and self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.slider.hidden = not self.slider.hidden
+            self.slider.events()
             return False
 
         self.checkIfCanPlace()
@@ -69,8 +73,8 @@ class PlacableObject():
 
     def update(self):
         if self.isPlaced:
+            self.slider.update()
             return
-
         # will figure out later works for now lol
         if self.cols % 2 == 1 and self.rows % 2 == 1:
             self.pos.x += self.size * 3 // 4
@@ -85,6 +89,8 @@ class PlacableObject():
     def draw(self):
         if not self.isPlaced:
             self.exitButton.draw()
-        pygame.draw.rect(self.screen, (240, 180, 212), self.rect)
+
         self.screen.blit(self.image, self.rect.topleft)
 
+        if not self.slider.hidden:
+            self.slider.draw()
