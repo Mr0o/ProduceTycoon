@@ -49,6 +49,7 @@ class Game():
 
         self.hideGUI = False
         self.mouseClicked = False
+        self.backspacePressed = False
         self.previousMouseClicked = False
         self.moveObject = False
 
@@ -66,6 +67,8 @@ class Game():
                 # press '1' to toggle debug
                 if event.key == pygame.K_1:
                     self.debug = not self.debug
+                if event.key == pygame.K_BACKSPACE:
+                    self.backspacePressed = True
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.mouseClicked = True
@@ -85,7 +88,7 @@ class Game():
         self.checkIfHidden()
 
         for placedObject in self.placedObjects:
-            self.hideGUI = placedObject.events(self.mouseClicked, self.previousMouseClicked)
+            self.hideGUI = placedObject.events(self.mouseClicked, self.previousMouseClicked, self.backspacePressed)
             if placedObject.exitButton.events(self.mouseClicked) and not placedObject.isPlaced:
                 self.placedObjects.remove(placedObject)
 

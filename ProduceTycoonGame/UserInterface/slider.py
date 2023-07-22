@@ -15,6 +15,7 @@ class Slider():
         self.slider = pygame.Rect((self.pos.x + 5, self.pos.y + self.height / 2 - 3), (4, 6))
 
         self.isSelected = False
+        
     def events(self, mouseClicked: bool = False):
         if self.slider.collidepoint(pygame.mouse.get_pos()):
             if mouseClicked:
