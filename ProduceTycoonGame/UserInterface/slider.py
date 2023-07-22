@@ -21,15 +21,9 @@ class Slider():
             return
 
         if self.slider.collidepoint(pygame.mouse.get_pos()):
-            print("yes")
-
             if mouseClicked:
-                self.isSelected = True
-                return True
-                print(self.isSelected)
-        return False
-        
-            
+                self.isSelected = not self.isSelected
+
         return self.isSelected
     
     def update(self):
