@@ -75,22 +75,16 @@ class Game():
 
         if not self.hideGUI:
             if self.button3x3.events(self.mouseClicked):
-                self.hideGUI = True
                 self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 4, 4, self.elements, './Resources/Images/WatermelonBin.png'))
             if self.button1x1.events(self.mouseClicked):
-                self.hideGUI = True
                 self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 1, 1, self.elements, './Resources/Images/Tomato.png'))
             if self.movePlacableObjects.events(self.mouseClicked):
-                self.hideGUI = True
                 self.moveObject = True
             
-        Button.hide = self.hideGUI
-
-        if self.hideGUI and not self.moveObject or self.placedObjects == []:
-            self.hideGUI = False
-            
+        self.checkIfHidden()
+        self.hideGUI = False
         for placedObject in self.placedObjects:
-            self.hideGUI = self.hideGUI or placedObject.events(self.mouseClicked, self.previousMouseClicked)
+            self.hideGUI = placedObject.events(self.mouseClicked, self.previousMouseClicked)
 
             if self.moveObject and not self.mouseClicked and self.previousMouseClicked:
                 self.moveObject = placedObject.moveToNewPos()
@@ -106,6 +100,13 @@ class Game():
         self.elements.extend(self.placedObjects)
         self.elements.extend(self.guests)
         self.elements.append(self.displayClock)
+
+    def checkIfHidden(self):
+        for button in self.buttons:
+            button.hidden = self.hideGUI
+
+        self.displayClock.hidden = self.hideGUI
+
 
     def update(self):
         self.tileMap.update()
@@ -138,8 +139,7 @@ class Game():
         for placedObject in self.placedObjects:
             placedObject.draw()
 
-        if not self.hideGUI:
-            self.displayClock.draw()
+        self.displayClock.draw()
 
         ## DEBUG STUFF ##
         if self.debug:

@@ -15,6 +15,8 @@ class Clock():
         self.hour = 7
         self.timeText = ""
 
+        self.hidden = False
+
         self.rect = pygame.Rect(self.pos.x, self.pos.y, 100, 25)
 
     def events(self):
@@ -31,9 +33,10 @@ class Clock():
         self.timeText = self.font.render(f"{self.hour}:{self.minute}0", True, (0, 0, 0))
 
     def draw(self):
-        pygame.draw.rect(self.screen, (240, 198, 60), self.rect)
-        pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
-        self.screen.blit(self.timeText, (self.pos.x + (self.rect.width/2 - self.timeText.get_width()/2), self.pos.y + (self.rect.height/2 - self.timeText.get_height()/2)))
+        if not self.hidden:
+            pygame.draw.rect(self.screen, (240, 198, 60), self.rect)
+            pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
+            self.screen.blit(self.timeText, (self.pos.x + (self.rect.width/2 - self.timeText.get_width()/2), self.pos.y + (self.rect.height/2 - self.timeText.get_height()/2)))
 
     
 

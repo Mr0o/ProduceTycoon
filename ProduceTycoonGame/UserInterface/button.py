@@ -2,12 +2,10 @@ import pygame
 
 from ProduceTycoonGame.vectors import Vector
 
-hide = False
 
 class Button():
     def __init__(self, screen: pygame.Surface, pos: Vector, text: str, width: int, height: int, color: tuple[int, int, int] | pygame.Color = (202, 228, 240)):
-
-        global hide; self.hide = hide
+        
         self.screen = screen
         self.pos = pos
         self.text = text
@@ -18,9 +16,10 @@ class Button():
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
 
         self.isSelected = False
+        self.hidden = False
     
     def events(self, mouseClicked: bool = False):
-        if hide:
+        if self.hidden:
             return
 
         # check if mouse position is on the button rect
@@ -34,7 +33,7 @@ class Button():
         return self.isSelected
 
     def draw(self):
-        if hide:
+        if self.hidden:
             return
         objectSize = pygame.font.SysFont('Arial', 15, bold=True)
         text = objectSize.render(self.text, True, (0, 0, 0))
