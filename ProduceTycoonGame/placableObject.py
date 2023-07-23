@@ -49,12 +49,13 @@ class PlacableObject():
 
         return True
 
-    def events(self, mouseClicked: bool = False, previousMouseClick: bool = False, backspacePressed: bool = False):
+    def events(self, previousMouseClick: bool = False, mouseClicked: bool = False, events: list = []):
         if self.isPlaced:
             if mouseClicked and self.rect.collidepoint(pygame.mouse.get_pos()):
                 self.gui.hidden = not self.gui.hidden
-            self.gui.events(mouseClicked, backspacePressed)
+            self.gui.events(mouseClicked, events)
             return False
+        
 
         self.checkIfCanPlace()
         self.pos.x, self.pos.y = pygame.mouse.get_pos()

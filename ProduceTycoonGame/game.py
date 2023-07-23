@@ -56,8 +56,9 @@ class Game():
     def events(self):
         self.previousMouseClicked = self.mouseClicked
         self.mouseClicked = False
-        
+        events = []
         for event in pygame.event.get():
+            events.append(event)
             # will stop running and exit
             if event.type == pygame.QUIT:
                 self.running = False
@@ -88,7 +89,7 @@ class Game():
         self.checkIfHidden()
 
         for placedObject in self.placedObjects:
-            self.hideGUI = placedObject.events(self.mouseClicked, self.previousMouseClicked, self.backspacePressed)
+            self.hideGUI = placedObject.events(self.previousMouseClicked, self.mouseClicked, events)
             if placedObject.exitButton.events(self.mouseClicked) and not placedObject.isPlaced:
                 self.placedObjects.remove(placedObject)
 

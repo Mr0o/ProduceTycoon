@@ -16,12 +16,21 @@ class TextInputBox():
         self.base_font = pygame.font.Font(None, 32)
         self.text = ''
     
-    def events(self, mouseClicked: bool = False, backspacePressed: bool = False):
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
-            if mouseClicked:
-                self.active = True
-            else:
-                self.active = False
+    def events(self, events: list = []):
+        print()
+        for event in events:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.rect.collidepoint(event.pos):
+                    self.active = True
+                else:
+                    self.active = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    self.text = self.text[:-1]
+                else:
+                    self.text += event.unicode
+                    print(self.text)
+
 
     def update(self):
         pass
@@ -29,3 +38,4 @@ class TextInputBox():
     def draw(self):
         pygame.draw.rect(self.screen, self.color, self.rect)
         pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 1)
+        self.screen.blit(self.base_font.render(self.text, True, (0, 0, 0)), (self.pos.x + 5, self.pos.y + 5))
