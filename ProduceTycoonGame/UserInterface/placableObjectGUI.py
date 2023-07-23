@@ -15,7 +15,7 @@ class PlacableObjectGUI():
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
 
 
-        self.textBox = TextInputBox(self.screen, Vector(self.pos.x + 5, self.pos.y + self.height / 2 - 20), self.width - 10, 18)
+        self.textBox = TextInputBox(self.screen, Vector(self.pos.x + 5, self.pos.y + self.height / 2 - 20), self.width - 10, 18, (230, 120, 140))
         self.slider = Slider(self.screen, Vector(self.pos.x + 5, self.pos.y + self.height / 2 - 3), self.width - 10, 6)
 
         self.hidden = True
