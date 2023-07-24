@@ -4,7 +4,7 @@ from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Type
 from ProduceTycoonGame.UserInterface.button import Button
-from ProduceTycoonGame.UserInterface.placableObjectGUI import PlacableObjectGUI
+from ProduceTycoonGame.UserInterface.placableObjectGUI import PlacableObjectGUI, TypeObject
 
 id = 0
 
@@ -77,6 +77,22 @@ class PlacableObject():
     def update(self):
         if self.isPlaced:
             self.gui.update()
+
+            match self.gui.type:
+                case TypeObject.WATERMELON:
+                    self.image = pygame.image.load('./Resources/Images/WatermelonBin.png')
+                    print("Watermelon")
+                case TypeObject.BANANAS:
+                    self.image = pygame.image.load('./Resources/Images/Banana_ProduceTycoon.png')
+                    print("Bananas")
+                case TypeObject.APPLES:
+                    self.image = pygame.image.load('./Resources/Images/Apple_ProduceTycoon.png')
+                    print("Apples")
+                case TypeObject.TOMATOES:
+                    self.image = pygame.image.load('./Resources/Images/Tomato.png')
+                    print("Tomatoes")
+                case _:
+                    self.image = pygame.image.load('./Resources/Images/Banana_ProduceTycoon.png')
             return
         # will figure out later works for now lol
         if self.cols % 2 == 1 and self.rows % 2 == 1:
