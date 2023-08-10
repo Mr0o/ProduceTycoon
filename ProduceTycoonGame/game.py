@@ -22,6 +22,10 @@ class Game():
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
+        # set the game icon
+        icon = pygame.image.load('./Resources/Images/Tomato.png')
+        pygame.display.set_icon(icon)
+
         # load font
         self.debugFont = pygame.font.SysFont('Arial', 15, bold=True)
 
