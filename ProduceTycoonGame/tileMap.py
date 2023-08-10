@@ -167,7 +167,7 @@ class TileMap():
     
     def setTileType(self, tile: Tile, type: Type):
         tile.type = type
-        self.updateStaticImage
+        self.updateStaticImage()
 
 
 # create a surface of Tiles that can be used statically (this will not reflect changes to the tileMap unless a new static surface is created)
