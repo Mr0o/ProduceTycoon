@@ -75,7 +75,21 @@ if __name__ == "__main__":
         if pygame.mouse.get_pressed()[2]:
             tileAtPos = tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
             if tileAtPos != None and tileAtPos.type != Type.BOUNDARY:
-                tileAtPos.type = Type.BOUNDARY
+                tileAtPos.setTileType(Type.BOUNDARY)
+
+
+        # if the tileMap has changed, update the heatmap and vector field
+        for tile in tileMap.tileMapGrid:
+            if tile.changed:
+                # update the heatmap
+                print("Creating heatmap...")
+                heatmap = createHeatmap(tileMap, targetTile)
+
+                # update the vector field
+                print("Creating vector field...")
+                vectorField = createVectorField(tileMap, heatmap)
+
+                break
 
         # middle click to place guests
         if pygame.mouse.get_pressed()[1]:
