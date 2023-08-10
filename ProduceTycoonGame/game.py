@@ -8,6 +8,7 @@ from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.placableObject import PlacableObject
 from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
+from ProduceTycoonGame.pathfinding import VectorFields
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -34,6 +35,9 @@ class Game():
         self.debug = False
 
         self.tileMap = TileMap(self.screen, Vector(0, 0))
+
+        # pathfinding (Vector Fields)
+        self.vectorField = VectorFields(self.tileMap)
 
         # buttons
         self.buttons = []
