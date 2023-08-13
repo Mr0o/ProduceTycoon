@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     # create a vector field
     print("Creating vector field...")
-    vectorField = createVectorField(tileMap, heatmap)
+    vectorField = createVectorField(tileMap, targetTile)
 
     # main game loop
     running = True
@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
                     # create a vector field
                     print("Creating vector field...")
-                    vectorField = createVectorField(tileMap, heatmap)
+                    vectorField = createVectorField(tileMap, targetTile)
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -69,7 +69,7 @@ if __name__ == "__main__":
 
             # create a vector field
             print("Creating vector field...")
-            vectorField = createVectorField(tileMap, heatmap)
+            vectorField = createVectorField(tileMap, targetTile)
         
         # right click to set boundary tiles
         if pygame.mouse.get_pressed()[2]:
@@ -87,7 +87,7 @@ if __name__ == "__main__":
 
                 # update the vector field
                 print("Creating vector field...")
-                vectorField = createVectorField(tileMap, heatmap)
+                vectorField = createVectorField(tileMap, targetTile)
 
                 break
 
