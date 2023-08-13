@@ -37,7 +37,7 @@ class Game():
         self.tileMap = TileMap(self.screen, Vector(0, 0))
 
         # pathfinding (Vector Fields)
-        self.vectorField = VectorFields(self.tileMap)
+        self.vectorField = VectorFields()
 
         # buttons
         self.buttons = []
