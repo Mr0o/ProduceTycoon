@@ -92,9 +92,12 @@ def getVector(tileMap: TileMap, tile: Tile) -> Vector:
     return vector
 
 # create a vector field of the tilemap
-def createVectorField(tileMap: TileMap, heatmap: list[Tile]) -> list[Vector]:
+def createVectorField(tileMap: TileMap, target: Tile) -> list[Vector]:
     # create a list of tiles that will be returned
     vectorField: list[Vector] = []
+
+    # create a heatmap of the tilemap
+    heatmap = createHeatmap(tileMap, target)
 
     # for each tile in the heatmap
     for tile in heatmap:
@@ -111,11 +114,31 @@ def createVectorField(tileMap: TileMap, heatmap: list[Tile]) -> list[Vector]:
 # a guest will aquire the vector field for tile they are targeting
 class VectorFields():
     def __init__(self, tileMap: TileMap):
-        self.updateVectorFields(tileMap)
+        self.vectorFields: list[list[Vector]] = []
+        self.tileMap = tileMap
 
+    def updateVectorFields(self, tileMap: TileMap) -> None:
+        self.tileMap = tileMap
 
-    def updateVectorFields(self, tileMap: TileMap):
         # create a vector field for each tile in the tileMap
         self.vectorFields: list[list[Vector]] = []
         for tile in tileMap.tileMapGrid:
-            self.vectorFields.append(self.createVectorField(tileMap, tile))
+            self.vectorFields.append(createVectorField(tileMap, tile))
+
+    def createVectorField(self, tileMap: TileMap, target: Tile) -> None:
+        self.vectorFields.append(createVectorField(tileMap, target))
+
+    def getTileVector(self, tile: Tile, target: Tile) -> Vector:
+        return Vector(0, 0)
+
+        if target.id >= len(self.vectorFields):
+            self.createVectorField(self.tileMap, target)
+
+        # use the id of the tile to get the vector field from the list
+        vectorField = self.vectorFields[target.id]
+
+        # get the vector from the vector field
+        vector = vectorField[tile.id]
+
+        # return the vector
+        return vector
