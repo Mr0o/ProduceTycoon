@@ -7,6 +7,7 @@ from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.placableObject import PlacableObject
 from ProduceTycoonGame.UserInterface.clock import Clock
+from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -42,6 +43,8 @@ class Game():
         self.buttons.append(self.button1x1)
         self.movePlacableObjects = Button(self.screen, Vector(120, 0), "Move Objects", 120, 20)
         self.buttons.append(self.movePlacableObjects)
+        self.buttonShop = Button(self.screen, Vector(240, 0), "Shop", 60, 20)
+        self.buttons.append(self.buttonShop)
 
         # placed objects
         self.placedObjects: list[PlacableObject] = []
@@ -50,6 +53,8 @@ class Game():
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
 
         self.displayClock = Clock(self.clock, self.screen, Vector(WIDTH - 100, 0))
+
+        self.shopMenu = ShopMenu(self.screen, Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2)
 
         self.hideGUI = False
         self.mouseClicked = False
@@ -89,6 +94,9 @@ class Game():
             if self.movePlacableObjects.events(self.mouseClicked):
                 self.hideGUI = True
                 self.moveObject = True
+            if self.buttonShop.events(self.mouseClicked):
+                self.hideGUI = True
+                self.shopMenu.hidden = False
             
         self.checkIfHidden()
 
@@ -100,6 +108,8 @@ class Game():
             if self.moveObject and not self.mouseClicked and self.previousMouseClicked:
                 self.moveObject = placedObject.moveToNewPos()
 
+        if not self.shopMenu.hidden:
+            self.shopMenu.exitButton.events(self.mouseClicked)
         
         for guest in self.guests:
             guest.events()
@@ -151,6 +161,8 @@ class Game():
             placedObject.draw()
 
         self.displayClock.draw()
+
+        self.shopMenu.draw()
 
         ## DEBUG STUFF ##
         if self.debug:
