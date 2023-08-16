@@ -11,6 +11,7 @@ class Type(Enum):
     WALKABLE = 1
     INTERACTABLE = 2
     BOUNDARY = 3
+    EDGE = 4
 
 # global
 id = 0
@@ -66,6 +67,10 @@ class Tile():
                 self.screen.blit(self.INTERACTABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
             case Type.BOUNDARY:
                 self.screen.blit(self.BOUNDARY_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
+            case Type.EDGE:
+                # placeholder, this should be a wall tile img not a walkable tile img
+                self.screen.blit(self.WALKABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
+
 
         # if self.isHighlighted:
         #     pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
