@@ -1,7 +1,7 @@
 import pygame
 
 # local imports
-from ProduceTycoonGame.vectors import Vector
+from ProduceTycoonGame.vectors import Vector, createRandomVector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
@@ -40,6 +40,11 @@ class Game():
         # pathfinding (Vector Fields)
         self.pathfinder = Pathfinder(self.tileMap)
 
+        # test target tile
+        self.targetTile = self.tileMap.getTileByPos(Vector(100, 100))
+
+        self.pathfinder.createVectorField(self.targetTile)
+
         # buttons
         self.buttons = []
         self.button3x3 = Button(self.screen, Vector(0, 0), "3x3 Tile", 60, 20)
@@ -55,7 +60,6 @@ class Game():
         self.placeableObjects: list[placeableObject] = []
 
         self.guests: list[Guest] = []
-        self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
 
         self.displayClock = Clock(self.clock, self.screen, Vector(WIDTH - 100, 0))
 
@@ -116,9 +120,26 @@ class Game():
 
         if not self.shopMenu.hidden:
             self.shopMenu.exitButton.events(self.mouseClicked)
+
+        # place guests down on mouse click
+        if self.mouseClicked:
+            mousePos = pygame.mouse.get_pos()
+            newGuest = Guest(self.screen, Vector(mousePos[0], mousePos[1]))
+            newGuest.targetTile = self.tileMap.getTileByPos(createRandomVector(self.WIDTH/2))
+            self.guests.append(newGuest)
         
         for guest in self.guests:
+            # guest events
             guest.events()
+
+            # apply vector field of the current tile in the vector field list
+            # if guest.targetTile is not None:
+            #     currentTile = self.tileMap.getTileByPos(guest.pos)
+            #     force = self.pathfinder.getVector(currentTile, guest.targetTile)
+            #     guest.applyForce(force)
+            
+
+            guest.update()
 
         self.displayClock.events()
 

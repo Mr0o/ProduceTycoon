@@ -91,7 +91,7 @@ def getVector(tileMap: TileMap, tile: Tile) -> Vector:
         else:
             # pretend that boundary tiles have a vector pointing to the center of the current tile (this will make the guest avoid boundary tiles)
             vec = Vector(tile.pos.x + tile.size - neighbor.pos.x - neighbor.size, tile.pos.y + tile.size - neighbor.pos.y - neighbor.size)
-            vec.setMag(8)
+            vec.setMag(100)
             neighboringVecs.append(vec)
 
     # for each neighboring vector
@@ -136,12 +136,14 @@ class VectorField():
         self.tileMap = tileMap
         self.target = target
         self.vectorField: list[Vector] = []
+        self.update()
 
     def update(self):
         self.vectorField = createVectorField(self.tileMap, self.target)
 
     def getVector(self, tile: Tile) -> Vector:
-        vector: Vector = VectorField[tile.id]
+        print("length of vector field: " + str(len(self.vectorField)))
+        vector: Vector = self.vectorField[tile.id]
         return vector
 
     def getVectorField(self) -> list[Vector]:
@@ -156,7 +158,6 @@ class Pathfinder():
 
     def createVectorField(self, target: Tile) -> None:
         vectorField = VectorField(self.tileMap, target)
-        vectorField.update()
         self.vectorFields.append(vectorField)
 
     def update(self) -> None:
@@ -174,26 +175,22 @@ class Pathfinder():
             print("Vector fields updated in " + str(time.time() - startTime) + " seconds")
 
     def getVector(self, tile: Tile, target: Tile) -> Vector:
-        # get the VectorField with the matching target
-        targetVectorField = None
+        # get the vector field for the target
+        vectorField = self.getVectorField(target)
+        # get the vector from the vector field
+        vector = vectorField.getVector(tile)
+
+        return vector
+    
+    def getVectorField(self, target: Tile) -> VectorField:
+        # get the vector field for the target
         for vectorField in self.vectorFields:
             if vectorField.target == target:
-                targetVectorField = vectorField
-                break
+                return vectorField
         
-        # if there is no VectorField that matches the target
-        if targetVectorField == None:
-            print("No VectorField with the matching target")
-            print("Creating VectorField ...")
-            # create a VectorField with the matching target
-            targetVectorField = VectorField(self.tileMap, target)
-            self.vectorFields.append(targetVectorField)
-
-        # get the vector from the VectorField
-        vector = targetVectorField.getVector(tile)
-
-        # return the vector
-        return vector
+        # if the vector field does not exist, create it and return it
+        self.createVectorField(target)
+        return self.getVectorField(target)
     
     def clear(self) -> None:
         self.vectorFields.clear()

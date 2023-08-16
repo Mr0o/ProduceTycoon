@@ -46,9 +46,6 @@ if __name__ == "__main__":
 
                     # clear the pathfinder
                     pathfinder.clear()
-                    
-                    # create a new vector field using the target tile
-                    pathfinder.createVectorField(targetTile)
 
                     # update the pathfinder
                     pathfinder.update()
@@ -63,9 +60,6 @@ if __name__ == "__main__":
 
             # clear the old vector fields
             pathfinder.clear()
-            
-            # create a new vector field using the target tile
-            pathfinder.createVectorField(targetTile)
 
             # update the pathfinder
             pathfinder.update()
@@ -77,7 +71,7 @@ if __name__ == "__main__":
                 tileAtPos.setTileType(Type.BOUNDARY)
 
 
-        # if the tileMap has changed, update the heatmap and vector field
+        # if the tileMap has changed, update the pathfinder
         for tile in tileMap.tileMapGrid:
             if tile.changed:
                 # update the pathfinder
@@ -99,8 +93,8 @@ if __name__ == "__main__":
         currentTile = tileMap.getTileByPos(guest.pos)
         if currentTile != None:
             # apply the force to the guest
-            force = currentTile.vector.copy()
-            guest.applyForce(currentTile.vector)
+            force = pathfinder.getVector(currentTile, targetTile)
+            guest.applyForce(force)
 
         guest.update()
 
