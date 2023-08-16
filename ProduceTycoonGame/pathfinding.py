@@ -48,7 +48,7 @@ def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
         # for each neighbor of the current tile
         for neighbor in neighbors:
             # if the neighbor is not a boundary tile
-            if neighbor.type != Type.BOUNDARY:
+            if neighbor.type != Type.BOUNDARY and neighbor.type != Type.EDGE:
                 # if the neighbor is not in the closed tiles
                 if neighbor not in closedTiles:
                     # if the neighbor is not in the open tiles
@@ -71,10 +71,17 @@ def getVector(tileMap: TileMap, tile: Tile) -> Vector:
     vector = Vector(0, 0)
 
     neighboringVecs: list[Vector] = []
+
+    # get the nu,ber of boundary tiles in the neighbors
+    boundaryTiles = 0
+    for neighbor in neighbors:
+        if neighbor.type == Type.BOUNDARY or neighbor.type == Type.EDGE:
+            boundaryTiles += 1
     
     # for each neighbor of the tile
     for neighbor in neighbors:
-        if neighbor.type != Type.BOUNDARY:
+        # check that its not a boundary tile or an edge tile
+        if neighbor.type != Type.BOUNDARY and neighbor.type != Type.EDGE:
             # if the neighbor has a parent
             if neighbor.parent != None:
                 # get the vector from the neighbor to the parent using the centers of the tiles
@@ -84,7 +91,7 @@ def getVector(tileMap: TileMap, tile: Tile) -> Vector:
         else:
             # pretend that boundary tiles have a vector pointing to the center of the current tile (this will make the guest avoid boundary tiles)
             vec = Vector(tile.pos.x + tile.size - neighbor.pos.x - neighbor.size, tile.pos.y + tile.size - neighbor.pos.y - neighbor.size)
-            vec.setMag(neighbor.cost * 100)
+            vec.setMag(8)
             neighboringVecs.append(vec)
 
     # for each neighboring vector
@@ -93,6 +100,12 @@ def getVector(tileMap: TileMap, tile: Tile) -> Vector:
         vector.add(neighboringVec)
 
     vector.setMag(10)
+
+    # check if the vector is 0
+    if vector.getMag() == 0:
+        # set the vector to a random vector
+        vector = Vector(1, 0)
+        vector.setMag(10)
 
     # return the vector
     return vector
