@@ -17,7 +17,6 @@ class PlaceableObject():
         self.elements = elements
 
         self.image = pygame.image.load(image)
-        self.image = pygame.transform.scale(self.image, (self.rows * self.size, self.cols * self.size))
 
         self.isPlaced = False
         self.canPlace = True
@@ -89,6 +88,7 @@ class PlaceableObject():
         if not self.isPlaced:
             self.exitButton.draw()
 
+        self.image = pygame.transform.scale(self.image, (self.rows * self.size, self.cols * self.size))
         self.screen.blit(self.image, self.rect.topleft)
 
         if not self.gui.hidden:
