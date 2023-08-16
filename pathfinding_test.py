@@ -50,7 +50,7 @@ if __name__ == "__main__":
                     pathfinder.createVectorField(targetTile)
 
                     # update the pathfinder
-                    pathfinder.update(tileMap)
+                    pathfinder.update()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -67,7 +67,7 @@ if __name__ == "__main__":
             pathfinder.createVectorField(targetTile)
 
             # update the pathfinder
-            pathfinder.update(tileMap)
+            pathfinder.update()
         
         # right click to set boundary tiles
         if pygame.mouse.get_pressed()[2]:
@@ -80,7 +80,7 @@ if __name__ == "__main__":
         for tile in tileMap.tileMapGrid:
             if tile.changed:
                 # update the pathfinder
-                pathfinder.update(tileMap)
+                pathfinder.update()
                 break
 
         # middle click to place guests
