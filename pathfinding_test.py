@@ -41,7 +41,8 @@ if __name__ == "__main__":
                     print("Creating new tilemap...")
                     # reset the tilemap (clears boundary tiles)
                     for tile in tileMap.tileMapGrid:
-                        tile.type = Type.WALKABLE
+                        if tile.type != Type.EDGE:
+                            tile.type = Type.WALKABLE
 
                     # clear the pathfinder
                     pathfinder.clear()
@@ -72,7 +73,7 @@ if __name__ == "__main__":
         # right click to set boundary tiles
         if pygame.mouse.get_pressed()[2]:
             tileAtPos = tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
-            if tileAtPos != None and tileAtPos.type != Type.BOUNDARY:
+            if tileAtPos != None and tileAtPos.type != Type.BOUNDARY and tileAtPos.type != Type.EDGE:
                 tileAtPos.setTileType(Type.BOUNDARY)
 
 
@@ -135,7 +136,7 @@ if __name__ == "__main__":
         screen.fill((0, 0, 0))
 
         # draw the heatmap and vector
-        for tile in pathfinder.tileMap.tileMapGrid:
+        for tile in tileMap.tileMapGrid:
             # use cost to calculate color'
             # red value must be between 0 and 255
             rValue = (tile.cost / 50) * 255
@@ -150,7 +151,7 @@ if __name__ == "__main__":
 
         # draw boundary tiles on top of heatmap
         for tile in tileMap.tileMapGrid:
-            if tile.type == Type.BOUNDARY or tile == targetTile:
+            if tile.type == Type.BOUNDARY or tile.type == Type.EDGE or tile == targetTile:
                 screen.blit(tile.BOUNDARY_TILE_IMG_SCALED, (tile.pos.x, tile.pos.y))
 
         # draw the guest
