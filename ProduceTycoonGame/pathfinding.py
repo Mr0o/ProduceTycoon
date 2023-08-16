@@ -1,3 +1,4 @@
+import time
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Tile, Type
 from ProduceTycoonGame.guest import Guest
@@ -80,6 +81,11 @@ def getVector(tileMap: TileMap, tile: Tile) -> Vector:
                 vec = Vector(neighbor.parent.pos.x + neighbor.parent.size - neighbor.pos.x - neighbor.size, neighbor.parent.pos.y + neighbor.parent.size - neighbor.pos.y - neighbor.size)
                 vec.setMag(neighbor.cost)
                 neighboringVecs.append(vec)
+        else:
+            # pretend that boundary tiles have a vector pointing to the center of the current tile (this will make the guest avoid boundary tiles)
+            vec = Vector(tile.pos.x + tile.size - neighbor.pos.x - neighbor.size, tile.pos.y + tile.size - neighbor.pos.y - neighbor.size)
+            vec.setMag(neighbor.cost * 100)
+            neighboringVecs.append(vec)
 
     # for each neighboring vector
     for neighboringVec in neighboringVecs:
@@ -112,33 +118,69 @@ def createVectorField(tileMap: TileMap, target: Tile) -> list[Vector]:
 
 # used to store the vector field of each placed object
 # a guest will aquire the vector field for tile they are targeting
-class VectorFields():
+class VectorField():
+    def __init__(self, tileMap: TileMap, target: Tile):
+        self.tileMap = tileMap
+        self.target = target
+        self.vectorField: list[Vector] = []
+
+    def update(self):
+        self.vectorField = createVectorField(self.tileMap, self.target)
+
+    def getVector(self, tile: Tile) -> Vector:
+        vector: Vector = VectorField[tile.id]
+        return vector
+
+    def getVectorField(self) -> list[Vector]:
+        return self.vectorField
+    
+
+# this will contain all vectorFields and contain methods to create, update, and get vector data from them
+class Pathfinder():
     def __init__(self, tileMap: TileMap):
-        self.vectorFields: list[list[Vector]] = []
         self.tileMap = tileMap
+        self.vectorFields: list[VectorField] = []
 
-    def updateVectorFields(self, tileMap: TileMap) -> None:
-        self.tileMap = tileMap
+    def createVectorField(self, target: Tile) -> None:
+        vectorField = VectorField(self.tileMap, target)
+        vectorField.update()
+        self.vectorFields.append(vectorField)
 
-        # create a vector field for each tile in the tileMap
-        self.vectorFields: list[list[Vector]] = []
-        for tile in tileMap.tileMapGrid:
-            self.vectorFields.append(createVectorField(tileMap, tile))
+    def update(self, target: Tile) -> None:
+        # check for any changes in the tilemap and update the vector fields accordingly
+        tileMapChanged = True
+        for tile in self.tileMap.tileMapGrid:
+            if tile.changed:
+                tileMapChanged = True
+                break
+        if tileMapChanged:
+            print("Updating vector fields")
+            startTime = time.time()
+            for vectorField in self.vectorFields:
+                vectorField.update()
+            print("Vector fields updated in " + str(time.time() - startTime) + " seconds")
 
-    def createVectorField(self, tileMap: TileMap, target: Tile) -> None:
-        self.vectorFields.append(createVectorField(tileMap, target))
+    def getVector(self, tile: Tile, target: Tile) -> Vector:
+        # get the VectorField with the matching target
+        targetVectorField = None
+        for vectorField in self.vectorFields:
+            if vectorField.target == target:
+                targetVectorField = vectorField
+                break
+        
+        # if there is no VectorField that matches the target
+        if targetVectorField == None:
+            print("No VectorField with the matching target")
+            print("Creating VectorField ...")
+            # create a VectorField with the matching target
+            targetVectorField = VectorField(self.tileMap, target)
+            self.vectorFields.append(targetVectorField)
 
-    def getTileVector(self, tile: Tile, target: Tile) -> Vector:
-        return Vector(0, 0)
-
-        if target.id >= len(self.vectorFields):
-            self.createVectorField(self.tileMap, target)
-
-        # use the id of the tile to get the vector field from the list
-        vectorField = self.vectorFields[target.id]
-
-        # get the vector from the vector field
-        vector = vectorField[tile.id]
+        # get the vector from the VectorField
+        vector = targetVectorField.getVector(tile)
 
         # return the vector
         return vector
+    
+    def clear(self) -> None:
+        self.vectorFields.clear()
