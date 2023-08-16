@@ -68,16 +68,16 @@ class PlaceableObject():
             match self.gui.type:
                 case TypeObject.WATERMELON:
                     self.image = pygame.image.load('./Resources/Images/WatermelonBin.png')
-                    print("Watermelon")
+                    #print("Watermelon")
                 case TypeObject.BANANAS:
                     self.image = pygame.image.load('./Resources/Images/Banana_ProduceTycoon.png')
-                    print("Bananas")
+                    #print("Bananas")
                 case TypeObject.APPLES:
                     self.image = pygame.image.load('./Resources/Images/Apple_ProduceTycoon.png')
-                    print("Apples")
+                    #print("Apples")
                 case TypeObject.TOMATOES:
                     self.image = pygame.image.load('./Resources/Images/Tomato.png')
-                    print("Tomatoes")
+                    #print("Tomatoes")
                 case _:
                     self.image = pygame.image.load('./Resources/Images/Banana_ProduceTycoon.png')
             return
