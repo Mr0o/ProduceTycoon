@@ -141,6 +141,9 @@ class Game():
 
         for placedObject in self.placedObjects:
             placedObject.update()
+
+        # pathfinder update will check for any changes and update the vector fields
+        self.pathfinder.update()
         
         if self.debug:
             pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
@@ -195,6 +198,10 @@ class Game():
             if self.tileMap.selectedTile is not None:
                 text = self.debugFont.render("Selected ID: " + str(self.tileMap.selectedTile.id), True, (255, 0, 255))
                 self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height()))
+
+            # draw the size of the pathfinder vector fields list
+            text = self.debugFont.render("Vector Fields: " + str(len(self.pathfinder.vectorFields)), True, (255, 255, 255))
+            self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height() * 2))
 
         pygame.display.update()
 
