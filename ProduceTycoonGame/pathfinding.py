@@ -146,9 +146,9 @@ class Pathfinder():
         vectorField.update()
         self.vectorFields.append(vectorField)
 
-    def update(self, target: Tile) -> None:
+    def update(self) -> None:
         # check for any changes in the tilemap and update the vector fields accordingly
-        tileMapChanged = True
+        tileMapChanged = False
         for tile in self.tileMap.tileMapGrid:
             if tile.changed:
                 tileMapChanged = True
