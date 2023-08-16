@@ -59,6 +59,9 @@ if __name__ == "__main__":
         # set the target tile at the mouse position
         if mouseClicked:
             targetTile = tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
+
+            # clear the old vector fields
+            pathfinder.clear()
             
             # create a new vector field using the target tile
             pathfinder.createVectorField(targetTile)
