@@ -132,10 +132,10 @@ class Game():
             guest.events()
 
             # apply vector field of the current tile in the vector field list
-            if guest.targetTile is not None:
-                currentTile = self.tileMap.getTileByPos(guest.pos)
-                force = self.pathfinder.getVector(currentTile, guest.targetTile)
-                guest.applyForce(force)
+            # if guest.targetTile is not None:
+            #     currentTile = self.tileMap.getTileByPos(guest.pos)
+            #     force = self.pathfinder.getVector(currentTile, guest.targetTile)
+            #     guest.applyForce(force)
             
 
             guest.update()
