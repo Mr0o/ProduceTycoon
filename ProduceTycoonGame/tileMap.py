@@ -82,18 +82,20 @@ class TileMap():
                 tile.isHighlighted = True
                 self.selectTile(tile, mouseClicked)
 
-    def update(self, placableObjects = None):
-        changed = False
-        for tile in self.tileMapGrid:    
-            for placableObject in placableObjects:
-                if placableObject.isPlaced and tile.rect.colliderect(placableObject.rect):
-                    if tile.type == Type.WALKABLE:
-                        tile.type = Type.INTERACTABLE
-                        tile.changed = True
-                    break
-                else:
-                    tile.type = Type.WALKABLE
+    def update(self, placableObjects: list[PlaceableObject] = None):
+        if placableObjects is not None:
+            for tile in self.tileMapGrid:    
+                for placableObject in placableObjects:
+                    if placableObject.isPlaced and tile.rect.colliderect(placableObject.rect):
+                        if tile.type == Type.WALKABLE:
+                            tile.type = Type.INTERACTABLE
+                            tile.changed = True
+                        break
+                    else:
+                        tile.type = Type.WALKABLE
 
+        changed = False
+        for tile in self.tileMapGrid:
             # check for any changes to tiles
             if tile.changed and not changed:
                 tile.changed = False
