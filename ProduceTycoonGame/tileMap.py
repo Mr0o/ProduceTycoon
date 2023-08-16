@@ -82,7 +82,7 @@ class TileMap():
                 tile.isHighlighted = True
                 self.selectTile(tile, mouseClicked)
 
-    def update(self, placableObjects):
+    def update(self, placableObjects = None):
         changed = False
         for tile in self.tileMapGrid:    
             for placableObject in placableObjects:
