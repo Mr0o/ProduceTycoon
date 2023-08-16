@@ -17,6 +17,7 @@ class PlaceableObject():
         self.elements = elements
 
         self.image = pygame.image.load(image)
+        self.image = pygame.transform.scale(self.image, (self.rows * self.size, self.cols * self.size))
 
         self.isPlaced = False
         self.canPlace = True
