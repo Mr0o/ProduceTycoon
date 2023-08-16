@@ -1,5 +1,5 @@
 from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
-from ProduceTycoonGame.pathfinding import createHeatmap, createVectorField
+from ProduceTycoonGame.pathfinding import Pathfinder, VectorField
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.tile import Type
@@ -22,13 +22,8 @@ if __name__ == "__main__":
     # target tile
     targetTile = tileMap.getTileByID(150)
 
-    # create a heatmap
-    print("Creating heatmap...")
-    heatmap = createHeatmap(tileMap, targetTile)
-
-    # create a vector field
-    print("Creating vector field...")
-    vectorField = createVectorField(tileMap, targetTile)
+    # create pathfinder instance
+    pathfinder = Pathfinder(tileMap)
 
     # main game loop
     running = True
@@ -48,13 +43,14 @@ if __name__ == "__main__":
                     for tile in tileMap.tileMapGrid:
                         tile.type = Type.WALKABLE
 
-                    # create a heatmap
-                    print("Creating heatmap...")
-                    heatmap = createHeatmap(tileMap, targetTile)
+                    # clear the pathfinder
+                    pathfinder.clear()
+                    
+                    # create a new vector field using the target tile
+                    pathfinder.createVectorField(targetTile)
 
-                    # create a vector field
-                    print("Creating vector field...")
-                    vectorField = createVectorField(tileMap, targetTile)
+                    # update the pathfinder
+                    pathfinder.update(tileMap)
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -63,13 +59,12 @@ if __name__ == "__main__":
         # set the target tile at the mouse position
         if mouseClicked:
             targetTile = tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
-            # create a heatmap
-            print("Creating heatmap...")
-            heatmap = createHeatmap(tileMap, targetTile)
+            
+            # create a new vector field using the target tile
+            pathfinder.createVectorField(targetTile)
 
-            # create a vector field
-            print("Creating vector field...")
-            vectorField = createVectorField(tileMap, targetTile)
+            # update the pathfinder
+            pathfinder.update(tileMap)
         
         # right click to set boundary tiles
         if pygame.mouse.get_pressed()[2]:
@@ -81,14 +76,8 @@ if __name__ == "__main__":
         # if the tileMap has changed, update the heatmap and vector field
         for tile in tileMap.tileMapGrid:
             if tile.changed:
-                # update the heatmap
-                print("Creating heatmap...")
-                heatmap = createHeatmap(tileMap, targetTile)
-
-                # update the vector field
-                print("Creating vector field...")
-                vectorField = createVectorField(tileMap, targetTile)
-
+                # update the pathfinder
+                pathfinder.update(tileMap)
                 break
 
         # middle click to place guests
@@ -129,9 +118,6 @@ if __name__ == "__main__":
                     guest.pos = neighbor.pos.copy()
                     break
 
-        print(guest.stuckTimer.timeRemaining)
-        print(guest.stuckTimer.isActive)
-
         # update
         tileMap.update()
 
@@ -139,7 +125,7 @@ if __name__ == "__main__":
         screen.fill((0, 0, 0))
 
         # draw the heatmap and vector
-        for tile in heatmap:
+        for tile in pathfinder.tileMap.tileMapGrid:
             # use cost to calculate color'
             # red value must be between 0 and 255
             rValue = (tile.cost / 50) * 255
@@ -163,6 +149,20 @@ if __name__ == "__main__":
         # print the guest velocity
         text = pygame.font.SysFont('Arial', 15, bold=True).render("Guest Velocity: " + str(guest.vel.getMag()), True, (255, 255, 255))
         screen.blit(text, (0, 0))
+
+        # print the guest stuck timer
+        if guest.stuckTimer.isActive:
+            text = pygame.font.SysFont('Arial', 15, bold=True).render("Stuck: " + str(guest.stuckTimer.timeRemaining), True, (255, 255, 255))
+            screen.blit(text, (0, 20))
+
+        # print the size of the vector fields list in pathfinder
+        text = pygame.font.SysFont('Arial', 15, bold=True).render("Vector Fields: " + str(len(pathfinder.vectorFields)), True, (255, 255, 255))
+        screen.blit(text, (0, 40))
+
+        # draw the cost of each tile
+        # for tile in tileMap.tileMapGrid:
+        #     text = pygame.font.SysFont('Arial', 15, bold=True).render(str(tile.cost), True, (255, 255, 255))
+        #     screen.blit(text, (tile.pos.x, tile.pos.y))
 
         # draw the target tile
         pygame.draw.rect(screen, (0, 255, 0), targetTile.rect)
