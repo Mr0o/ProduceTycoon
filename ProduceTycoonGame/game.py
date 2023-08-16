@@ -35,6 +35,7 @@ class Game():
         self.debug = False
 
         self.tileMap = TileMap(self.screen, Vector(0, 0))
+        self.size = self.tileMap.tileMapGrid[0].size
 
         # pathfinding (Vector Fields)
         self.pathfinder = Pathfinder(self.tileMap)
@@ -92,9 +93,9 @@ class Game():
 
         if not self.hideGUI:
             if self.button3x3.events(self.mouseClicked):
-                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 4, 4, self.elements, './Resources/Images/WatermelonBin.png'))
+                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.size, 4, 4, self.elements, './Resources/Images/WatermelonBin.png'))
             if self.button1x1.events(self.mouseClicked):
-                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.tileMap, 1, 1, self.elements, './Resources/Images/Tomato.png'))
+                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.size, 1, 1, self.elements, './Resources/Images/Tomato.png'))
             if self.movePlacableObjects.events(self.mouseClicked):
                 self.hideGUI = True
                 self.moveObject = True
@@ -134,7 +135,7 @@ class Game():
 
 
     def update(self):
-        self.tileMap.update()
+        self.tileMap.update(self.placedObjects)
 
         for guest in self.guests:
             guest.update()

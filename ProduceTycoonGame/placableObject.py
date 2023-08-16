@@ -1,23 +1,27 @@
 import pygame
 
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Type
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.UserInterface.placableObjectGUI import PlacableObjectGUI, TypeObject
 
 id = 0
 
+# see if somethings changed if not dont worry about updating
+# remove tilemap
+# find better way for exit button to coexist
+# change events to not return
+# getter for pos
+#
+
 class PlacableObject():
-    def __init__(self, screen: pygame.Surface, pos: Vector, tileMap: TileMap, rows: int = 1, cols: int = 1, elements: list = [], image: str = './Resources/Images/Banana_ProduceTycoon.png'):
+    def __init__(self, screen: pygame.Surface, pos: Vector, size: int, rows: int = 1, cols: int = 1, elements: list = [], image: str = './Resources/Images/Banana_ProduceTycoon.png'):
         self.screen = screen
         self.pos = pos
-        self.tileMap = tileMap
+        self.size = size
         self.rows = rows
         self.cols = cols
         self.elements = elements
-
-        self.size = self.tileMap.tileMapGrid[0].size
 
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, (self.rows * self.size, self.cols * self.size))
@@ -41,38 +45,28 @@ class PlacableObject():
     def moveToNewPos(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             self.isPlaced = False
-            self.placeAgain = True
-            for tile in self.tileMap.tileMapGrid:
-                if tile.rect.colliderect(self.rect):
-                    tile.setTileType(Type.WALKABLE)
-            return False
-
-        return True
+            return self.isPlaced
+        return self.isPlaced
 
     def events(self, previousMouseClick: bool = False, mouseClicked: bool = False, events: list = []):
         if self.isPlaced:
             if mouseClicked and self.rect.collidepoint(pygame.mouse.get_pos()):
                 self.gui.hidden = not self.gui.hidden
             self.gui.events(mouseClicked, events)
-            return False
-        
 
         self.checkIfCanPlace()
-        self.pos.x, self.pos.y = pygame.mouse.get_pos()
-        for tile in self.tileMap.tileMapGrid:
-            # changes center of object object to center of current tile
-            if tile.rect.collidepoint(pygame.mouse.get_pos()):
-                newPosX = tile.pos.x - self.rows * self.size // 4
-                newPosY = tile.pos.y - self.cols * self.size // 4
-                self.pos.x = newPosX
-                self.pos.y = newPosY
-                
-            # changes tile type to object if rect collides with tile and mouse is clicked
-            if self.rect.colliderect(tile.rect) and self.canPlace and not mouseClicked and previousMouseClick:
-                tile.setTileType(Type.INTERACTABLE)
-                self.isPlaced = True
+
+        mousePos = pygame.mouse.get_pos()
+        if mousePos[0] % self.size == 1 :
+            newPosX = (mousePos[0] - 1)- self.rows * self.size // 2
+            self.pos.x = newPosX
+        if mousePos[1] % self.size == 0:
+            newPosY = mousePos[1] - self.cols * self.size // 2
+            self.pos.y = newPosY
             
-        return True
+        # changes tile type to object if rect collides with tile and mouse is clicked
+        if self.canPlace and not mouseClicked and previousMouseClick:
+            self.isPlaced = True
 
     def update(self):
         if self.isPlaced:
@@ -113,3 +107,9 @@ class PlacableObject():
 
         if not self.gui.hidden:
             self.gui.draw()
+
+    def getPos(self):
+        return self.pos
+
+    def getPlaced(self):
+        return self.isPlaced

@@ -2,6 +2,7 @@ import pygame
 
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tile import Tile, Type, resetIDtiles
+from ProduceTycoonGame.placableObject import PlacableObject
 
 
 class TileMap():
@@ -81,12 +82,19 @@ class TileMap():
                 tile.isHighlighted = True
                 self.selectTile(tile, mouseClicked)
 
-    def update(self):
+    def update(self, placableObjects):
         changed = False
         for tile in self.tileMapGrid:    
-            tile.update()
+            for placableObject in placableObjects:
+                if placableObject.isPlaced and tile.rect.colliderect(placableObject.rect):
+                    tile.type = Type.INTERACTABLE
+                    tile.changed = True
+                    break
+                else:
+                    tile.type = Type.WALKABLE
+
             # check for any changes to tiles
-            if tile.changed:
+            if tile.changed and not changed:
                 tile.changed = False
                 changed = True
 
