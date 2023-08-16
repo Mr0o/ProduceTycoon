@@ -46,6 +46,13 @@ class TileMap():
             for col in range(numCols):
                 tileMapGrid.append(Tile(self.screen, Vector(tileMapStartingPos.x + col * tileSize, tileMapStartingPos.y + row * tileSize), tileSize))
         
+        # set the edges of the tileMapGrid to be EDGE tiles
+        for tile in tileMapGrid:
+            if tile.pos.x == tileMapStartingPos.x or tile.pos.x == tileMapStartingPos.x + (numCols - 1) * tileSize or tile.pos.y == tileMapStartingPos.y or tile.pos.y == tileMapStartingPos.y + (numRows - 1) * tileSize:
+                tile.type = Type.EDGE
+            if tile.pos.y == tileMapStartingPos.y + tileSize:
+                tile.type = Type.EDGE
+        
 
         return tileMapGrid
 
