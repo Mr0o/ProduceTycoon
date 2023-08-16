@@ -5,7 +5,7 @@ from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
-from ProduceTycoonGame.placableObject import PlacableObject
+from ProduceTycoonGame.placeableObject import PlaceableObject
 from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.pathfinding import Pathfinder, VectorField
@@ -46,13 +46,13 @@ class Game():
         self.buttons.append(self.button3x3)
         self.button1x1 = Button(self.screen, Vector(60, 0), "1x1 Tile", 60, 20)
         self.buttons.append(self.button1x1)
-        self.movePlacableObjects = Button(self.screen, Vector(120, 0), "Move Objects", 120, 20)
-        self.buttons.append(self.movePlacableObjects)
+        self.moveplaceableObjects = Button(self.screen, Vector(120, 0), "Move Objects", 120, 20)
+        self.buttons.append(self.moveplaceableObjects)
         self.buttonShop = Button(self.screen, Vector(240, 0), "Shop", 60, 20)
         self.buttons.append(self.buttonShop)
 
         # placed objects
-        self.placedObjects: list[PlacableObject] = []
+        self.placeableObjects: list[placeableObject] = []
 
         self.guests: list[Guest] = []
         self.guests.append(Guest(self.screen, Vector(WIDTH/2, HEIGHT/2)))
@@ -70,6 +70,7 @@ class Game():
     def events(self):
         self.previousMouseClicked = self.mouseClicked
         self.mouseClicked = False
+        self.hideGUI = self.placeableObjects
         events = []
         for event in pygame.event.get():
             events.append(event)
@@ -93,10 +94,10 @@ class Game():
 
         if not self.hideGUI:
             if self.button3x3.events(self.mouseClicked):
-                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.size, 4, 4, self.elements, './Resources/Images/WatermelonBin.png'))
+                self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.size, 4, 4, self.elements, './Resources/Images/WatermelonBin.png'))
             if self.button1x1.events(self.mouseClicked):
-                self.placedObjects.append(PlacableObject(self.screen, Vector(0, 0), self.size, 1, 1, self.elements, './Resources/Images/Tomato.png'))
-            if self.movePlacableObjects.events(self.mouseClicked):
+                self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.size, 1, 1, self.elements, './Resources/Images/Tomato.png'))
+            if self.moveplaceableObjects.events(self.mouseClicked):
                 self.hideGUI = True
                 self.moveObject = True
             if self.buttonShop.events(self.mouseClicked):
@@ -105,13 +106,13 @@ class Game():
             
         self.checkIfHidden()
 
-        for placedObject in self.placedObjects:
-            self.hideGUI = placedObject.events(self.previousMouseClicked, self.mouseClicked, events)
-            if placedObject.exitButton.events(self.mouseClicked) and not placedObject.isPlaced:
-                self.placedObjects.remove(placedObject)
+        for placeableObject in self.placeableObjects:
+            placeableObject.events(self.previousMouseClicked, self.mouseClicked, events)
+            if placeableObject.exitButton.events(self.mouseClicked) and not placeableObject.isPlaced:
+                self.placeableObjects.remove(placeableObject)
 
             if self.moveObject and not self.mouseClicked and self.previousMouseClicked:
-                self.moveObject = placedObject.moveToNewPos()
+                self.moveObject = placeableObject.moveToNewPos()
 
         if not self.shopMenu.hidden:
             self.shopMenu.exitButton.events(self.mouseClicked)
@@ -123,7 +124,7 @@ class Game():
 
         self.elements = []
         self.elements.extend(self.buttons)
-        self.elements.extend(self.placedObjects)
+        self.elements.extend(self.placeableObjects)
         self.elements.extend(self.guests)
         self.elements.append(self.displayClock)
 
@@ -135,13 +136,13 @@ class Game():
 
 
     def update(self):
-        self.tileMap.update(self.placedObjects)
+        self.tileMap.update(self.placeableObjects)
 
         for guest in self.guests:
             guest.update()
 
-        for placedObject in self.placedObjects:
-            placedObject.update()
+        for placeableObject in self.placeableObjects:
+            placeableObject.update()
 
         # pathfinder update will check for any changes and update the vector fields
         self.pathfinder.update()
@@ -165,8 +166,8 @@ class Game():
         for button in self.buttons:
             button.draw()
 
-        for placedObject in self.placedObjects:
-            placedObject.draw()
+        for placeableObject in self.placeableObjects:
+            placeableObject.draw()
 
         self.displayClock.draw()
 

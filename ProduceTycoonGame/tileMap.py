@@ -2,7 +2,7 @@ import pygame
 
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tile import Tile, Type, resetIDtiles
-from ProduceTycoonGame.placableObject import PlacableObject
+from ProduceTycoonGame.placeableObject import PlaceableObject
 
 
 class TileMap():

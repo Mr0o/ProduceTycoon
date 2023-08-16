@@ -14,7 +14,7 @@ id = 0
 # getter for pos
 #
 
-class PlacableObject():
+class PlaceableObject():
     def __init__(self, screen: pygame.Surface, pos: Vector, size: int, rows: int = 1, cols: int = 1, elements: list = [], image: str = './Resources/Images/Banana_ProduceTycoon.png'):
         self.screen = screen
         self.pos = pos
@@ -57,8 +57,8 @@ class PlacableObject():
         self.checkIfCanPlace()
 
         mousePos = pygame.mouse.get_pos()
-        if mousePos[0] % self.size == 1 :
-            newPosX = (mousePos[0] - 1)- self.rows * self.size // 2
+        if mousePos[0] % self.size == 0 :
+            newPosX = mousePos[0] - self.rows * self.size // 2
             self.pos.x = newPosX
         if mousePos[1] % self.size == 0:
             newPosY = mousePos[1] - self.cols * self.size // 2
