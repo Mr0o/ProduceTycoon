@@ -59,9 +59,9 @@ class PlaceableObject():
         mousePos = pygame.mouse.get_pos()
         xDiff = self.size - mousePos[0] % self.size
         yDiff = self.size - mousePos[1] % self.size
-        newPosX = mousePos[0] + xDiff + self.rows * self.size // 2
+        newPosX = mousePos[0] + xDiff - self.rows * self.size // 2
         self.pos.x = newPosX
-        newPosY = mousePos[1] + yDiff + self.cols * self.size // 2
+        newPosY = mousePos[1] + yDiff - self.cols * self.size // 2
         self.pos.y = newPosY
             
         # changes tile type to object if rect collides with tile and mouse is clicked
