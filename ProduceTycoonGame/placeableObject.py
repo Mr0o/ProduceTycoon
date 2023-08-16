@@ -8,7 +8,7 @@ from ProduceTycoonGame.UserInterface.placableObjectGUI import PlacableObjectGUI,
 id = 0
 
 class PlaceableObject():
-    def __init__(self, screen: pygame.Surface, pos: Vector, size: int, rows: int = 1, cols: int = 1, elements: list = [], image: str = './Resources/Images/Watermelon_ProduceTycoon.png'):
+    def __init__(self, screen: pygame.Surface, pos: Vector, size: int, rows: int = 1, cols: int = 1, elements: list = [], image: str = './Resources/Images/WatermelonBin.png'):
         self.screen = screen
         self.pos = pos
         self.size = size
