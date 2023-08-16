@@ -88,14 +88,13 @@ class TileMap():
             for placableObject in placableObjects:
                 if placableObject.isPlaced and tile.rect.colliderect(placableObject.rect):
                     if tile.type == Type.WALKABLE:
-                        tile.type = Type.INTERACTABLE
-                        tile.changed = True
+                        tile.setTileType(Type.INTERACTABLE)
                     break
                 else:
                     tile.type = Type.WALKABLE
 
             # check for any changes to tiles
-            if tile.changed and not changed:
+            if tile.changed:
                 tile.changed = False
                 changed = True
 

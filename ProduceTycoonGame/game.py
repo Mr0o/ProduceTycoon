@@ -74,8 +74,12 @@ class Game():
     def events(self):
         self.previousMouseClicked = self.mouseClicked
         self.mouseClicked = False
+
         if len(self.placeableObjects):
-            self.hideGUI = not self.placeableObjects[len(self.placeableObjects) - 1].isPlaced
+            self.hideGUI = not self.placeableObjects[len(self.placeableObjects) - 1].getPlaced()
+        else:
+            self.hideGUI = False
+
         events = []
         for event in pygame.event.get():
             events.append(event)
@@ -113,11 +117,15 @@ class Game():
 
         for placeableObject in self.placeableObjects:
             placeableObject.events(self.previousMouseClicked, self.mouseClicked, events)
-            if placeableObject.exitButton.events(self.mouseClicked) and not placeableObject.isPlaced:
+            exitButton = placeableObject.exitButton.events(self.mouseClicked)
+            if exitButton and not placeableObject.isPlaced:
                 self.placeableObjects.remove(placeableObject)
 
-            if self.moveObject and not self.mouseClicked and self.previousMouseClicked:
-                self.moveObject = placeableObject.moveToNewPos()
+            if self.moveObject:
+                if self.mouseClicked and self.previousMouseClicked:
+                    self.moveObject = placeableObject.moveToNewPos()
+                elif exitButton:
+                    self.moveObject = False
 
         if not self.shopMenu.hidden:
             self.shopMenu.exitButton.events(self.mouseClicked)

@@ -7,13 +7,6 @@ from ProduceTycoonGame.UserInterface.placableObjectGUI import PlacableObjectGUI,
 
 id = 0
 
-# see if somethings changed if not dont worry about updating
-# remove tilemap
-# find better way for exit button to coexist
-# change events to not return
-# getter for pos
-#
-
 class PlaceableObject():
     def __init__(self, screen: pygame.Surface, pos: Vector, size: int, rows: int = 1, cols: int = 1, elements: list = [], image: str = './Resources/Images/Banana_ProduceTycoon.png'):
         self.screen = screen
