@@ -74,7 +74,7 @@ class Game():
     def events(self):
         self.previousMouseClicked = self.mouseClicked
         self.mouseClicked = False
-        self.hideGUI = self.placeableObjects
+        #self.hideGUI = self.placeableObjects
         events = []
         for event in pygame.event.get():
             events.append(event)

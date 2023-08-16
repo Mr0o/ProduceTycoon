@@ -87,8 +87,9 @@ class TileMap():
         for tile in self.tileMapGrid:    
             for placableObject in placableObjects:
                 if placableObject.isPlaced and tile.rect.colliderect(placableObject.rect):
-                    tile.type = Type.INTERACTABLE
-                    tile.changed = True
+                    if tile.type == Type.WALKABLE:
+                        tile.type = Type.INTERACTABLE
+                        tile.changed = True
                     break
                 else:
                     tile.type = Type.WALKABLE

@@ -57,12 +57,12 @@ class PlaceableObject():
         self.checkIfCanPlace()
 
         mousePos = pygame.mouse.get_pos()
-        if mousePos[0] % self.size == 0 :
-            newPosX = mousePos[0] - self.rows * self.size // 2
-            self.pos.x = newPosX
-        if mousePos[1] % self.size == 0:
-            newPosY = mousePos[1] - self.cols * self.size // 2
-            self.pos.y = newPosY
+        xDiff = self.size - mousePos[0] % self.size
+        yDiff = self.size - mousePos[1] % self.size
+        newPosX = mousePos[0] + xDiff + self.rows * self.size // 2
+        self.pos.x = newPosX
+        newPosY = mousePos[1] + yDiff + self.cols * self.size // 2
+        self.pos.y = newPosY
             
         # changes tile type to object if rect collides with tile and mouse is clicked
         if self.canPlace and not mouseClicked and previousMouseClick:
@@ -89,14 +89,6 @@ class PlaceableObject():
                     self.image = pygame.image.load('./Resources/Images/Banana_ProduceTycoon.png')
             return
         # will figure out later works for now lol
-        if self.cols % 2 == 1 and self.rows % 2 == 1:
-            self.pos.x += self.size * 3 // 4
-            self.pos.y -= 1
-        if self.cols % 2 == 1:
-            self.pos.y += self.size * 3 / 4 - 1
-        elif self.rows % 2 == 1:
-            self.pos.x -= 1
-            self.pos.x += self.size * 3 / 4
         self.rect.topleft = (self.pos.x, self.pos.y)
 
     def draw(self):
