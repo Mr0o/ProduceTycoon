@@ -54,16 +54,12 @@ class PlacableObjectGUI():
                     match button.text:
                         case 'Watermelon':
                             self.type = TypeObject.WATERMELON
-                            print("Watermelon")
                         case 'Bananas':
                             self.type = TypeObject.BANANAS
-                            print("Bananas")
                         case 'Apples':
                             self.type = TypeObject.APPLES
-                            print("Apples")
                         case 'Tomatoes':
                             self.type = TypeObject.TOMATOES
-                            print("Tomatoes")
                         case _:
                             self.type = TypeObject.EMPTY
 
