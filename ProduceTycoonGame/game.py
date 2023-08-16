@@ -57,7 +57,7 @@ class Game():
         self.buttons.append(self.buttonShop)
 
         # placed objects
-        self.placeableObjects: list[placeableObject] = []
+        self.placeableObjects: list[PlaceableObject] = []
 
         self.guests: list[Guest] = []
 
