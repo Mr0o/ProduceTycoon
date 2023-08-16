@@ -15,6 +15,10 @@ class Person():
         self.size = 15
         self.movSpeed = 1.0
 
+        # used to detect stuck condition
+        self.prevPos = pos.copy()
+        self.actualVel = Vector(0, 0)
+
         # stuck timer
         self.stuckTimer = TimedEvent()
         self.isStuck = False
@@ -50,6 +54,9 @@ class Person():
         self.animationCount += 1
 
     def update(self):
+        # set the previous position
+        self.prevPos = self.pos.copy()
+
         # position is derived from the velocity and velocity is derived from the acceleration
         self.vel.add(self.acc)
         # force velocity to be a certain speed (magnitude)
@@ -62,8 +69,8 @@ class Person():
         
         self.checkIfStuck()
         if self.isStuck:
-            # teleport the person in the direction it is trying to go
-            self.pos.add(Vector(50, 50))
+            print("stuck")
+            self.isStuck = False
         
     def applyForce(self, force : Vector):
         fcopy = force.copy() # create a copy of the force
@@ -72,16 +79,15 @@ class Person():
     def checkIfStuck(self):
         self.stuckTimer.update()
         # check if the person is stuck
-        if self.vel.getMag() > 1.0 or self.vel.getMag() < 0.999999999 and not self.stuckTimer.isActive:
+        if self.actualVel.getMag() < 0.8 and not self.stuckTimer.isActive:
             self.stuckTimer.setTimer(1)
         
         # if the stuck timer is active then we check if it has reached the end
         if self.stuckTimer.isActive:
             if self.stuckTimer.isTriggered:
-                if self.vel.getMag() > 1.0 or self.vel.getMag() < 0.999999999:
+                # check if the person is still stuck
+                if self.actualVel.getMag() < 0.8:
                     self.isStuck = True
-            else:
-                self.isStuck = False
 
     def draw(self):
         pygame.draw.rect(

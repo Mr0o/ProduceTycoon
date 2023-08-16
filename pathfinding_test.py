@@ -106,6 +106,13 @@ if __name__ == "__main__":
                 if isGuestTouchingTile(guest, tile):
                     guest = resolveCollision(guest, tile)
 
+        # get the actual velocity of the guest after collision check
+        guest.actualVel = guest.vel.copy()
+        # get the difference between the current pos and the previous pos
+        posDelta = guest.pos - guest.prevPos
+
+        guest.actualVel = posDelta
+
         # check if the guest is stuck (velocity is less than 0.9)
         if guest.isStuck:
             # get untsuck
@@ -149,6 +156,10 @@ if __name__ == "__main__":
         # print the guest velocity
         text = pygame.font.SysFont('Arial', 15, bold=True).render("Guest Velocity: " + str(guest.vel.getMag()), True, (255, 255, 255))
         screen.blit(text, (0, 0))
+
+        # print the guest actual velocity
+        text = pygame.font.SysFont('Arial', 15, bold=True).render("Guest Actual Velocity: " + str(guest.actualVel.getMag()), True, (255, 255, 255))
+        screen.blit(text, (0, 60))
 
         # print the guest stuck timer
         if guest.stuckTimer.isActive:
