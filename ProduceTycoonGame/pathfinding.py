@@ -125,6 +125,9 @@ def createVectorField(tileMap: TileMap, target: Tile) -> list[Vector]:
 
         tile.vector = vector
 
+        # add the vector to the vector field
+        vectorField.append(vector)
+
     # return the vector field
     return vectorField
 
@@ -142,8 +145,7 @@ class VectorField():
         self.vectorField = createVectorField(self.tileMap, self.target)
 
     def getVector(self, tile: Tile) -> Vector:
-        print("length of vector field: " + str(len(self.vectorField)))
-        vector: Vector = self.vectorField[tile.id]
+        vector: Vector = self.vectorField[tile.id -1]
         return vector
 
     def getVectorField(self) -> list[Vector]:
