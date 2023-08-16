@@ -61,6 +61,9 @@ class Person():
             (self.pos.x, self.pos.y), (self.size, self.size))
         
         self.checkIfStuck()
+        if self.isStuck:
+            # teleport the person in the direction it is trying to go
+            self.pos.add(Vector(50, 50))
         
     def applyForce(self, force : Vector):
         fcopy = force.copy() # create a copy of the force
@@ -68,14 +71,14 @@ class Person():
 
     def checkIfStuck(self):
         self.stuckTimer.update()
-        # if the velocity is less than 0.9 then we start the stuck timer
-        if self.vel.getMag() < 0.9 and self.stuckTimer.isActive == False:
-            self.stuckTimer.setTimer(3)
+        # check if the person is stuck
+        if self.vel.getMag() > 1.0 or self.vel.getMag() < 0.999999999 and not self.stuckTimer.isActive:
+            self.stuckTimer.setTimer(1)
         
         # if the stuck timer is active then we check if it has reached the end
         if self.stuckTimer.isActive:
             if self.stuckTimer.isTriggered:
-                if self.vel.getMag() < 0.9:
+                if self.vel.getMag() > 1.0 or self.vel.getMag() < 0.999999999:
                     self.isStuck = True
             else:
                 self.isStuck = False
