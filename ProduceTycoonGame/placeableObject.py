@@ -26,6 +26,7 @@ class PlaceableObject():
         self.exitButton = Button(self.screen, Vector(0, 0), 'X', 20, 20, (255, 0, 0))
 
         self.gui = PlacableObjectGUI(self.screen, Vector(self.screen.get_width() - 100, 25), 100, 100, (200, 150, 170))
+        self.gui.type = TypeObject.WATERMELON
 
     def checkIfCanPlace(self):
         for element in self.elements:
@@ -79,7 +80,7 @@ class PlaceableObject():
                     self.image = pygame.image.load('./Resources/Images/Tomato.png')
                     #print("Tomatoes")
                 case _:
-                    self.image = pygame.image.load('./Resources/Images/Banana_ProduceTycoon.png')
+                    self.image = pygame.image.load('./Resources/Images/WatermelonBin.png')
             return
         # will figure out later works for now lol
         self.rect.topleft = (self.pos.x, self.pos.y)
