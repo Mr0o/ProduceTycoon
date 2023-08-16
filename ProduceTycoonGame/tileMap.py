@@ -82,13 +82,16 @@ class TileMap():
                 tile.isHighlighted = True
                 self.selectTile(tile, mouseClicked)
 
+    def checkCollide(self, tile: Tile, placableObject: PlaceableObject):
+        if placableObject.isPlaced and tile.rect.colliderect(placableObject.rect):
+            if tile.type == Type.WALKABLE:
+                tile.type = Type.INTERACTABLE
+
     def update(self, placableObjects: list[PlaceableObject] = None):
         if placableObjects is not None:
             for tile in self.tileMapGrid:    
                 for placableObject in placableObjects:
-                    if placableObject.isPlaced and tile.rect.colliderect(placableObject.rect):
-                        if tile.type == Type.WALKABLE:
-                            tile.type = Type.INTERACTABLE
+                    self.checkCollide(tile, placableObject)
 
         changed = False
         for tile in self.tileMapGrid:
