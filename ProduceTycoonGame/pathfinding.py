@@ -139,18 +139,18 @@ class VectorField():
     def __init__(self, tileMap: TileMap, target: Tile):
         self.tileMap = tileMap
         self.target = target
-        self.vectorField: list[Vector] = []
+        self.vectors: list[Vector] = []
         self.update()
 
     def update(self):
-        self.vectorField = createVectorField(self.tileMap, self.target)
+        self.vectors= createVectorField(self.tileMap, self.target)
 
     def getVector(self, tile: Tile) -> Vector:
-        vector: Vector = self.vectorField[tile.id]
+        vector: Vector = self.vectors[tile.id]
         return vector
 
-    def getVectorField(self) -> list[Vector]:
-        return self.vectorField
+    def getVectors(self) -> list[Vector]:
+        return self.vectors
     
 
 # this will contain all vectorFields and contain methods to create, update, and get vector data from them
