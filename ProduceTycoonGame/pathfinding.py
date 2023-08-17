@@ -64,7 +64,7 @@ def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
     return closedTiles
 
 # get the vector from neighboring tiles using kernel convolution
-def getVector(tileMap: TileMap, tile: Tile) -> Vector:
+def calcVector(tileMap: TileMap, tile: Tile) -> Vector:
     # get the neighbors of the tile
     neighbors = tileMap.getNeighbors(tile)
 
@@ -104,7 +104,7 @@ def getVector(tileMap: TileMap, tile: Tile) -> Vector:
     # check if the vector is 0
     if vector.getMag() == 0:
         # set the vector to a random vector
-        vector = Vector(1, 0)
+        vector = Vector(0.5, 0.5)
         vector.setMag(10)
 
     # return the vector
@@ -121,7 +121,7 @@ def createVectorField(tileMap: TileMap, target: Tile) -> list[Vector]:
     # for each tile in the heatmap
     for tile in heatmap:
         # get the vector from neighboring tiles using kernel convolution
-        vector = getVector(tileMap, tile)
+        vector = calcVector(tileMap, tile)
 
         tile.vector = vector
 
@@ -145,7 +145,7 @@ class VectorField():
         self.vectorField = createVectorField(self.tileMap, self.target)
 
     def getVector(self, tile: Tile) -> Vector:
-        vector: Vector = self.vectorField[tile.id -1]
+        vector: Vector = self.vectorField[tile.id]
         return vector
 
     def getVectorField(self) -> list[Vector]:
