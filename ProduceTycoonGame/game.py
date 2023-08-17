@@ -103,7 +103,7 @@ class Game():
 
         if not self.hideGUI:
             if self.button3x3.events(self.mouseClicked):
-                self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.size, 8, 8, self.elements, './Resources/Images/WatermelonBin.png'))
+                self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.size, 4, 4, self.elements, './Resources/Images/WatermelonBin.png'))
             if self.button1x1.events(self.mouseClicked):
                 self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.size, 1, 1, self.elements, './Resources/Images/Tomato.png'))
             if self.moveplaceableObjects.events(self.mouseClicked):
