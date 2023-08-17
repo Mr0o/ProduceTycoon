@@ -47,18 +47,19 @@ def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
 
         # for each neighbor of the current tile
         for neighbor in neighbors:
-            # if the neighbor is not a boundary tile
-            if neighbor.type != Type.BOUNDARY and neighbor.type != Type.EDGE:
-                # if the neighbor is not in the closed tiles
-                if neighbor not in closedTiles:
-                    # if the neighbor is not in the open tiles
-                    if neighbor not in openTiles:
-                       # add the neighbor to the open tiles
-                        openTiles.append(neighbor)
-                        # set the cost of the neighbor to the cost of the current tile plus 1
-                        neighbor.cost = currentTile.cost + 1
-                        # set the parent of the neighbor to the current tile
-                        neighbor.parent = currentTile
+            # if the neighbor is not in the closed tiles
+            if neighbor not in closedTiles:
+                # if the neighbor is not in the open tiles
+                if neighbor not in openTiles:
+                    # add the neighbor to the open tiles
+                    openTiles.append(neighbor)
+                    # set the cost of the neighbor to the cost of the current tile plus 1
+                    neighbor.cost = currentTile.cost + 1
+                    # set the parent of the neighbor to the current tile
+                    neighbor.parent = currentTile
+
+            if neighbor.type == Type.BOUNDARY or neighbor.type == Type.EDGE:
+                neighbor.cost = 1000
 
     # return the closed tiles
     return closedTiles
