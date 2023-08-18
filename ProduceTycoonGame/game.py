@@ -131,21 +131,21 @@ class Game():
             self.shopMenu.exitButton.events(self.mouseClicked)
 
         # place guests down on mouse click
-        #if self.mouseClicked:
-        #    mousePos = pygame.mouse.get_pos()
-        #    newGuest = Guest(self.screen, Vector(mousePos[0], mousePos[1]))
-        #    newGuest.targetTile = self.tileMap.getTileByPos(createRandomVector(self.WIDTH/2))
-        #    self.guests.append(newGuest)
+        if self.mouseClicked:
+           mousePos = pygame.mouse.get_pos()
+           newGuest = Guest(self.screen, Vector(mousePos[0], mousePos[1]))
+           newGuest.targetTile = self.tileMap.getTileByPos(createRandomVector(self.WIDTH/2))
+           self.guests.append(newGuest)
         
         for guest in self.guests:
             # guest events
             guest.events()
 
             # apply vector field of the current tile in the vector field list
-            # if guest.targetTile is not None:
-            #     currentTile = self.tileMap.getTileByPos(guest.pos)
-            #     force = self.pathfinder.getVector(currentTile, guest.targetTile)
-            #     guest.applyForce(force)
+            if guest.targetTile is not None:
+                currentTile = self.tileMap.getTileByPos(guest.pos)
+                force = self.pathfinder.getVector(currentTile, guest.targetTile)
+                guest.applyForce(force)
             
 
             guest.update()
