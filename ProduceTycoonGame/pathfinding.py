@@ -150,6 +150,10 @@ class VectorField():
         self.vectors= createVectorField(self.tileMap, self.target)
 
     def getVector(self, tile: Tile) -> Vector:
+        if tile is None:
+            print("WARN: VectorField.getVector() -> tile is None")
+            return Vector(0, 0)
+        
         vector: Vector = self.vectors[tile.id]
         return vector
 
@@ -182,6 +186,10 @@ class Pathfinder():
             print("Vector fields updated in " + str(time.time() - startTime) + " seconds")
 
     def getVector(self, tile: Tile, target: Tile) -> Vector:
+        if tile is None:
+            print("WARN: Pathfinder.getVector() -> tile is None")
+            return Vector(0, 0)
+        
         # get the vector field for the target
         vectorField = self.getVectorField(target)
         # get the vector from the vector field
@@ -190,6 +198,9 @@ class Pathfinder():
         return vector
     
     def getVectorField(self, target: Tile) -> VectorField:
+        if target is None:
+            print("WARN: getVectorField() -> target is None")
+            return []
         # get the vector field for the target
         for vectorField in self.vectorFields:
             if vectorField.target == target:
