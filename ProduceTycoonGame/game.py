@@ -1,7 +1,8 @@
+from random import randint
 import pygame
 
 # local imports
-from ProduceTycoonGame.vectors import Vector, createRandomVector
+from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
@@ -130,11 +131,11 @@ class Game():
         if not self.shopMenu.hidden:
             self.shopMenu.exitButton.events(self.mouseClicked)
 
-        # place guests down on mouse click
+        # place guests down on mouse click (testing, remove this later)
         if self.mouseClicked:
            mousePos = pygame.mouse.get_pos()
            newGuest = Guest(self.screen, Vector(mousePos[0], mousePos[1]))
-           newGuest.targetTile = self.tileMap.getTileByPos(createRandomVector(self.WIDTH/2))
+           newGuest.targetTile = self.tileMap.getTileByPos(Vector(randint(0, self.WIDTH), randint(0, self.HEIGHT)))
            self.guests.append(newGuest)
         
         for guest in self.guests:
