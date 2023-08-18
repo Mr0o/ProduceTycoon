@@ -5,10 +5,11 @@ from ProduceTycoonGame.tile import Type
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.UserInterface.placableObjectGUI import PlacableObjectGUI, TypeObject
 
-id = 0
-
 class PlaceableObject():
+    static_id = 0
     def __init__(self, screen: pygame.Surface, pos: Vector, size: int, rows: int = 1, cols: int = 1, elements: list = [], image: str = './Resources/Images/WatermelonBin.png'):
+        self.s_id = PlaceableObject.static_id
+        PlaceableObject.static_id += 1
         self.screen = screen
         self.pos = pos
         self.size = size
