@@ -139,8 +139,12 @@ if __name__ == "__main__":
             color = (rValue, 150, 60)
             pygame.draw.rect(screen, color, tile.rect)
 
-            # draw the vector
-            pygame.draw.line(screen, (100, 100, 100), (tile.pos.x + tile.size / 2, tile.pos.y + tile.size / 2), (tile.pos.x + tile.size / 2 + tile.vector.x, tile.pos.y + tile.size / 2 + tile.vector.y), 2)
+            # draw the vector from the pathfinder vectors list
+            vector = pathfinder.getVector(tile, targetTile)
+            pygame.draw.line(screen, (100, 100, 100), (tile.pos.x + tile.size / 2, tile.pos.y + tile.size / 2), (tile.pos.x + tile.size / 2 + vector.x, tile.pos.y + tile.size / 2 + vector.y), 2)
+
+            # draw the vector from the tile
+            # pygame.draw.line(screen, (100, 100, 100), (tile.pos.x + tile.size / 2, tile.pos.y + tile.size / 2), (tile.pos.x + tile.size / 2 + tile.vector.x, tile.pos.y + tile.size / 2 + tile.vector.y), 2)
 
 
         # draw boundary tiles on top of heatmap
@@ -168,14 +172,10 @@ if __name__ == "__main__":
         text = pygame.font.SysFont('Arial', 15, bold=True).render("Vector Fields: " + str(len(pathfinder.vectorFields)), True, (255, 255, 255))
         screen.blit(text, (0, 40))
 
-        # draw the cost of each tiletimer
-
         # print the tile id of the tile the guest is in
-        text = pygame.font.SysFont('Arial', 15, bold=True).render("Tile ID: " + str(currentTile.id), True, (255, 255, 255))
-        screen.blit(text, (0, 80))
-
-        # draw the vector of the tile the guest is in
-        pygame.draw.line(screen, (255, 255, 255), (currentTile.pos.x + currentTile.size / 2, currentTile.pos.y + currentTile.size / 2), (currentTile.pos.x + currentTile.size / 2 + currentTile.vector.x, currentTile.pos.y + currentTile.size / 2 + currentTile.vector.y), 2)
+        if currentTile != None:
+            text = pygame.font.SysFont('Arial', 15, bold=True).render("Tile ID: " + str(currentTile.id), True, (255, 255, 255))
+            screen.blit(text, (0, 80))
 
         # draw the target tile
         pygame.draw.rect(screen, (0, 255, 0), targetTile.rect)
