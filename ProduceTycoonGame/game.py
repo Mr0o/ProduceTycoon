@@ -131,8 +131,8 @@ class Game():
             if self.moveObject:
                 if self.mouseClicked and self.previousMouseClicked:
                     self.moveObject = placeableObject.moveToNewPos()
-                elif exitButton:
-                    self.moveObject = False
+                # elif exitButton:
+                #     self.moveObject = False
 
 
         # place guests down on mouse click (testing, remove this later)
