@@ -168,7 +168,6 @@ class Game():
 
         self.displayClock.hidden = self.hideGUI
 
-
     def update(self):
         self.tileMap.update(self.placeableObjects)
 
