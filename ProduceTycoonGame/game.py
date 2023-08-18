@@ -19,6 +19,7 @@ class Game():
 
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
+        self.currency = 1000
 
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.running = True
@@ -64,7 +65,7 @@ class Game():
 
         self.displayClock = Clock(self.clock, self.screen, Vector(WIDTH - 100, 0))
 
-        self.shopMenu = ShopMenu(self.screen, Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2)
+        self.shopMenu = ShopMenu(self.screen, Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2, self.currency)
 
         self.hideGUI = False
         self.mouseClicked = False
@@ -76,6 +77,7 @@ class Game():
         self.previousMouseClicked = self.mouseClicked
         self.mouseClicked = False
         self.rightMouseClicked = False
+        currency = self.shopMenu.getCurrency()
 
         if len(self.placeableObjects):
             self.hideGUI = not self.placeableObjects[len(self.placeableObjects) - 1].getPlaced()
@@ -132,8 +134,6 @@ class Game():
                 elif exitButton:
                     self.moveObject = False
 
-        if not self.shopMenu.hidden:
-            self.shopMenu.exitButton.events(self.mouseClicked)
 
         # place guests down on mouse click (testing, remove this later)
         if self.rightMouseClicked:
@@ -156,6 +156,8 @@ class Game():
             guest.update()
 
         self.displayClock.events()
+
+        self.shopMenu.events(self.mouseClicked)
 
         self.elements = []
         self.elements.extend(self.buttons)
@@ -180,6 +182,8 @@ class Game():
 
         # pathfinder update will check for any changes and update the vector fields
         self.pathfinder.update()
+
+        self.shopMenu.update()
         
         if self.debug:
             pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
