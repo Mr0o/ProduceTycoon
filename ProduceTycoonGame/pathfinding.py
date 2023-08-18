@@ -126,8 +126,12 @@ def createVectorField(tileMap: TileMap, target: Tile) -> list[Vector]:
 
         tile.vector = vector
 
-        # add the vector to the vector field
-        vectorField.append(vector)
+    # the heatmap is not necessarily in the same order as the tileMap, 
+    # so we will loop throught the tileMap and get the vectors
+    # Note: using the tile.vector attribute should be avoided because it will always be set to the last vector calculated
+    # it is only used for the vectorField calculation, and should not be used for anything else
+    for tile in tileMap.tileMapGrid:
+        vectorField.append(tile.vector)
 
     # return the vector field
     return vectorField
