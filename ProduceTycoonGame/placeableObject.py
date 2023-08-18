@@ -3,12 +3,14 @@ import pygame
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tile import Type
 from ProduceTycoonGame.UserInterface.button import Button
-from ProduceTycoonGame.UserInterface.placableObjectGUI import PlacableObjectGUI, TypeObject
+from ProduceTycoonGame.UserInterface.placeableObjectGUI import PlaceableObjectGUI, TypeObject
 
 class PlaceableObject():
     static_id = 0
+    static_canSelect = True
+    static_currentID = None
     def __init__(self, screen: pygame.Surface, pos: Vector, size: int, rows: int = 1, cols: int = 1, elements: list = [], image: str = './Resources/Images/WatermelonBin.png'):
-        self.s_id = PlaceableObject.static_id
+        self.id = PlaceableObject.static_id
         PlaceableObject.static_id += 1
         self.screen = screen
         self.pos = pos
@@ -22,11 +24,12 @@ class PlaceableObject():
 
         self.isPlaced = False
         self.canPlace = True
+        self.selectedGUI = False
         self.rect = self.image.get_rect()
 
         self.exitButton = Button(self.screen, Vector(0, 0), 'X', 20, 20, (255, 0, 0))
 
-        self.gui = PlacableObjectGUI(self.screen, Vector(self.screen.get_width() - 100, 25), 100, 100, (200, 150, 170))
+        self.gui = PlaceableObjectGUI(self.screen, Vector(self.screen.get_width() - 100, 25), 100, 100, (200, 150, 170))
         self.gui.type = TypeObject.WATERMELON
 
     def checkIfCanPlace(self):
@@ -37,6 +40,7 @@ class PlaceableObject():
             else:
                 self.canPlace = True
 
+    # function looks like garbage fix later
     def moveToNewPos(self):
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             self.isPlaced = False
@@ -46,17 +50,26 @@ class PlaceableObject():
     def events(self, previousMouseClick: bool = False, mouseClicked: bool = False, events: list = []):
         if self.isPlaced:
             if mouseClicked and self.rect.collidepoint(pygame.mouse.get_pos()):
-                self.gui.hidden = not self.gui.hidden
+                #checks if we can select a new object
+                if PlaceableObject.static_canSelect or PlaceableObject.static_currentID == self.id:
+                    #we change the crrent ID to the selected ID
+                    PlaceableObject.static_currentID = self.id
+                    #we can no longer select a new object
+                    PlaceableObject.static_canSelect = not PlaceableObject.static_canSelect
+                    self.gui.hidden = not self.gui.hidden
+            print(PlaceableObject.static_currentID)  
             self.gui.events(mouseClicked, events)
 
         self.checkIfCanPlace()
 
         mousePos = pygame.mouse.get_pos()
-        xDiff = self.size - mousePos[0] % self.size
-        yDiff = self.size - mousePos[1] % self.size
-        newPosX = mousePos[0] + xDiff - self.rows * self.size // 2
+        #offset between next tile and mouse position for both x and y
+        xOffset = self.size - mousePos[0] % self.size
+        yOffset = self.size - mousePos[1] % self.size
+        #new position for the object
+        newPosX = mousePos[0] + xOffset - self.rows * self.size // 2
         self.pos.x = newPosX
-        newPosY = mousePos[1] + yDiff - self.cols * self.size // 2
+        newPosY = mousePos[1] + yOffset - self.cols * self.size // 2
         self.pos.y = newPosY
             
         # changes tile type to object if rect collides with tile and mouse is clicked

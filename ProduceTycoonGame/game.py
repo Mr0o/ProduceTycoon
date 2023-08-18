@@ -121,9 +121,10 @@ class Game():
 
         for placeableObject in self.placeableObjects:
             placeableObject.events(self.previousMouseClicked, self.mouseClicked, events)
-            exitButton = placeableObject.exitButton.events(self.mouseClicked)
-            if exitButton and not placeableObject.isPlaced:
-                self.placeableObjects.remove(placeableObject)
+
+            #exitButton = placeableObject.exitButton.events(self.mouseClicked)
+            #if exitButton and not placeableObject.isPlaced:
+            #    self.placeableObjects.remove(placeableObject)
 
             if self.moveObject:
                 if self.mouseClicked and self.previousMouseClicked:
