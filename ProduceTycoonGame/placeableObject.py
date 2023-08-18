@@ -50,7 +50,7 @@ class PlaceableObject():
     def events(self, previousMouseClick: bool = False, mouseClicked: bool = False, events: list = []):
         if self.isPlaced:
             mouseClickedObject = mouseClicked and self.rect.collidepoint(pygame.mouse.get_pos())
-            if mouseCLickedObject:
+            if mouseClickedObject:
                 #checks if we can select a new object
                 if PlaceableObject.static_canSelect or PlaceableObject.static_currentID == self.id:
                     #we change the crrent ID to the selected ID
@@ -58,7 +58,7 @@ class PlaceableObject():
                     #we can no longer select a new object
                     PlaceableObject.static_canSelect = not PlaceableObject.static_canSelect
                     self.gui.hidden = not self.gui.hidden
-            print(PlaceableObject.static_currentID)
+            #print(PlaceableObject.static_currentID)
             self.gui.events(mouseClicked, events)
 
         self.checkIfCanPlace()
