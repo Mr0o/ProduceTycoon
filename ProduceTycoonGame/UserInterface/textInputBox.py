@@ -28,7 +28,11 @@ class TextInputBox():
                 if self.active:
                     if event.key == pygame.K_BACKSPACE:
                         self.text = self.text[:-1]
-                    elif event.key == pygame.K_0 or event.key == pygame.K_1 or event.key == pygame.K_2 or event.key == pygame.K_3 or event.key == pygame.K_4 or event.key == pygame.K_5 or event.key == pygame.K_6 or event.key == pygame.K_7 or event.key == pygame.K_8 or event.key == pygame.K_9:
+                    elif   (event.key == pygame.K_0 or event.key == pygame.K_1 
+                         or event.key == pygame.K_2 or event.key == pygame.K_3 
+                         or event.key == pygame.K_4 or event.key == pygame.K_5 
+                         or event.key == pygame.K_6 or event.key == pygame.K_7 
+                         or event.key == pygame.K_8 or event.key == pygame.K_9):
 
                         self.text += event.unicode
 
