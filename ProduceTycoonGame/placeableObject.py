@@ -7,7 +7,6 @@ from ProduceTycoonGame.UserInterface.placeableObjectGUI import PlaceableObjectGU
 
 class PlaceableObject():
     static_id = 0
-    static_canSelect = True
     static_currentID = None
     def __init__(self, screen: pygame.Surface, pos: Vector, size: int, rows: int = 1, cols: int = 1, elements: list = [], image: str = './Resources/Images/WatermelonBin.png'):
         self.id = PlaceableObject.static_id
@@ -24,7 +23,6 @@ class PlaceableObject():
 
         self.isPlaced = False
         self.canPlace = True
-        self.selectedGUI = False
         self.rect = self.image.get_rect()
 
         self.exitButton = Button(self.screen, Vector(0, 0), 'X', 20, 20, (255, 0, 0))
@@ -51,14 +49,11 @@ class PlaceableObject():
         if self.isPlaced:
             mouseClickedObject = mouseClicked and self.rect.collidepoint(pygame.mouse.get_pos())
             if mouseClickedObject:
-                #checks if we can select a new object
-                if PlaceableObject.static_canSelect or PlaceableObject.static_currentID == self.id:
-                    #we change the crrent ID to the selected ID
-                    PlaceableObject.static_currentID = self.id
-                    #we can no longer select a new object
-                    PlaceableObject.static_canSelect = not PlaceableObject.static_canSelect
-                    self.gui.hidden = not self.gui.hidden
-            #print(PlaceableObject.static_currentID)
+                PlaceableObject.static_currentID = self.id
+                self.gui.hidden = not self.gui.hidden
+            print(PlaceableObject.static_currentID)
+            if not PlaceableObject.static_currentID == self.id:
+                self.gui.hidden = True
             self.gui.events(mouseClicked, events)
 
         self.checkIfCanPlace()
