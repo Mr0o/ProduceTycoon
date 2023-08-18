@@ -1,6 +1,7 @@
 import pygame
 
 from ProduceTycoonGame.vectors import Vector
+from ProduceTycoonGame.UserInterface.text import Text
 
 class Button():
     def __init__(self, screen: pygame.Surface, pos: Vector, text: str, width: int, height: int, color: tuple[int, int, int] | pygame.Color = (90, 140, 200)):
@@ -12,10 +13,7 @@ class Button():
         self.color = color
         
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
-        objectSize = pygame.font.SysFont('Arial', 15, bold=True)
-        self.renderText = objectSize.render(self.text, True, (0, 0, 0))
-        self.xPos = self.pos.x + (self.width/2 - self.renderText.get_width()/2)
-        self.yPos = self.pos.y + (self.height/2 - self.renderText.get_height()/2)
+        self.textRenderer = Text(self.screen, self.pos, self.width, self.height, self.text)
 
         self.isSelected = False
         self.hidden = False
@@ -40,9 +38,6 @@ class Button():
             return
         pygame.draw.rect(self.screen, self.color, self.rect)
         pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
-        self.drawText()
-
-    def drawText(self):
-        self.screen.blit(self.renderText, (self.xPos, self.yPos))
+        self.textRenderer.draw()
 
         
