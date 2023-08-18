@@ -14,7 +14,7 @@ class TypeObject(Enum):
     APPLES = 3
     TOMATOES = 4
 
-class PlacableObjectGUI():
+class PlaceableObjectGUI():
     def __init__(self, screen: pygame.Surface, pos: Vector, width: int, height: int, color: tuple[int, int, int] | pygame.Color = (200, 150, 170)):
         self.screen = screen
         self.pos = pos
