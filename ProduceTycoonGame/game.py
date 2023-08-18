@@ -75,6 +75,7 @@ class Game():
     def events(self):
         self.previousMouseClicked = self.mouseClicked
         self.mouseClicked = False
+        self.rightMouseClicked = False
 
         if len(self.placeableObjects):
             self.hideGUI = not self.placeableObjects[len(self.placeableObjects) - 1].getPlaced()
@@ -98,6 +99,8 @@ class Game():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     self.mouseClicked = True
+                if event.button == 3:
+                    self.rightMouseClicked = True
 
         
         self.tileMap.events(self.mouseClicked)
@@ -132,7 +135,7 @@ class Game():
             self.shopMenu.exitButton.events(self.mouseClicked)
 
         # place guests down on mouse click (testing, remove this later)
-        if self.mouseClicked:
+        if self.rightMouseClicked:
            mousePos = pygame.mouse.get_pos()
            newGuest = Guest(self.screen, Vector(mousePos[0], mousePos[1]))
            newGuest.targetTile = self.tileMap.getTileByPos(Vector(randint(0, self.WIDTH), randint(0, self.HEIGHT)))
