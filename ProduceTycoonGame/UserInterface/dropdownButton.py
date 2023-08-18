@@ -23,14 +23,6 @@ class DropdownButton(Button):
         return self.isSelected
 
     def draw(self):
-        if self.hidden:
-            return
-        objectSize = pygame.font.SysFont('Arial', 15, bold=True)
-        text = objectSize.render(self.text, True, (0, 0, 0))
-
-        pygame.draw.rect(self.screen, self.color, self.rect)
-        pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
-        # center the text using the width and height of the text rect
-        self.screen.blit(text, (self.pos.x + (self.width/2 - text.get_width()/2), self.pos.y + (self.height/2 - text.get_height()/2)))
+       super().draw()
 
         
