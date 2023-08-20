@@ -196,16 +196,19 @@ class Game():
         # drawing tileMap
         self.tileMap.draw()
 
-        # drawing charachters
-        for guest in self.guests:
-            guest.draw()
-        
+        # if we are placing an object, draw the tile lines
+        if len(self.placeableObjects) and not self.placeableObjects[len(self.placeableObjects) - 1].getPlaced():
+            self.tileMap.drawTileLines()
 
         for button in self.buttons:
             button.draw()
 
         for placeableObject in self.placeableObjects:
             placeableObject.draw()
+
+        # drawing charachters
+        for guest in self.guests:
+            guest.draw()
 
         self.displayClock.draw()
 

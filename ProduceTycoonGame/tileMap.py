@@ -17,11 +17,14 @@ class TileMap():
         self.zoom = self.screen.get_width()
 
         self.rows = self.screen.get_height() // 25
-        self.col = self.screen.get_width() // 25
+        self.cols = self.screen.get_width() // 25
         self.tileMapStartingPos = self.pos.copy()
+
+        # create grid of tiles
+        self.tileSize = self.zoom // self.cols
         
         # create the grid of tiles
-        self.tileMapGrid = self.createTileGrid(self.zoom, self.rows, self.col, self.tileMapStartingPos) 
+        self.tileMapGrid = self.createTileGrid() 
 
         # creates rectangle size of screen for border
         self.rect = pygame.Rect((0, 0), (self.width, self.height))
@@ -36,22 +39,23 @@ class TileMap():
         self.staticSurface: pygame.Surface
         self.updateStaticImage()
 
-    def createTileGrid(self, zoom: int, numRows: int, numCols: int, tileMapStartingPos: Vector) -> list[Tile]:
+        # tile lines surface (created once on init, assuming it will not change)
+        self.tileLinesSurface = createStaticTileLineSurface(self, self.width, self.height)
+
+    def createTileGrid(self) -> list[Tile]:
         resetIDtiles()
-        # create grid of tiles
-        tileSize = zoom // numCols
 
         # create a list of tiles (skipping the first row, to make room for buttons at the top)
         tileMapGrid: list[Tile] = []
-        for row in range(1, numRows):
-            for col in range(numCols):
-                tileMapGrid.append(Tile(self.screen, Vector(tileMapStartingPos.x + col * tileSize, tileMapStartingPos.y + row * tileSize), tileSize))
+        for row in range(1, self.rows):
+            for col in range(self.cols):
+                tileMapGrid.append(Tile(self.screen, Vector(self.tileMapStartingPos.x + col * self.tileSize, self.tileMapStartingPos.y + row * self.tileSize), self.tileSize))
         
         # set the edges of the tileMapGrid to be EDGE tiles
         for tile in tileMapGrid:
-            if tile.pos.x == tileMapStartingPos.x or tile.pos.x == tileMapStartingPos.x + (numCols - 1) * tileSize or tile.pos.y == tileMapStartingPos.y or tile.pos.y == tileMapStartingPos.y + (numRows - 1) * tileSize:
+            if tile.pos.x == self.tileMapStartingPos.x or tile.pos.x == self.tileMapStartingPos.x + (self.cols - 1) * self.tileSize or tile.pos.y == self.tileMapStartingPos.y or tile.pos.y == self.tileMapStartingPos.y + (self.rows - 1) * self.tileSize:
                 tile.type = Type.EDGE
-            if tile.pos.y == tileMapStartingPos.y + tileSize:
+            if tile.pos.y == self.tileMapStartingPos.y + self.tileSize:
                 tile.type = Type.EDGE
         
 
@@ -123,7 +127,9 @@ class TileMap():
 
         # draws border
         pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
-        
+
+    def drawTileLines(self):
+        self.screen.blit(self.tileLinesSurface, (self.pos.x, self.pos.y))
 
     def getTileByID(self, tileID: int):
         return self.tileMapGrid[tileID]
@@ -140,14 +146,14 @@ class TileMap():
 
         # determine the neighbors by using the id
         # top left
-        if tile.id - self.col - 1 >= 0:
-            neighbors.append(self.getTileByID(tile.id - self.col - 1))
+        if tile.id - self.cols - 1 >= 0:
+            neighbors.append(self.getTileByID(tile.id - self.cols - 1))
         # top center
-        if tile.id - self.col >= 0:
-            neighbors.append(self.getTileByID(tile.id - self.col))
+        if tile.id - self.cols >= 0:
+            neighbors.append(self.getTileByID(tile.id - self.cols))
         # top right
-        if tile.id - self.col + 1 >= 0:
-            neighbors.append(self.getTileByID(tile.id - self.col + 1))
+        if tile.id - self.cols + 1 >= 0:
+            neighbors.append(self.getTileByID(tile.id - self.cols + 1))
         # left center
         if tile.id - 1 >= 0:
             neighbors.append(self.getTileByID(tile.id - 1))
@@ -156,14 +162,14 @@ class TileMap():
             neighbors.append(self.getTileByID(tile.id + 1))
 
         # bottom left
-        if tile.id + self.col - 1 < len(self.tileMapGrid):
-            neighbors.append(self.getTileByID(tile.id + self.col - 1))
+        if tile.id + self.cols - 1 < len(self.tileMapGrid):
+            neighbors.append(self.getTileByID(tile.id + self.cols - 1))
         # bottom
-        if tile.id + self.col < len(self.tileMapGrid):
-            neighbors.append(self.getTileByID(tile.id + self.col))
+        if tile.id + self.cols < len(self.tileMapGrid):
+            neighbors.append(self.getTileByID(tile.id + self.cols))
         # bottom right
-        if tile.id + self.col + 1 < len(self.tileMapGrid):
-            neighbors.append(self.getTileByID(tile.id + self.col + 1))
+        if tile.id + self.cols + 1 < len(self.tileMapGrid):
+            neighbors.append(self.getTileByID(tile.id + self.cols + 1))
 
         return neighbors
 
@@ -200,5 +206,29 @@ def createStaticTileSurface(tiles: list[Tile], width: int, height: int) -> pygam
         tile.draw()
         # restore the original screen of the tiles
         tile.screen = ogScreen
+
+    return staticSurface
+
+
+# create static surface of tile lines
+def createStaticTileLineSurface(tileMap: TileMap, width: int, height: int) -> pygame.Surface:
+    staticSurface = pygame.Surface((width, height))
+    staticSurface.fill((0, 0, 0))
+
+    # the surface should be transparent
+    staticSurface.set_colorkey((0, 0, 0))
+
+    numCols = tileMap.cols
+    numRows = tileMap.rows
+
+    color = (50, 50, 50)
+
+    # draw horizontal lines
+    for row in range(1, numRows-1):
+        pygame.draw.line(staticSurface, color, (0, row * tileMap.tileSize), (width, row * tileMap.tileSize))
+
+    # draw vertical lines
+    for col in range(1, numCols):
+        pygame.draw.line(staticSurface, color, (col * tileMap.tileSize, tileMap.tileSize), (col * tileMap.tileSize, height))
 
     return staticSurface
