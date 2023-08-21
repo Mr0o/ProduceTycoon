@@ -93,14 +93,14 @@ class PlaceableObject():
         yOffset = self.size - mousePos[1] % self.size
         #new position for the object
         if self.cols % 2 == 0:
-            newPosX = mousePos[0] + xOffset - self.rows * self.size + self.size // 2
+            newPosX = mousePos[0] + xOffset - self.cols * self.size // 2
         else:
-            newPosX = mousePos[0] + xOffset - self.rows * self.size 
+            newPosX = mousePos[0] + xOffset - self.cols * self.size
         self.pos.x = newPosX
         if self.rows % 2 == 0:
-            newPosY = mousePos[1] + yOffset - self.cols * self.size + self.size // 2
+            newPosY = mousePos[1] + yOffset - self.rows * self.size // 2
         else:
-            newPosY = mousePos[1] + yOffset - self.cols * self.size
+            newPosY = mousePos[1] + yOffset - self.rows * self.size
         self.pos.y = newPosY
             
         # changes tile type to object if rect collides with tile and mouse is clicked
