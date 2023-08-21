@@ -4,7 +4,7 @@ from enum import Enum
 from ProduceTycoonGame.vectors import Vector
 
 WALKABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/FloorTile.png')
-INTERACTABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/Interactable.jpg')
+INTERACTABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/FloorTile.png')
 BOUNDARY_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/Barrier.png')
 
 class Type(Enum):
