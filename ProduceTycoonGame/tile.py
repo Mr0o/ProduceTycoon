@@ -13,16 +13,12 @@ class Type(Enum):
     BOUNDARY = 3
     EDGE = 4
 
-# global
-id = 0
-
-def resetIDtiles():
-    global id; id = 0
-
 class Tile():
+    static_id = 0
     def __init__(self, screen: pygame.Surface, pos: Vector, size: int, type: Type = Type.WALKABLE):
         # create unique id for each tile
-        global id; self.id = id; id += 1
+        self.id = Tile.static_id
+        Tile.static_id += 1
 
         self.screen = screen
 
