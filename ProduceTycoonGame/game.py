@@ -65,8 +65,8 @@ class Game():
 
         # buttons
         self.buttons = []
-        self.button3x3 = Button(self.screen, Vector(0, 0), "3x3 Tile", 60, 20)
-        self.buttons.append(self.button3x3)
+        self.button4x4 = Button(self.screen, Vector(0, 0), "4x4 Tile", 60, 20)
+        self.buttons.append(self.button4x4)
         self.button1x1 = Button(self.screen, Vector(60, 0), "1x1 Tile", 60, 20)
         self.buttons.append(self.button1x1)
         self.moveplaceableObjects = Button(self.screen, Vector(120, 0), "Move Objects", 120, 20)
@@ -124,7 +124,7 @@ class Game():
         self.tileMap.events(self.mouseClicked)
 
         if not self.hideGUI:
-            if self.button3x3.events(self.mouseClicked):
+            if self.button4x4.events(self.mouseClicked):
                 self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.size, 4, 4, self.elements, './Resources/Images/WatermelonBin.png'))
             if self.button1x1.events(self.mouseClicked):
                 self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.size, 1, 1, self.elements, './Resources/Images/Tomato.png'))
