@@ -12,7 +12,6 @@ class ShopMenu():
         self.height = height
         self.playerValues = playerValues
         self.color = color
-        print(self.playerValues)
 
         self.hidden = True
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
