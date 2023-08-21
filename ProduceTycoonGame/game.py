@@ -19,7 +19,6 @@ class Game():
 
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
-        self.currency = 1000
 
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.running = True
@@ -35,6 +34,23 @@ class Game():
 
         # debug variable that when true will enable debug features (fps, frametime, etc.)
         self.debug = False
+
+        # player values
+        self.playerValues = {
+            "currency": 1000,
+            "watermelon-amount": 1,
+            "watermelon-price": 5,
+            "watermelon-sell-price": 5,
+            "banana-amount": 1,
+            "banana-price": 5,
+            "banana-sell-price": 5,
+            "apple-amount": 1,
+            "apple-price": 5,
+            "apple-sell-price": 5,
+            "tomato-amount": 1,
+            "tomato-price": 5,
+            "tomato-sell-price": 5
+        }
 
         self.tileMap = TileMap(self.screen, Vector(0, 0))
         self.size = self.tileMap.tileMapGrid[0].size
@@ -65,7 +81,7 @@ class Game():
 
         self.displayClock = Clock(self.clock, self.screen, Vector(WIDTH - 100, 0))
 
-        self.shopMenu = ShopMenu(self.screen, Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2, self.currency)
+        self.shopMenu = ShopMenu(self.screen, Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2, self.playerValues)
 
         self.hideGUI = False
         self.mouseClicked = False
