@@ -5,13 +5,14 @@ from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.text import Text
 
 class ShopMenu():
-    def __init__(self, screen: pygame.Surface, pos: Vector, width: int, height: int, currency: int, color: tuple[int, int, int] | pygame.Color = (90, 140, 200)):
+    def __init__(self, screen: pygame.Surface, pos: Vector, width: int, height: int, playerValues: dict, color: tuple[int, int, int] | pygame.Color = (90, 140, 200)):
         self.screen = screen
         self.pos = pos
         self.width = width
         self.height = height
-        self.currency = currency
+        self.playerValues = playerValues
         self.color = color
+        print(self.playerValues)
 
         self.hidden = True
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
@@ -26,17 +27,18 @@ class ShopMenu():
         currencyBoxY = self.pos.y
         self.currencyBox = pygame.Rect((currencyBoxX, currencyBoxY), (currencyBoxWidth, currencyBoxHeight))
 
-        self.textRenderer = Text(self.screen, Vector(currencyBoxX, currencyBoxY), currencyBoxWidth, currencyBoxHeight, str(self.currency))
+        self.textRenderer = Text(self.screen, Vector(currencyBoxX, currencyBoxY), currencyBoxWidth, currencyBoxHeight, str(self.playerValues["currency"]))
 
 
     def events(self, mouseClicked: bool = False):
         if self.exitButton.events(mouseClicked):
             self.hidden = True
         if self.watermelonButton.events(mouseClicked):
-            self.currency -= 100
+            self.playerValues["currency"] -= 100
+            self.playerValues["watermelon-amount"] += 1
 
     def update(self):
-        self.textRenderer.setText(str(self.currency))
+        self.textRenderer.setText(str(self.playerValues["currency"]))
 
     def draw(self):
         if not self.hidden:
@@ -52,4 +54,4 @@ class ShopMenu():
         self.textRenderer.draw()    
 
     def getCurrency(self):
-        return self.currency
+        return self.playerValues["currency"]
