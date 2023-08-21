@@ -140,6 +140,9 @@ class Game():
         for placeableObject in self.placeableObjects:
             placeableObject.events(self.previousMouseClicked, self.mouseClicked, events)
 
+            placeableObject.setDirection()
+            print(placeableObject.frontTileIDs)
+
             #exitButton = placeableObject.exitButton.events(self.mouseClicked)
             #if exitButton and not placeableObject.isPlaced:
             #    self.placeableObjects.remove(placeableObject)
@@ -153,9 +156,7 @@ class Game():
             # do some stuff when the object is placed (only once on the frame the object is placed)
             if placeableObject.isPlaced and placeableObject.hasPlaced:
                 placeableObject.hasPlaced = False
-
-                placeableObject.setDirection()
-
+                
                 # set the placeableObject's mainTile to changed (important for detecting changes in the tileMap)
                 placedTileIDs = placeableObject.mainTileID
                 placedTile = self.tileMap.getTileByID(placedTileIDs)
