@@ -53,15 +53,9 @@ class Game():
         }
 
         self.tileMap = TileMap(self.screen, Vector(0, 0))
-        self.size = self.tileMap.tileMapGrid[0].size
 
         # pathfinding (Vector Fields)
         self.pathfinder = Pathfinder(self.tileMap)
-
-        # test target tile
-        self.targetTile = self.tileMap.getTileByPos(Vector(100, 100))
-
-        self.pathfinder.createVectorField(self.targetTile)
 
         # buttons
         self.buttons = []
