@@ -134,16 +134,30 @@ class Game():
                 elif exitButton:
                     self.moveObject = False
             
+            # do some stuff when the object is placed
             if placeableObject.isPlaced:
                 placeableObject.setDirection()
 
+                # set the placeableObject's mainTile to changed (important for detecting changes in the tileMap)
+                placedTileIDs = placeableObject.mainTileID
+                placedTile = self.tileMap.getTileByID(placedTileIDs)
+
+                if placedTile is not None:
+                    placedTile.changed = True
+
+                print(placedTileIDs)
+
 
         # place guests down on mouse click (testing, remove this later)
-        if self.rightMouseClicked:
-           mousePos = pygame.mouse.get_pos()
-           newGuest = Guest(self.screen, Vector(mousePos[0], mousePos[1]))
-           newGuest.targetTile = self.tileMap.getTileByPos(Vector(randint(0, self.WIDTH), randint(0, self.HEIGHT)))
-           self.guests.append(newGuest)
+        if self.rightMouseClicked and len(self.placeableObjects):
+            # pick a random placeableObject
+            randomIndex = randint(0, len(self.placeableObjects) - 1)
+            
+            mousePos = pygame.mouse.get_pos()
+            newGuest = Guest(self.screen, Vector(mousePos[0], mousePos[1]))
+            targetTileID = self.placeableObjects[randomIndex].mainTileID
+            newGuest.targetTile = self.tileMap.getTileByID(targetTileID)
+            self.guests.append(newGuest)
         
         for guest in self.guests:
             # guest events
