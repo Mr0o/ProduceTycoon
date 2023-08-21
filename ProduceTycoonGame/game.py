@@ -141,7 +141,6 @@ class Game():
             placeableObject.events(self.previousMouseClicked, self.mouseClicked, events)
 
             placeableObject.setDirection()
-            print(placeableObject.frontTileIDs)
 
             #exitButton = placeableObject.exitButton.events(self.mouseClicked)
             #if exitButton and not placeableObject.isPlaced:
@@ -289,7 +288,6 @@ class Game():
                     for frontTileID in placeableObject.frontTileIDs:
                         frontTile = self.tileMap.getTileByID(frontTileID)
                         pygame.draw.rect(self.screen, (255, 0, 0), frontTile.rect, 2)
-                        print("SHJKEDFKJSHDGFKJHSGDF")
 
         pygame.display.update()
 
