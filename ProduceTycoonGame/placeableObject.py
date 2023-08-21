@@ -4,6 +4,13 @@ from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tile import Type
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.UserInterface.placeableObjectGUI import PlaceableObjectGUI, TypeObject
+from enum import Enum
+
+class Direction(Enum):
+    NORTH = 0
+    EAST = 1
+    SOUTH = 2
+    WEST = 3
 
 class PlaceableObject():
     static_id = 0
@@ -30,6 +37,10 @@ class PlaceableObject():
         self.gui = PlaceableObjectGUI(self.screen, Vector(self.screen.get_width() - 100, 25), 100, 100, (200, 150, 170))
         self.gui.type = TypeObject.WATERMELON
 
+        self.mainTileID = -1
+        self.frontTileIDs = []
+        self.direction = Direction.EAST
+
     def checkIfCanPlace(self):
         for element in self.elements:
             if element.rect.colliderect(self.rect):
@@ -45,17 +56,35 @@ class PlaceableObject():
             return self.isPlaced
         return self.isPlaced
 
+    def setDirection(self):
+        self.frontTileIDs = []
+        if self.direction == Direction.NORTH:
+            for i in range(self.rows):
+                newTileID = self.mainTileID + i
+                self.frontTileIDs.append(newTileID)
+        elif self.direction == Direction.EAST:
+            for i in range(self.cols):
+                newTileID = self.mainTileID + i * 10 + self.rows - 1
+                self.frontTileIDs.append(newTileID)
+        elif self.direction == Direction.SOUTH:
+            for i in range(self.rows):
+                newTileID = self.mainTileID + i + (self.cols - 1) * 10
+                self.frontTileIDs.append(newTileID)
+        elif self.direction == Direction.WEST:
+            for i in range(self.cols):
+                newTileID = self.mainTileID + i * 10
+                self.frontTileIDs.append(newTileID)
+        print(self.frontTileIDs)
+
     def events(self, previousMouseClick: bool = False, mouseClicked: bool = False, events: list = []):
         if self.isPlaced:
             mouseClickedObject = mouseClicked and self.rect.collidepoint(pygame.mouse.get_pos())
             if mouseClickedObject:
                 PlaceableObject.static_currentID = self.id
                 self.gui.hidden = not self.gui.hidden
-            print(PlaceableObject.static_currentID)
             if not PlaceableObject.static_currentID == self.id:
                 self.gui.hidden = True
             self.gui.events(mouseClicked, events)
-
         self.checkIfCanPlace()
 
         mousePos = pygame.mouse.get_pos()

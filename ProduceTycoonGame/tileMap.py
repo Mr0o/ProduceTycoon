@@ -1,8 +1,8 @@
 import pygame
 
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.tile import Tile, Type, resetIDtiles
-from ProduceTycoonGame.placeableObject import PlaceableObject
+from ProduceTycoonGame.tile import Tile, Type
+from ProduceTycoonGame.placeableObject import PlaceableObject, Direction
 
 
 class TileMap():
@@ -37,7 +37,6 @@ class TileMap():
         self.updateStaticImage()
 
     def createTileGrid(self, zoom: int, numRows: int, numCols: int, tileMapStartingPos: Vector) -> list[Tile]:
-        resetIDtiles()
         # create grid of tiles
         tileSize = zoom // numCols
 
@@ -53,7 +52,6 @@ class TileMap():
                 tile.type = Type.EDGE
             if tile.pos.y == tileMapStartingPos.y + tileSize:
                 tile.type = Type.EDGE
-        
 
         return tileMapGrid
 
@@ -82,16 +80,22 @@ class TileMap():
                 tile.isHighlighted = True
                 self.selectTile(tile, mouseClicked)
 
-    def checkCollide(self, tile: Tile, placableObject: PlaceableObject):
-        if placableObject.isPlaced and tile.rect.colliderect(placableObject.rect):
+    def checkCollide(self, tile: Tile, placeableObject: PlaceableObject):
+        if placeableObject.isPlaced and tile.rect.colliderect(placeableObject.rect):
             if tile.type == Type.WALKABLE:
                 tile.type = Type.INTERACTABLE
 
-    def update(self, placableObjects: list[PlaceableObject] = None):
-        if placableObjects is not None:
-            for tile in self.tileMapGrid:    
-                for placableObject in placableObjects:
-                    self.checkCollide(tile, placableObject)
+    def getMainTile(self, tile: Tile, placeableObject: PlaceableObject):
+        if tile.rect.colliderect(placeableObject.rect) and placeableObject.mainTileID == -1:
+            placeableObject.mainTileID = tile.id
+
+    def update(self, placeableObjects: list[PlaceableObject] = None):
+        if placeableObjects is not None:
+            for placeableObject in placeableObjects:
+                for tile in self.tileMapGrid:  
+                    self.getMainTile(tile, placeableObject)
+                    self.checkCollide(tile, placeableObject)
+
 
         changed = False
         for tile in self.tileMapGrid:
@@ -103,7 +107,6 @@ class TileMap():
         # update static surface if any tiles changed
         if changed:
             self.updateStaticImage()
-
 
     # update the static surface, use this instead of importing createStaticTileSurface in other files
     def updateStaticImage(self):
