@@ -39,14 +39,11 @@ class TileMap():
         self.staticSurface: pygame.Surface
         self.updateStaticImage()
 
-    def createTileGrid(self, zoom: int, numRows: int, numCols: int, tileMapStartingPos: Vector) -> list[Tile]:
-        # create grid of tiles
-        tileSize = zoom // numCols
         # tile lines surface (created once on init, assuming it will not change)
         self.tileLinesSurface = createStaticTileLineSurface(self, self.width, self.height)
 
     def createTileGrid(self) -> list[Tile]:
-        resetIDtiles()
+        Tile.static_id = 0
 
         # create a list of tiles (skipping the first row, to make room for buttons at the top)
         tileMapGrid: list[Tile] = []
