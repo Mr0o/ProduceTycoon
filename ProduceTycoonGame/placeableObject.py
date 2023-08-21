@@ -40,8 +40,8 @@ class PlaceableObject():
 
         self.mainTileID = -1
         self.frontTileIDs = []
-        self.direction = Direction.EAST
-
+        self.direction = Direction.NORTH
+        
     def checkIfCanPlace(self):
         for element in self.elements:
             if element.rect.colliderect(self.rect):
@@ -57,7 +57,9 @@ class PlaceableObject():
             return self.isPlaced
         return self.isPlaced
 
+    
     def setDirection(self):
+        tileMapWidth = 32
         self.frontTileIDs = []
         if self.direction == Direction.NORTH:
             for i in range(self.rows):
@@ -65,15 +67,15 @@ class PlaceableObject():
                 self.frontTileIDs.append(newTileID)
         elif self.direction == Direction.EAST:
             for i in range(self.cols):
-                newTileID = self.mainTileID + i * 10 + self.rows - 1
+                newTileID = self.mainTileID + i * tileMapWidth + self.rows - 1
                 self.frontTileIDs.append(newTileID)
         elif self.direction == Direction.SOUTH:
             for i in range(self.rows):
-                newTileID = self.mainTileID + i + (self.cols - 1) * 10
+                newTileID = self.mainTileID + i + (self.cols - 1) * tileMapWidth
                 self.frontTileIDs.append(newTileID)
         elif self.direction == Direction.WEST:
             for i in range(self.cols):
-                newTileID = self.mainTileID + i * 10
+                newTileID = self.mainTileID + i * tileMapWidth
                 self.frontTileIDs.append(newTileID)
 
     def events(self, previousMouseClick: bool = False, mouseClicked: bool = False, events: list = []):
