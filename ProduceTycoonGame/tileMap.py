@@ -91,7 +91,7 @@ class TileMap():
                 tile.type = Type.INTERACTABLE
 
     def getMainTile(self, tile: Tile, placeableObject: PlaceableObject):
-        if tile.rect.colliderect(placeableObject.rect) and placeableObject.mainTileID == -1:
+        if tile.rect.colliderect(placeableObject.rect) and placeableObject.mainTileID == -1 and placeableObject.isPlaced:
             placeableObject.mainTileID = tile.id
 
     def update(self, placeableObjects: list[PlaceableObject] = None):

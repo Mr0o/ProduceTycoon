@@ -74,7 +74,6 @@ class PlaceableObject():
             for i in range(self.cols):
                 newTileID = self.mainTileID + i * 10
                 self.frontTileIDs.append(newTileID)
-        print(self.frontTileIDs)
 
     def events(self, previousMouseClick: bool = False, mouseClicked: bool = False, events: list = []):
         if self.isPlaced:
@@ -139,3 +138,5 @@ class PlaceableObject():
 
     def getPlaced(self):
         return self.isPlaced
+
+    
