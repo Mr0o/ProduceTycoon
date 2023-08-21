@@ -150,7 +150,7 @@ class Game():
                 # elif exitButton:
                 #     self.moveObject = False
             
-            # do some stuff when the object is placed
+            # do some stuff when the object is placed (only once on the frame the object is placed)
             if placeableObject.isPlaced and placeableObject.hasPlaced:
                 placeableObject.hasPlaced = False
 
@@ -171,9 +171,12 @@ class Game():
             
             mousePos = pygame.mouse.get_pos()
             newGuest = Guest(self.screen, Vector(mousePos[0], mousePos[1]))
-            targetTileID = self.placeableObjects[randomIndex].mainTileID
+            targetTileID = self.placeableObjects[randomIndex].frontTileIDs[0]
             newGuest.targetTile = self.tileMap.getTileByID(targetTileID)
-            self.guests.append(newGuest)
+
+            # make sure the guest is not None
+            if newGuest.targetTile is not None:
+                self.guests.append(newGuest)
         
         for guest in self.guests:
             # guest events
@@ -278,6 +281,14 @@ class Game():
             # draw the size of the pathfinder vector fields list
             text = self.debugFont.render("Vector Fields: " + str(len(self.pathfinder.vectorFields)), True, (255, 255, 255))
             self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height() * 2))
+
+            # draw a red square over the front tiles of the placeable objects
+            for placeableObject in self.placeableObjects:
+                if placeableObject.isPlaced:
+                    for frontTileID in placeableObject.frontTileIDs:
+                        frontTile = self.tileMap.getTileByID(frontTileID)
+                        pygame.draw.rect(self.screen, (255, 0, 0), frontTile.rect, 2)
+                        print("SHJKEDFKJSHDGFKJHSGDF")
 
         pygame.display.update()
 
