@@ -43,7 +43,7 @@ class TileMap():
         self.tileLinesSurface = createStaticTileLineSurface(self, self.width, self.height)
 
     def createTileGrid(self) -> list[Tile]:
-        Tile.static_id = 0
+        Tile.static_id = 0 # reset the static id for assignment of the tiles
 
         # create a list of tiles (skipping the first row, to make room for buttons at the top)
         tileMapGrid: list[Tile] = []
