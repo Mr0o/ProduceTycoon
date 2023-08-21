@@ -29,6 +29,7 @@ class PlaceableObject():
         self.image = pygame.transform.scale(self.image, (self.rows * self.size, self.cols * self.size))
 
         self.isPlaced = False
+        self.hasPlaced = False
         self.canPlace = True
         self.rect = self.image.get_rect()
 
@@ -99,6 +100,7 @@ class PlaceableObject():
         # changes tile type to object if rect collides with tile and mouse is clicked
         if self.canPlace and not mouseClicked and previousMouseClick:
             self.isPlaced = True
+            self.hasPlaced = True
 
     def update(self):
         if self.isPlaced:

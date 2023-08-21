@@ -131,11 +131,13 @@ class Game():
             if self.moveObject:
                 if self.mouseClicked and self.previousMouseClicked:
                     self.moveObject = placeableObject.moveToNewPos()
-                elif exitButton:
-                    self.moveObject = False
+                # elif exitButton:
+                #     self.moveObject = False
             
             # do some stuff when the object is placed
-            if placeableObject.isPlaced:
+            if placeableObject.isPlaced and placeableObject.hasPlaced:
+                placeableObject.hasPlaced = False
+
                 placeableObject.setDirection()
 
                 # set the placeableObject's mainTile to changed (important for detecting changes in the tileMap)
@@ -144,8 +146,6 @@ class Game():
 
                 if placedTile is not None:
                     placedTile.changed = True
-
-                print(placedTileIDs)
 
 
         # place guests down on mouse click (testing, remove this later)
