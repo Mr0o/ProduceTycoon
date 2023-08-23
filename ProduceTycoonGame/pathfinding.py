@@ -179,11 +179,11 @@ class Pathfinder():
                 tileMapChanged = True
                 break
         if tileMapChanged:
-            print("Updating vector fields")
+            #print("Updating vector fields")
             startTime = time.time()
             for vectorField in self.vectorFields:
                 vectorField.update()
-            print("Vector fields updated in " + str(time.time() - startTime) + " seconds")
+            #print("Vector fields updated in " + str(time.time() - startTime) + " seconds")
 
     def getVector(self, tile: Tile, target: Tile) -> Vector:
         if tile is None:
