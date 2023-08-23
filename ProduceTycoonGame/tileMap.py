@@ -90,6 +90,13 @@ class TileMap():
             if tile.type == Type.WALKABLE:
                 tile.type = Type.INTERACTABLE
 
+    def getTilesInRect(self, rect: pygame.Rect) -> list[Tile]:
+        collidedTiles: list[Tile] = []
+        for tile in self.tileMapGrid:
+            if rect.colliderect(tile.rect):
+                collidedTiles.append(tile)
+        return collidedTiles
+
     def getMainTile(self, tile: Tile, placeableObject: PlaceableObject):
         if tile.rect.colliderect(placeableObject.rect) and placeableObject.mainTileID == -1 and placeableObject.isPlaced:
             placeableObject.mainTileID = tile.id
