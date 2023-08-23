@@ -119,17 +119,17 @@ class Game():
 
         if not self.hideGUI:
             if self.button4x4.events(self.mouseClicked):
-                self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.size, 4, 4, self.elements, './Resources/Images/WatermelonBin.png'))
+                self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.tileMap.tileSize, 4, 4, self.elements, './Resources/Images/WatermelonBin.png'))
             if self.button1x1.events(self.mouseClicked):
-                self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.size, 1, 1, self.elements, './Resources/Images/Tomato.png'))
+                self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.tileMap.tileSize, 1, 1, self.elements, './Resources/Images/Tomato.png'))
             if self.moveplaceableObjects.events(self.mouseClicked):
                 self.hideGUI = True
                 self.moveObject = True
             if self.buttonShop.events(self.mouseClicked):
                 self.hideGUI = True
                 self.shopMenu.hidden = False
-            
-        self.checkIfHidden()
+
+        self.setHiddenUI()
 
         for placeableObject in self.placeableObjects:
             placeableObject.events(self.previousMouseClicked, self.mouseClicked, events)
@@ -195,7 +195,8 @@ class Game():
         self.elements.extend(self.guests)
         self.elements.append(self.displayClock)
 
-    def checkIfHidden(self):
+    # set every element's hidden variable to the value of self.hideGUI
+    def setHiddenUI(self):
         for button in self.buttons:
             button.hidden = self.hideGUI
 
