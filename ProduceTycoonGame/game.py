@@ -3,6 +3,7 @@ import pygame
 
 # local imports
 from ProduceTycoonGame.vectors import Vector
+from ProduceTycoonGame.tile import Type
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
@@ -169,6 +170,18 @@ class Game():
                     objectPlaced = True
 
         if objectPlaced:
+            # get the tiles that fall within the placeableObject's rect
+            placedObjectTiles = self.tileMap.getTilesInRect(self.placeableObjects[len(self.placeableObjects) - 1].rect)
+
+            # remove the main tile from the list
+            for tile in placedObjectTiles:
+                if tile.id == self.placeableObjects[len(self.placeableObjects) - 1].mainTileID:
+                    placedObjectTiles.remove(tile)
+                    break
+
+            # set each tile to a boundary type for the pathfinder
+            for tile in placedObjectTiles:
+                tile.type = Type.BOUNDARY
             self.pathfinder.update()
 
         # place guests down on mouse click (testing, remove this later)
