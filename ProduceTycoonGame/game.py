@@ -35,6 +35,9 @@ class Game():
         # debug variable that when true will enable debug features (fps, frametime, etc.)
         self.debug = False
 
+        # debug variable that when true will draw the tiles that make up each placeableObject (this could impact performance, therefore it is disabled by default)
+        self.debugPlaceableObjects = False
+
         # player values
         self.playerValues = {
             "currency": 1000,
@@ -106,6 +109,9 @@ class Game():
                 # press '1' to toggle debug
                 if event.key == pygame.K_1:
                     self.debug = not self.debug
+                # press '2' to toggle debugPlaceableObjects
+                if event.key == pygame.K_2:
+                    self.debugPlaceableObjects = not self.debugPlaceableObjects
                 if event.key == pygame.K_BACKSPACE:
                     self.backspacePressed = True
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -130,6 +136,8 @@ class Game():
                 self.shopMenu.hidden = False
 
         self.setHiddenUI()
+
+        objectPlaced = False
 
         for placeableObject in self.placeableObjects:
             placeableObject.events(self.previousMouseClicked, self.mouseClicked, events)
@@ -157,6 +165,11 @@ class Game():
                 if placedTile is not None:
                     placedTile.changed = True
 
+                    # objectPlaced event
+                    objectPlaced = True
+
+        if objectPlaced:
+            self.pathfinder.update()
 
         # place guests down on mouse click (testing, remove this later)
         if self.rightMouseClicked and len(self.placeableObjects):
@@ -276,13 +289,21 @@ class Game():
             # draw the size of the pathfinder vector fields list
             text = self.debugFont.render("Vector Fields: " + str(len(self.pathfinder.vectorFields)), True, (255, 255, 255))
             self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height() * 2))
+            
+            # debug placeable objects
+            if self.debugPlaceableObjects:
+                # draw a red square over the front tiles of the placeable objects
+                for placeableObject in self.placeableObjects:
+                    if placeableObject.isPlaced:
+                        for frontTileID in placeableObject.frontTileIDs:
+                            frontTile = self.tileMap.getTileByID(frontTileID)
+                            pygame.draw.rect(self.screen, (255, 0, 0), frontTile.rect, 2)
 
-            # draw a red square over the front tiles of the placeable objects
-            for placeableObject in self.placeableObjects:
-                if placeableObject.isPlaced:
-                    for frontTileID in placeableObject.frontTileIDs:
-                        frontTile = self.tileMap.getTileByID(frontTileID)
-                        pygame.draw.rect(self.screen, (255, 0, 0), frontTile.rect, 2)
+                # draw a green square over the main tiles of the placeable objects
+                for placeableObject in self.placeableObjects:
+                    if placeableObject.isPlaced:
+                        mainTile = self.tileMap.getTileByID(placeableObject.mainTileID)
+                        pygame.draw.rect(self.screen, (0, 255, 0), mainTile.rect, 2)
 
         pygame.display.update()
 
