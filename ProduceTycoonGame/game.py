@@ -142,12 +142,17 @@ class Game():
 
         for placeableObject in self.placeableObjects:
             placeableObject.events(self.previousMouseClicked, self.mouseClicked, events)
-
+            if not placeableObject.isPlaced:
+                Exit = placeableObject.exitButton.events(self.mouseClicked)
+                if Exit:
+                    self.placeableObjects.remove(placeableObject)
+                continue
+            
             placeableObject.setDirection()
 
-            #exitButton = placeableObject.exitButton.events(self.mouseClicked)
-            #if exitButton and not placeableObject.isPlaced:
-            #    self.placeableObjects.remove(placeableObject)
+            exitButton = placeableObject.exitButton.events(self.mouseClicked)
+            if exitButton and not placeableObject.isPlaced:
+                self.placeableObjects.remove(placeableObject)
 
             if self.moveObject:
                 if self.mouseClicked and self.previousMouseClicked:
@@ -179,9 +184,6 @@ class Game():
                     placedObjectTiles.remove(tile)
                     break
 
-            # set each tile to a boundary type for the pathfinder
-            for tile in placedObjectTiles:
-                tile.type = Type.BOUNDARY
             self.pathfinder.update()
 
         # place guests down on mouse click (testing, remove this later)
