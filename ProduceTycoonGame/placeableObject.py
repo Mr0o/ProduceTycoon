@@ -41,7 +41,7 @@ class PlaceableObject():
         self.mainTileID = -1
         self.frontTileIDs = []
         self.direction = Direction.NORTH
-        
+
     def checkIfCanPlace(self):
         for element in self.elements:
             if element.rect.colliderect(self.rect):
@@ -134,11 +134,11 @@ class PlaceableObject():
         self.rect.topleft = (self.pos.x, self.pos.y)
 
     def draw(self):
-        if not self.isPlaced:
-            self.exitButton.draw()
-
         self.image = pygame.transform.scale(self.image, (self.rows * self.size, self.cols * self.size))
         self.screen.blit(self.image, self.rect.topleft)
+
+        if not self.isPlaced:
+            self.exitButton.draw()
 
         if not self.gui.hidden:
             self.gui.draw()
