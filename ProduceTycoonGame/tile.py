@@ -4,14 +4,12 @@ from enum import Enum
 from ProduceTycoonGame.vectors import Vector
 
 WALKABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/FloorTile.png')
-INTERACTABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/FloorTile.png')
 BOUNDARY_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/Barrier.png')
 
 class Type(Enum):
     WALKABLE = 1
-    INTERACTABLE = 2
-    BOUNDARY = 3
-    EDGE = 4
+    BOUNDARY = 2
+    EDGE = 3
 
 class Tile():
     static_id = 0
@@ -44,7 +42,6 @@ class Tile():
         self.vector = Vector(0, 0)
 
         self.WALKABLE_TILE_IMG_SCALED = pygame.transform.scale(WALKABLE_TILE_IMG.copy(), (self.size, self.size))
-        self.INTERACTABLE_TILE_IMG_SCALED = pygame.transform.scale(INTERACTABLE_TILE_IMG.copy(), (self.size, self.size))
         self.BOUNDARY_TILE_IMG_SCALED = pygame.transform.scale(BOUNDARY_TILE_IMG.copy(), (self.size, self.size))
 
     def update(self):
@@ -59,8 +56,6 @@ class Tile():
         match self.type:
             case Type.WALKABLE:
                 self.screen.blit(self.WALKABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
-            case Type.INTERACTABLE:
-                self.screen.blit(self.INTERACTABLE_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
             case Type.BOUNDARY:
                 self.screen.blit(self.BOUNDARY_TILE_IMG_SCALED, (self.pos.x, self.pos.y))
             case Type.EDGE:
