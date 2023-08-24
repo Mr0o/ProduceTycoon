@@ -85,10 +85,10 @@ class TileMap():
                 tile.isHighlighted = True
                 self.selectTile(tile, mouseClicked)
 
-    def checkCollide(self, tile: Tile, placeableObject: PlaceableObject):
+    def changeTileType(self, tile: Tile, placeableObject: PlaceableObject):
         if placeableObject.isPlaced and tile.rect.colliderect(placeableObject.rect):
             if tile.type == Type.WALKABLE:
-                tile.type = Type.INTERACTABLE
+                tile.type = Type.BOUNDARY
 
     def getTilesInRect(self, rect: pygame.Rect) -> list[Tile]:
         collidedTiles: list[Tile] = []
@@ -106,7 +106,7 @@ class TileMap():
             for placeableObject in placeableObjects:
                 for tile in self.tileMapGrid:  
                     self.getMainTile(tile, placeableObject)
-                    self.checkCollide(tile, placeableObject)
+                    self.changeTileType(tile, placeableObject)
 
 
         changed = False
