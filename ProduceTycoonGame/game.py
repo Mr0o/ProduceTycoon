@@ -11,6 +11,7 @@ from ProduceTycoonGame.placeableObject import PlaceableObject
 from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.pathfinding import Pathfinder, VectorField
+from ProduceTycoonGame.valueHandler import ValueHandler
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -39,27 +40,12 @@ class Game():
         # debug variable that when true will draw the tiles that make up each placeableObject (this could impact performance, therefore it is disabled by default)
         self.debugPlaceableObjects = False
 
-        # player values
-        self.playerValues = {
-            "currency": 1000,
-            "watermelon-amount": 1,
-            "watermelon-price": 5,
-            "watermelon-sell-price": 5,
-            "banana-amount": 1,
-            "banana-price": 5,
-            "banana-sell-price": 5,
-            "apple-amount": 1,
-            "apple-price": 5,
-            "apple-sell-price": 5,
-            "tomato-amount": 1,
-            "tomato-price": 5,
-            "tomato-sell-price": 5
-        }
-
         self.tileMap = TileMap(self.screen, Vector(0, 0))
 
         # pathfinding (Vector Fields)
         self.pathfinder = Pathfinder(self.tileMap)
+
+        self.playerValues = ValueHandler.getStaticValues()
 
         # buttons
         self.buttons = []
