@@ -142,6 +142,7 @@ class Game():
 
         for placeableObject in self.placeableObjects:
             placeableObject.events(self.previousMouseClicked, self.mouseClicked, events)
+
             if not placeableObject.isPlaced:
                 Exit = placeableObject.exitButton.events(self.mouseClicked)
                 if Exit:
@@ -150,28 +151,21 @@ class Game():
             
             placeableObject.setDirection()
 
-            exitButton = placeableObject.exitButton.events(self.mouseClicked)
-            if exitButton and not placeableObject.isPlaced:
-                self.placeableObjects.remove(placeableObject)
-
-            if self.moveObject:
-                if self.mouseClicked and self.previousMouseClicked:
-                    self.moveObject = placeableObject.moveToNewPos()
-                # elif exitButton:
-                #     self.moveObject = False
+            #if self.moveObject:
+            #    if self.mouseClicked and self.previousMouseClicked:
+            #        self.moveObject = placeableObject.moveToNewPos()
             
             # do some stuff when the object is placed (only once on the frame the object is placed)
-            if placeableObject.isPlaced and placeableObject.hasPlaced:
+            if placeableObject.hasPlaced:
                 placeableObject.hasPlaced = False
                 
                 # set the placeableObject's mainTile to changed (important for detecting changes in the tileMap)
-                placedTileIDs = placeableObject.mainTileID
-                placedTile = self.tileMap.getTileByID(placedTileIDs)
+                placedTileID = placeableObject.mainTileID
+                placedTile = self.tileMap.getTileByID(placedTileID)
 
                 if placedTile is not None:
                     placedTile.changed = True
-
-                    # objectPlaced event
+                    
                     objectPlaced = True
 
         if objectPlaced:
@@ -183,7 +177,7 @@ class Game():
                 if tile.id == self.placeableObjects[len(self.placeableObjects) - 1].mainTileID:
                     placedObjectTiles.remove(tile)
                     break
-
+        
             self.pathfinder.update()
 
         # place guests down on mouse click (testing, remove this later)
