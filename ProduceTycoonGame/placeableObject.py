@@ -30,7 +30,7 @@ class PlaceableObject():
 
         self.isPlaced = False
         self.hasPlaced = False
-        self.canPlace = True
+        self.canPlace = False
         self.rect = self.image.get_rect()
 
         self.exitButton = Button(self.screen, Vector(0, 0), 'X', 20, 20, (255, 0, 0))
