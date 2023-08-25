@@ -3,6 +3,7 @@ import pygame
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.text import Text
+from ProduceTycoonGame.valueHandler import ValueHandler
 
 class ShopMenu():
     def __init__(self, screen: pygame.Surface, pos: Vector, width: int, height: int, playerValues: dict, color: tuple[int, int, int] | pygame.Color = (90, 140, 200)):
@@ -12,6 +13,8 @@ class ShopMenu():
         self.height = height
         self.playerValues = playerValues
         self.color = color
+
+        self.playerValues = ValueHandler.getStaticValues()
 
         self.hidden = True
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
@@ -26,18 +29,20 @@ class ShopMenu():
         currencyBoxY = self.pos.y
         self.currencyBox = pygame.Rect((currencyBoxX, currencyBoxY), (currencyBoxWidth, currencyBoxHeight))
 
-        self.textRenderer = Text(self.screen, Vector(currencyBoxX, currencyBoxY), currencyBoxWidth, currencyBoxHeight, str(self.playerValues["currency"]))
+        self.currency = 'currency'
+        self.textRenderer = Text(self.screen, Vector(currencyBoxX, currencyBoxY), currencyBoxWidth, 
+        currencyBoxHeight, str(self.playerValues[self.currency]))
 
 
     def events(self, mouseClicked: bool = False):
         if self.exitButton.events(mouseClicked):
             self.hidden = True
         if self.watermelonButton.events(mouseClicked):
-            self.playerValues["currency"] -= 100
-            self.playerValues["watermelon-amount"] += 1
+            self.playerValues[self.currency] -= 100
+            self.playerValues["Watermelon-amount"] += 1
 
     def update(self):
-        self.textRenderer.setText(str(self.playerValues["currency"]))
+        self.textRenderer.setText(str(self.playerValues[self.currency]))
 
     def draw(self):
         if not self.hidden:
@@ -53,4 +58,4 @@ class ShopMenu():
         self.textRenderer.draw()    
 
     def getCurrency(self):
-        return self.playerValues["currency"]
+        return self.playerValues[self.currency]
