@@ -1,5 +1,3 @@
-import pygame
-
 class ValueHandler():
     s_playerValues = {
         "currency": 1000,
