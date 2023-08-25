@@ -21,7 +21,7 @@ class PlaceableObjectGUI():
         self.slider = Slider(self.screen, Vector(self.pos.x + 5, self.pos.y + self.height / 2 - 3), self.width - 10, 6)
 
         self.hidden = True
-        self.text = ""
+        self.type = ""
 
         self.typeButtonDropdown = DropdownButton(self.screen, Vector(self.pos.x + 5, self.pos.y + 5), 'Type', 50, 20, (255, 255, 255))
         self.setTypeButtons = []
@@ -45,7 +45,7 @@ class PlaceableObjectGUI():
         if self.typeButtonDropdown.events(mouseClicked):
             for button in self.setTypeButtons:
                 if button.events(mouseClicked):
-                    self.text = button.text
+                    self.type = button.text
     
     def update(self, objectValues: dict[str, int] = {}):
         if self.hidden:
@@ -63,8 +63,8 @@ class PlaceableObjectGUI():
         pygame.draw.rect(self.screen, self.color, self.rect)
         pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 1)
 
-        values = Text(self.screen, Vector(self.pos.x + 5, self.pos.y + 105), self.width - 10, 20, printValues)
-        values.draw()
+        valuesText = Text(self.screen, Vector(self.pos.x + 5, self.pos.y + 105), self.width - 10, 20, printValues)
+        valuesText.draw()
 
         self.textBox.draw()
         self.slider.draw()
@@ -72,4 +72,7 @@ class PlaceableObjectGUI():
         if self.typeButtonDropdown.isSelected:
             for button in self.setTypeButtons:
                 button.draw()
+
+    def getType(self) -> str:
+        return self.type
         

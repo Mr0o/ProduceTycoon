@@ -52,13 +52,9 @@ class PlaceableObject():
         self.frontTileIDs = []
         self.direction = Direction.NORTH
 
-        self.objectValues = ValueHandler()
-        self.setDictionary()
+        self.amount = 0
+        self.price = 0
         self.printValues = ''
-
-    def setDictionary(self):
-        self.objectValues.setValue('amount', 0)
-        self.objectValues.setValue('price', 0)
 
 
     def checkIfCanPlace(self):
@@ -136,7 +132,7 @@ class PlaceableObject():
                                 str(self.objectValues.getValue('quantity')) + '\n\t' + 
                                 str(self.objectValues.getValue('price')))
 
-            match self.gui.text:
+            match self.gui.getType():
                 case TypeObject.WATERMELON.value:
                     self.image = pygame.image.load('./Resources/Images/WatermelonBin.png')
                     self.type = TypeObject.WATERMELON
@@ -153,7 +149,7 @@ class PlaceableObject():
                     self.image = pygame.image.load('./Resources/Images/WatermelonBin.png')
                     self.type = TypeObject.EMPTY
             return
-        # will figure out later works for now lol
+
         self.rect.topleft = (self.pos.x, self.pos.y)
 
     def draw(self):
