@@ -3,14 +3,13 @@ import pygame
 
 # local imports
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.tile import Type
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.placeableObject import PlaceableObject
 from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
-from ProduceTycoonGame.pathfinding import Pathfinder, VectorField
+from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.valueHandler import ValueHandler
 
 # this is the main game loop (events, update, draw)
@@ -287,6 +286,14 @@ class Game():
             
             # debug placeable objects
             if self.debugPlaceableObjects:
+                for placeableObject in self.placeableObjects:
+                    if placeableObject.isPlaced:
+                        # get the tiles that fall within the placeableObject's rect
+                        placedObjectTiles = self.tileMap.getTilesInRect(placeableObject.rect)
+                        for tile in placedObjectTiles:
+                            pygame.draw.rect(self.screen, (255, 255, 255), tile.rect, 2)
+                        
+
                 # draw a red square over the front tiles of the placeable objects
                 for placeableObject in self.placeableObjects:
                     if placeableObject.isPlaced:

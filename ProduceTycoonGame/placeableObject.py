@@ -128,9 +128,12 @@ class PlaceableObject():
         if self.isPlaced:
             self.gui.update(self.objectValues)
 
-            self.printValues = (self.type.value + ': ' + 
-                                str(self.objectValues.getValue('quantity')) + '\n\t' + 
-                                str(self.objectValues.getValue('price')))
+            # self.printValues = (self.type.value + ': ' + 
+            #                     str(self.objectValues.getValue('quantity')) + '\n\t' + 
+            #                     str(self.objectValues.getValue('price')))
+
+            # This doesn't do anything lol, please remove it once the getValue function is fixed
+            self.printValues = (self.type.value + ': ' + "TEST" + '\n\t')
 
             match self.gui.getType():
                 case TypeObject.WATERMELON.value:
