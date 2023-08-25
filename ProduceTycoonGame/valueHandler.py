@@ -27,9 +27,6 @@ class ValueHandler():
 
     def setValue(self, valueName: str, value: int):
         self.playerValues[valueName] = value
-
-    def setValue(self, valueName: str, value: str):
-        self.playerValues[valueName] = value
     
     def removeValue(self, valueName: str):
         del self.playerValues[valueName]
