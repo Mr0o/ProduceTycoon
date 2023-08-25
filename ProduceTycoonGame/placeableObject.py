@@ -53,11 +53,12 @@ class PlaceableObject():
         self.direction = Direction.NORTH
 
         self.objectValues = ValueHandler()
+        self.setDictionary()
+        self.printValues = ''
 
     def setDictionary(self):
-        self.objectValues.setValue('quantity', 0)
+        self.objectValues.setValue('amount', 0)
         self.objectValues.setValue('price', 0)
-        self.objectValues.setValue('type', self.type.value)
 
 
     def checkIfCanPlace(self):
@@ -131,8 +132,9 @@ class PlaceableObject():
         if self.isPlaced:
             self.gui.update(self.objectValues)
 
-            if self.objectValues.hasValue(self.type.value):
-                pass
+            self.printValues = (self.type.value + ': ' + 
+                                str(self.objectValues.getValue('quantity')) + '\n\t' + 
+                                str(self.objectValues.getValue('price')))
 
             match self.gui.text:
                 case TypeObject.WATERMELON.value:
@@ -161,8 +163,7 @@ class PlaceableObject():
         if not self.isPlaced:
             self.exitButton.draw()
 
-        if not self.gui.hidden:
-            self.gui.draw()
+        self.gui.draw(self.printValues)
 
     def getPos(self):
         return self.pos

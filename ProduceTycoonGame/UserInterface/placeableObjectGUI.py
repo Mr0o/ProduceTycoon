@@ -5,6 +5,7 @@ from ProduceTycoonGame.UserInterface.slider import Slider
 from ProduceTycoonGame.UserInterface.textInputBox import TextInputBox
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.UserInterface.dropdownButton import DropdownButton
+from ProduceTycoonGame.UserInterface.text import Text
 
 class PlaceableObjectGUI():
     def __init__(self, screen: pygame.Surface, pos: Vector, width: int, height: int, color: tuple[int, int, int] | pygame.Color = (200, 150, 170)):
@@ -55,12 +56,15 @@ class PlaceableObjectGUI():
         self.textBox.update()
         self.slider.update()
 
-    def draw(self):
+    def draw(self, printValues: str = ""):
         if self.hidden:
             return
 
         pygame.draw.rect(self.screen, self.color, self.rect)
         pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 1)
+
+        values = Text(self.screen, Vector(self.pos.x + 5, self.pos.y + 105), self.width - 10, 20, printValues)
+        values.draw()
 
         self.textBox.draw()
         self.slider.draw()
