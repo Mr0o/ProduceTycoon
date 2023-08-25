@@ -286,6 +286,14 @@ class Game():
             
             # debug placeable objects
             if self.debugPlaceableObjects:
+                for placeableObject in self.placeableObjects:
+                    if placeableObject.isPlaced:
+                        # get the tiles that fall within the placeableObject's rect
+                        placedObjectTiles = self.tileMap.getTilesInRect(placeableObject.rect)
+                        for tile in placedObjectTiles:
+                            pygame.draw.rect(self.screen, (255, 255, 255), tile.rect, 2)
+                        
+
                 # draw a red square over the front tiles of the placeable objects
                 for placeableObject in self.placeableObjects:
                     if placeableObject.isPlaced:
