@@ -3,18 +3,18 @@ import pygame
 class ValueHandler():
     s_playerValues = {
         "currency": 1000,
-        "watermelon-amount": 1,
-        "watermelon-price": 5,
-        "watermelon-sell-price": 5,
-        "banana-amount": 1,
-        "banana-price": 5,
-        "banana-sell-price": 5,
-        "apple-amount": 1,
-        "apple-price": 5,
-        "apple-sell-price": 5,
-        "tomato-amount": 1,
-        "tomato-price": 5,
-        "tomato-sell-price": 5
+        "Watermelon-amount": 1,
+        "Watermelon-price": 5,
+        "Watermelon-sell-price": 5,
+        "Banana-amount": 1,
+        "Banana-price": 5,
+        "Banana-sell-price": 5,
+        "Apple-amount": 1,
+        "Apple-price": 5,
+        "Apple-sell-price": 5,
+        "Tomato-amount": 1,
+        "Tomato-price": 5,
+        "Tomato-sell-price": 5
     }
     def __init__(self, playerValues: dict = {}):
         self.playerValues = playerValues
@@ -26,6 +26,9 @@ class ValueHandler():
         self.playerValues[valueName] -= value
 
     def setValue(self, valueName: str, value: int):
+        self.playerValues[valueName] = value
+
+    def setValue(self, valueName: str, value: str):
         self.playerValues[valueName] = value
     
     def removeValue(self, valueName: str):

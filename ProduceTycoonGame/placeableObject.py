@@ -3,8 +3,17 @@ import pygame
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tile import Type
 from ProduceTycoonGame.UserInterface.button import Button
-from ProduceTycoonGame.UserInterface.placeableObjectGUI import PlaceableObjectGUI, TypeObject
+from ProduceTycoonGame.UserInterface.placeableObjectGUI import PlaceableObjectGUI
+from ProduceTycoonGame.valueHandler import ValueHandler
+
 from enum import Enum
+
+class TypeObject(Enum):
+    EMPTY = 'Empty'
+    WATERMELON = 'Watermelon'
+    BANANAS = 'Bananas'
+    APPLES = 'Apples'
+    TOMATOES = 'Tomatoes'
 
 class Direction(Enum):
     NORTH = 0
@@ -15,6 +24,7 @@ class Direction(Enum):
 class PlaceableObject():
     static_id = 0
     static_currentID = None
+
     def __init__(self, screen: pygame.Surface, pos: Vector, size: int, rows: int = 1, cols: int = 1, elements: list = [], image: str = './Resources/Images/WatermelonBin.png'):
         self.id = PlaceableObject.static_id
         PlaceableObject.static_id += 1
@@ -36,11 +46,19 @@ class PlaceableObject():
         self.exitButton = Button(self.screen, Vector(0, 0), 'X', 20, 20, (255, 0, 0))
 
         self.gui = PlaceableObjectGUI(self.screen, Vector(self.screen.get_width() - 100, 25), 100, 100, (200, 150, 170))
-        self.gui.type = TypeObject.WATERMELON
+        self.type = TypeObject.WATERMELON
 
         self.mainTileID = -1
         self.frontTileIDs = []
         self.direction = Direction.NORTH
+
+        self.objectValues = ValueHandler()
+
+    def setDictionary(self):
+        self.objectValues.setValue('quantity', 0)
+        self.objectValues.setValue('price', 0)
+        self.objectValues.setValue('type', self.type.value)
+
 
     def checkIfCanPlace(self):
         for element in self.elements:
@@ -56,7 +74,6 @@ class PlaceableObject():
             self.isPlaced = False
             return self.isPlaced
         return self.isPlaced
-
     
     def setDirection(self):
         tileMapWidth = 32
@@ -112,23 +129,27 @@ class PlaceableObject():
 
     def update(self):
         if self.isPlaced:
-            self.gui.update()
+            self.gui.update(self.objectValues)
 
-            match self.gui.type:
-                case TypeObject.WATERMELON:
+            if self.objectValues.hasValue(self.type.value):
+                pass
+
+            match self.gui.text:
+                case TypeObject.WATERMELON.value:
                     self.image = pygame.image.load('./Resources/Images/WatermelonBin.png')
-                    #print("Watermelon")
-                case TypeObject.BANANAS:
+                    self.type = TypeObject.WATERMELON
+                case TypeObject.BANANAS.value:
                     self.image = pygame.image.load('./Resources/Images/Banana_ProduceTycoon.png')
-                    #print("Bananas")
-                case TypeObject.APPLES:
+                    self.type = TypeObject.BANANAS
+                case TypeObject.APPLES.value:
                     self.image = pygame.image.load('./Resources/Images/Apple_ProduceTycoon.png')
-                    #print("Apples")
-                case TypeObject.TOMATOES:
+                    self.type = TypeObject.APPLES
+                case TypeObject.TOMATOES.value:
                     self.image = pygame.image.load('./Resources/Images/Tomato.png')
-                    #print("Tomatoes")
+                    self.type = TypeObject.TOMATOES
                 case _:
                     self.image = pygame.image.load('./Resources/Images/WatermelonBin.png')
+                    self.type = TypeObject.EMPTY
             return
         # will figure out later works for now lol
         self.rect.topleft = (self.pos.x, self.pos.y)

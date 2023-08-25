@@ -1,18 +1,10 @@
 import pygame
 
 from ProduceTycoonGame.vectors import Vector
-from enum import Enum
 from ProduceTycoonGame.UserInterface.slider import Slider
 from ProduceTycoonGame.UserInterface.textInputBox import TextInputBox
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.UserInterface.dropdownButton import DropdownButton
-
-class TypeObject(Enum):
-    EMPTY = 0
-    WATERMELON = 1
-    BANANAS = 2
-    APPLES = 3
-    TOMATOES = 4
 
 class PlaceableObjectGUI():
     def __init__(self, screen: pygame.Surface, pos: Vector, width: int, height: int, color: tuple[int, int, int] | pygame.Color = (200, 150, 170)):
@@ -22,17 +14,18 @@ class PlaceableObjectGUI():
         self.height = height
         self.color = color
 
-        self.type = TypeObject.EMPTY
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
 
         self.textBox = TextInputBox(self.screen, Vector(self.pos.x + 5, self.pos.y + self.height / 2 - 20), self.width - 10, 18, (230, 120, 140))
         self.slider = Slider(self.screen, Vector(self.pos.x + 5, self.pos.y + self.height / 2 - 3), self.width - 10, 6)
 
         self.hidden = True
+        self.text = ""
 
         self.typeButtonDropdown = DropdownButton(self.screen, Vector(self.pos.x + 5, self.pos.y + 5), 'Type', 50, 20, (255, 255, 255))
         self.setTypeButtons = []
         self.createButtons()
+        self.objectValues = {}
         
 
     def createButtons(self):
@@ -51,27 +44,13 @@ class PlaceableObjectGUI():
         if self.typeButtonDropdown.events(mouseClicked):
             for button in self.setTypeButtons:
                 if button.events(mouseClicked):
-                    match button.text:
-                        case 'Watermelon':
-                            self.type = TypeObject.WATERMELON
-                            #print("Watermelon")
-                        case 'Bananas':
-                            self.type = TypeObject.BANANAS
-                            #print("Bananas")
-                        case 'Apples':
-                            self.type = TypeObject.APPLES
-                            #print("Apples")
-                        case 'Tomatoes':
-                            self.type = TypeObject.TOMATOES
-                            #print("Tomatoes")
-                        case _:
-                            self.type = TypeObject.EMPTY
-
+                    self.text = button.text
     
-    def update(self):
+    def update(self, objectValues: dict[str, int] = {}):
         if self.hidden:
             self.typeButtonDropdown.isSelected = False
             return
+        self.objectValues = objectValues
         
         self.textBox.update()
         self.slider.update()
