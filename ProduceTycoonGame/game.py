@@ -6,7 +6,7 @@ from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
-from ProduceTycoonGame.placeableObject import PlaceableObject
+from ProduceTycoonGame.objectRegister import ObjectRegister
 from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.pathfinding import Pathfinder
@@ -36,7 +36,7 @@ class Game():
         # debug variable that when true will enable debug features (fps, frametime, etc.)
         self.debug = False
 
-        # debug variable that when true will draw the tiles that make up each placeableObject (this could impact performance, therefore it is disabled by default)
+        # debug variable that when true will draw the tiles that make up each currentObject (this could impact performance, therefore it is disabled by default)
         self.debugPlaceableObjects = False
 
         self.tileMap = TileMap(self.screen, Vector(0, 0))
@@ -48,17 +48,17 @@ class Game():
 
         # buttons
         self.buttons = []
-        self.button4x4 = Button(self.screen, Vector(0, 0), "4x4 Tile", 60, 20)
+        self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20)
         self.buttons.append(self.button4x4)
-        self.button1x1 = Button(self.screen, Vector(60, 0), "1x1 Tile", 60, 20)
+        self.button1x1 = Button(Vector(60, 0), "1x1 Tile", 60, 20)
         self.buttons.append(self.button1x1)
-        self.moveplaceableObjects = Button(self.screen, Vector(120, 0), "Move Objects", 120, 20)
-        self.buttons.append(self.moveplaceableObjects)
-        self.buttonShop = Button(self.screen, Vector(240, 0), "Shop", 60, 20)
+        self.moveObjects = Button(Vector(120, 0), "Move Objects", 120, 20)
+        self.buttons.append(self.moveObjects)
+        self.buttonShop = Button(Vector(240, 0), "Shop", 60, 20)
         self.buttons.append(self.buttonShop)
 
         # placed objects
-        self.placeableObjects: list[PlaceableObject] = []
+        self.objects: list[ObjectRegister] = []
 
         self.guests: list[Guest] = []
 
@@ -72,14 +72,17 @@ class Game():
         self.previousMouseClicked = False
         self.moveObject = False
 
+        self.elements = []
+        Button.setScreen(self.screen)
+
     def events(self):
         self.previousMouseClicked = self.mouseClicked
         self.mouseClicked = False
         self.rightMouseClicked = False
         currency = self.shopMenu.getCurrency()
 
-        if len(self.placeableObjects):
-            self.hideGUI = not self.placeableObjects[len(self.placeableObjects) - 1].getPlaced()
+        if len(self.objects):
+            self.hideGUI = not self.objects[len(self.objects) - 1].info.placed
         else:
             self.hideGUI = False
 
@@ -109,43 +112,46 @@ class Game():
         
         self.tileMap.events(self.mouseClicked)
 
+        ObjectRegister.setElementRectangles(self.elements)
+
         if not self.hideGUI:
             if self.button4x4.events(self.mouseClicked):
-                self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.tileMap.tileSize, 4, 4, self.elements, './Resources/Images/WatermelonBin.png'))
+                ObjectRegister(self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
             if self.button1x1.events(self.mouseClicked):
-                self.placeableObjects.append(PlaceableObject(self.screen, Vector(0, 0), self.tileMap.tileSize, 1, 1, self.elements, './Resources/Images/Tomato.png'))
-            if self.moveplaceableObjects.events(self.mouseClicked):
+                ObjectRegister(self.screen, Vector(0, 0), 1, 1, self.tileMap.tileSize)
+            if self.moveObjects.events(self.mouseClicked):
                 self.hideGUI = True
                 self.moveObject = True
             if self.buttonShop.events(self.mouseClicked):
                 self.hideGUI = True
                 self.shopMenu.hidden = False
 
+        self.objects = ObjectRegister.objects
+
         self.setHiddenUI()
 
         objectPlaced = False
 
-        for placeableObject in self.placeableObjects:
-            placeableObject.events(self.previousMouseClicked, self.mouseClicked, events)
+        for currentObject in self.objects:
+            currentObject.events(self.previousMouseClicked, self.mouseClicked, events)
 
-            if not placeableObject.isPlaced:
-                Exit = placeableObject.exitButton.events(self.mouseClicked)
+            if not currentObject.info.placed:
+                Exit = currentObject.info.objectGUI.exitButton.events(self.mouseClicked)
                 if Exit:
-                    self.placeableObjects.remove(placeableObject)
+                    self.objects.remove(currentObject)
                 continue
-            
-            placeableObject.setDirection()
 
+            self.elements.append(currentObject.rectangle)
             #if self.moveObject:
             #    if self.mouseClicked and self.previousMouseClicked:
-            #        self.moveObject = placeableObject.moveToNewPos()
+            #        self.moveObject = currentObject.moveToNewPos()
             
             # do some stuff when the object is placed (only once on the frame the object is placed)
-            if placeableObject.hasPlaced:
-                placeableObject.hasPlaced = False
+            if currentObject.info.hasPlaced:
+                currentObject.info.hasPlaced = False
                 
-                # set the placeableObject's mainTile to changed (important for detecting changes in the tileMap)
-                placedTileID = placeableObject.mainTileID
+                # set the currentObject's mainTile to changed (important for detecting changes in the tileMap)
+                placedTileID = currentObject.mainTileID
                 placedTile = self.tileMap.getTileByID(placedTileID)
 
                 if placedTile is not None:
@@ -154,25 +160,25 @@ class Game():
                     objectPlaced = True
 
         if objectPlaced:
-            # get the tiles that fall within the placeableObject's rect
-            placedObjectTiles = self.tileMap.getTilesInRect(self.placeableObjects[len(self.placeableObjects) - 1].rect)
+            # get the tiles that fall within the currentObject's rect
+            placedObjectTiles = self.tileMap.getTilesInRect(self.objects[len(self.objects) - 1].rectangle)
 
             # remove the main tile from the list
             for tile in placedObjectTiles:
-                if tile.id == self.placeableObjects[len(self.placeableObjects) - 1].mainTileID:
+                if tile.id == self.objects[len(self.objects) - 1].mainTileID:
                     placedObjectTiles.remove(tile)
                     break
         
             self.pathfinder.update()
 
         # place guests down on mouse click (testing, remove this later)
-        if self.rightMouseClicked and len(self.placeableObjects):
-            # pick a random placeableObject
-            randomIndex = randint(0, len(self.placeableObjects) - 1)
+        if self.rightMouseClicked and len(self.objects):
+            # pick a random currentObject
+            randomIndex = randint(0, len(self.objects) - 1)
             
             mousePos = pygame.mouse.get_pos()
             newGuest = Guest(self.screen, Vector(mousePos[0], mousePos[1]))
-            targetTileID = self.placeableObjects[randomIndex].frontTileIDs[0]
+            targetTileID = self.objects[randomIndex].getFrontTiles()[0]
             newGuest.targetTile = self.tileMap.getTileByID(targetTileID)
 
             # make sure the guest is not None
@@ -180,6 +186,7 @@ class Game():
                 self.guests.append(newGuest)
         
         for guest in self.guests:
+            self.elements.append(guest.rect)
             # guest events
             guest.events()
 
@@ -195,28 +202,22 @@ class Game():
         self.displayClock.events()
 
         self.shopMenu.events(self.mouseClicked)
-
         self.elements = []
-        self.elements.extend(self.buttons)
-        self.elements.extend(self.placeableObjects)
-        self.elements.extend(self.guests)
-        self.elements.append(self.displayClock)
 
     # set every element's hidden variable to the value of self.hideGUI
     def setHiddenUI(self):
         for button in self.buttons:
+            self.elements.append(button.rect)
             button.hidden = self.hideGUI
 
         self.displayClock.hidden = self.hideGUI
+        self.elements.append(self.displayClock.rect)
 
     def update(self):
-        self.tileMap.update(self.placeableObjects)
+        self.tileMap.update(self.objects)
 
         for guest in self.guests:
             guest.update()
-
-        for placeableObject in self.placeableObjects:
-            placeableObject.update()
 
         # pathfinder update will check for any changes and update the vector fields
         self.pathfinder.update()
@@ -235,14 +236,14 @@ class Game():
         self.tileMap.draw()
 
         # if we are placing an object, draw the tile lines
-        if len(self.placeableObjects) and not self.placeableObjects[len(self.placeableObjects) - 1].getPlaced():
+        if len(self.objects) and not self.objects[len(self.objects) - 1].info.placed:
             self.tileMap.drawTileLines()
 
         for button in self.buttons:
             button.draw()
 
-        for placeableObject in self.placeableObjects:
-            placeableObject.draw()
+        for currentObject in self.objects:
+            currentObject.draw()
 
         # drawing charachters
         for guest in self.guests:
@@ -286,25 +287,25 @@ class Game():
             
             # debug placeable objects
             if self.debugPlaceableObjects:
-                for placeableObject in self.placeableObjects:
-                    if placeableObject.isPlaced:
-                        # get the tiles that fall within the placeableObject's rect
-                        placedObjectTiles = self.tileMap.getTilesInRect(placeableObject.rect)
+                for currentObject in self.objects:
+                    if currentObject.placed:
+                        # get the tiles that fall within the currentObject's rect
+                        placedObjectTiles = self.tileMap.getTilesInRect(currentObject.rect)
                         for tile in placedObjectTiles:
                             pygame.draw.rect(self.screen, (255, 255, 255), tile.rect, 2)
                         
 
                 # draw a red square over the front tiles of the placeable objects
-                for placeableObject in self.placeableObjects:
-                    if placeableObject.isPlaced:
-                        for frontTileID in placeableObject.frontTileIDs:
+                for currentObject in self.objects:
+                    if currentObject.placed:
+                        for frontTileID in currentObject.frontTileIDs:
                             frontTile = self.tileMap.getTileByID(frontTileID)
                             pygame.draw.rect(self.screen, (255, 0, 0), frontTile.rect, 2)
 
                 # draw a green square over the main tiles of the placeable objects
-                for placeableObject in self.placeableObjects:
-                    if placeableObject.isPlaced:
-                        mainTile = self.tileMap.getTileByID(placeableObject.mainTileID)
+                for currentObject in self.objects:
+                    if currentObject.placed:
+                        mainTile = self.tileMap.getTileByID(currentObject.mainTileID)
                         pygame.draw.rect(self.screen, (0, 255, 0), mainTile.rect, 2)
 
         pygame.display.update()
