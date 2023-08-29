@@ -2,7 +2,7 @@ import pygame
 
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tile import Tile, Type
-from ProduceTycoonGame.placeableObject import PlaceableObject, Direction
+from ProduceTycoonGame.objectRegister import Object, Direction
 
 
 class TileMap():
@@ -85,8 +85,8 @@ class TileMap():
                 tile.isHighlighted = True
                 self.selectTile(tile, mouseClicked)
 
-    def changeTileType(self, tile: Tile, placeableObject: PlaceableObject):
-        if placeableObject.isPlaced and tile.rect.colliderect(placeableObject.rect):
+    def changeTileType(self, tile: Tile, currentObject: Object):
+        if currentObject.info.placed and tile.rect.colliderect(currentObject.rectangle):
             if tile.type == Type.WALKABLE:
                 tile.type = Type.BOUNDARY
 
@@ -97,16 +97,16 @@ class TileMap():
                 collidedTiles.append(tile)
         return collidedTiles
 
-    def getMainTile(self, tile: Tile, placeableObject: PlaceableObject):
-        if tile.rect.colliderect(placeableObject.rect) and placeableObject.mainTileID == -1 and placeableObject.isPlaced:
-            placeableObject.mainTileID = tile.id
+    def getMainTile(self, tile: Tile, currentObject: Object):
+        if tile.rect.colliderect(currentObject.rectangle) and currentObject.mainTileID == -1 and currentObject.info.placed:
+            currentObject.mainTileID = tile.id
 
-    def update(self, placeableObjects: list[PlaceableObject] = None):
-        if placeableObjects is not None:
-            for placeableObject in placeableObjects:
+    def update(self, currentObjects: list[Object] = None):
+        if currentObjects is not None:
+            for currentObject in currentObjects:
                 for tile in self.tileMapGrid:  
-                    self.getMainTile(tile, placeableObject)
-                    self.changeTileType(tile, placeableObject)
+                    self.getMainTile(tile, currentObject)
+                    self.changeTileType(tile, currentObject)
 
 
         changed = False

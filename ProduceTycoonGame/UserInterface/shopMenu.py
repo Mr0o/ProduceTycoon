@@ -20,8 +20,8 @@ class ShopMenu():
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
 
         self.buttons = []
-        self.exitButton = Button(self.screen, Vector(self.pos.x, self.pos.y), 'X', 20, 20, (255, 0, 0))
-        self.watermelonButton = Button(self.screen, Vector(self.pos.x + 20, self.pos.y + 20), 'Watermelon', 100, 100, (255, 0, 0))
+        self.exitButton = Button(Vector(self.pos.x, self.pos.y), 'X', 20, 20, (255, 0, 0))
+        self.watermelonButton = Button(Vector(self.pos.x + 20, self.pos.y + 20), 'Watermelon', 100, 100, (255, 0, 0))
 
         currencyBoxWidth = 40
         currencyBoxHeight = 20
