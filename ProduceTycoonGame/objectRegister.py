@@ -110,6 +110,7 @@ class ObjectInfo:
         self.hasPlaced = hasPlaced
         
     # Some method for changing type
+    #fjgbekjgne
     def setType(self):
         typeButtons = self.objectGUI.typeButtons
         for button in typeButtons:
