@@ -30,7 +30,6 @@ class Direction(Enum):
     WEST = 3
 
 # Helder functions
-
 def getNextDirection(direction):
     return direction + 1 if direction + 1 < 4 else direction - 3
 
@@ -65,7 +64,6 @@ class ObjectGUI:
             self.createButton('Empty')
         ]
 
-        
         self.activeGUI = activeGUI
 
         ObjectGUI.x = 700; ObjectGUI.y = 3
@@ -242,7 +240,7 @@ class Object:
     # Main methods
     def events(self, previousMouseClick: bool = False, mouseClicked: bool = False, events: list = []):
         self.setImage()
-        
+
         if self.info.placed:
             self.info.setType()
             self.info.setDirection()
@@ -280,202 +278,4 @@ class ObjectRegister:
         objectGUI = ObjectGUI()    
         objectInfo = ObjectInfo(screen, position, objectGUI, rows, colums, tileSize)
         return Object(objectID, objectInfo)
-
-
-
-
-
-
-
-#class PlaceableObjectGUI:
-#    def __init__(self, screen: pygame.Surface, pos: Vector, width: int, height: int, color: tuple[int, int, int] | #pygame.Color = (200, 150, 170)):
-#        self.screen = screen
-#        self.pos = pos
-#        self.width = width
-#        self.height = height
-#        self.color = color
-#
-#        self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
-#
-#        textBoxX = self.pos.x + 5
-#        textBoxY = self.pos.y + self.height / 2 - 20
-#        self.textBox = TextInputBox(self.screen, Vector(textBoxX, textBoxY), self.width - 10, 18, (230, 120, 140))
-#        sliderX = self.pos.x + 5
-#        sliderY = self.pos.y + self.height / 2 - 3
-#        self.slider = Slider(self.screen, Vector(sliderX, sliderY), self.width - 10, 6)
-#
-#        self.hidden = True
-#        self.type = ""
-#
-#        self.typeButtonDropdown = DropdownButton(self.screen, Vector(self.pos.x + 5, self.pos.y + 5), 'Type', 50, #20, (255, 255, 255))
-#        self.setTypeButtons = []
-#        self.createButtons()
-#        self.objectValues = {}
-#        
-#
-#    def createButtons(self):
-#        xPos = self.pos.x + 5 - self.typeButtonDropdown.width
-#        yPos += self.pos.y + 30
-#        self.setTypeButtons.append(Button(self.screen, Vector(xPos, yPos), 'Watermelon', 50, 20, (255, 255, 255)))
-#        yPos += 20
-#        self.setTypeButtons.append(Button(self.screen, Vector(xPos, yPos), 'Bananas', 50, 20, (255, 255, 255)))
-#        yPos += 20
-#        self.setTypeButtons.append(Button(self.screen, Vector(xPos, yPos), 'Apples', 50, 20, (255, 255, 255)))
-#        yPos += 20
-#        self.setTypeButtons.append(Button(self.screen, Vector(xPos, yPos), 'Tomatoes', 50, 20, (255, 255, 255)))
-#
-#    def events(self, mouseClicked: bool = False, events: list = []):
-#        if self.hidden:
-#            return
-#
-#        self.textBox.events(events)
-#        self.slider.events(mouseClicked)
-#
-#        if self.typeButtonDropdown.events(mouseClicked):
-#            for button in self.setTypeButtons:
-#                if button.events(mouseClicked):
-#                    self.type = button.text
-#    
-#    def update(self, objectValues: dict[str, int] = {}):
-#        if self.hidden:
-#            self.typeButtonDropdown.isSelected = False
-#            return
-#        self.objectValues = objectValues
-#        
-#        self.textBox.update()
-#        self.slider.update()
-#
-#    def draw(self, printValues: str = ""):
-#        if self.hidden:
-#            return
-#
-#        pygame.draw.rect(self.screen, self.color, self.rect)
-#        pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 1)
-#
-#        valuesText = Text(self.screen, Vector(self.pos.x + 5, self.pos.y + 105), self.width - 10, 20, printValues)
-#        valuesText.draw()
-#
-#        self.textBox.draw()
-#        self.slider.draw()
-#        self.typeButtonDropdown.draw()
-#        if self.typeButtonDropdown.isSelected:
-#            for button in self.setTypeButtons:
-#                button.draw()
-#
-#    def getType(self) -> str:
-#        return self.type
-#        
-#
-#class PlaceableObject:
-#    static_id = 0
-#    static_currentID = None
-#
-#    def __init__(self, screen: pygame.Surface, pos: Vector, size: int, rows: int = 1, cols: int = 1, elements: list #= [], image: str = './Resources/Images/WatermelonBin.png'):
-#        self.id = PlaceableObject.static_id
-#        PlaceableObject.static_id += 1
-#        self.screen = screen
-#        self.pos = pos
-#        self.size = size
-#        self.rows = rows
-#        self.cols = cols
-#        self.elements = elements
-#
-#        self.image = pygame.image.load(image)
-#        self.image = pygame.transform.scale(self.image, (self.rows * self.size, self.cols * self.size))
-#
-#        self.isPlaced = False
-#        self.hasPlaced = False
-#        self.canPlace = False
-#        self.rect = self.image.get_rect()
-#
-#        self.exitButton = Button(self.screen, Vector(0, 0), 'X', 20, 20, (255, 0, 0))
-#
-#        self.gui = PlaceableObjectGUI(self.screen, Vector(self.screen.get_width() - 100, 25), 100, 100, (200, 150, #170))
-#        self.type = typeCase.WATERMELON
-#
-#        self.mainTileID = -1
-#        self.frontTileIDs = []
-#        self.direction = Direction.NORTH
-#
-#        self.amount = 0
-#        self.price = 0
-#        self.printValues = ''
-#
-#
-#    def checkIfCanPlace(self):
-#        for element in self.elements:
-#            if element.rect.colliderect(self.rect):
-#                self.canPlace = False
-#                break
-#            else:
-#                self.canPlace = True
-#
-#    # function looks like garbage fix later
-#    def moveToNewPos(self):
-#        if self.rect.collidepoint(pygame.mouse.get_pos()):
-#            self.isPlaced = False
-#            return self.isPlaced
-#        return self.isPlaced
-#    
-#    def setDirection(self):
-#        
-#
-#    def events(self):
-#        
-#        self.checkIfCanPlace()
-#
-#        mousePos = pygame.mouse.get_pos()
-#        #offset between next tile and mouse position for both x and y
-#        
-#        #new position for the object
-#        
-#            
-#        # changes tile type to object if rect collides with tile and mouse is clicked
-#        if self.canPlace and not mouseClicked and previousMouseClick:
-#            self.isPlaced = True
-#            self.hasPlaced = True
-#
-#    def update(self):
-#        if self.isPlaced:
-#            self.gui.update()
-#
-#            # self.printValues = (self.type.value + ': ' + 
-#            #                     str(self.objectValues.getValue('quantity')) + '\n\t' + 
-#            #                     str(self.objectValues.getValue('price')))
-#
-#            match self.gui.getType():
-#                case TypeObject.WATERMELON.value:
-#                    self.image = pygame.image.load('./Resources/Images/WatermelonBin.png')
-#                    self.type = TypeObject.WATERMELON
-#                case TypeObject.BANANAS.value:
-#                    self.image = pygame.image.load('./Resources/Images/Banana_ProduceTycoon.png')
-#                    self.type = TypeObject.BANANAS
-#                case TypeObject.APPLES.value:
-#                    self.image = pygame.image.load('./Resources/Images/Apple_ProduceTycoon.png')
-#                    
-#                case TypeObject.TOMATOES.value:
-#                    self.image = pygame.image.load('./Resources/Images/Tomato.png')
-#                    self.type = TypeObject.TOMATOES
-#                case _:
-#                    self.image = pygame.image.load('./Resources/Images/WatermelonBin.png')
-#                    self.type = TypeObject.EMPTY
-#            return
-#
-#        
-#
-#    def draw(self):
-#        
-#        self.screen.blit(self.image, self.rect.topleft)
-#
-#        if not self.isPlaced:
-#            self.exitButton.draw()
-#
-#        self.gui.draw(self.printValues)
-#
-#    def getPos(self):
-#        return self.pos
-#
-#    def getPlaced(self):
-#        return self.isPlaced
-
     
