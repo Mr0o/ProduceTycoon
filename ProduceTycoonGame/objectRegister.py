@@ -66,6 +66,7 @@ class ObjectGUI:
 
         self.activeGUI = activeGUI
 
+        # Resets positions back to (700, 3) fbsr;jbwr
         ObjectGUI.x = 700; ObjectGUI.y = 3
 
     # Helper methods
