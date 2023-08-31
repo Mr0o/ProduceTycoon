@@ -1,6 +1,5 @@
 from math import sqrt
 
-from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.tile import Tile
 

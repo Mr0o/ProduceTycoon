@@ -1,13 +1,7 @@
 import pygame
 
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.tile import Type
 from ProduceTycoonGame.UserInterface.button import Button
-from ProduceTycoonGame.valueHandler import ValueHandler
-from ProduceTycoonGame.UserInterface.slider import Slider
-from ProduceTycoonGame.UserInterface.textInputBox import TextInputBox
-from ProduceTycoonGame.UserInterface.dropdownButton import DropdownButton
-from ProduceTycoonGame.UserInterface.text import Text
 
 from enum import Enum
 
