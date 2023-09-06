@@ -3,17 +3,40 @@ from collections import defaultdict
 # Default value of the dictionary will be list
 subscribers = defaultdict(list)
 
-def subscribe(event_type: str, fn):
-    subscribers[event_type].append(fn)
+# Every event that is posted will be appended to this list
+eventList = []
 
-def post_event(event_type: str, args):
-    if not event_type in subscribers:
+
+def subscribe(eventType: str, fn):
+    subscribers[eventType].append(fn)
+
+# args
+def postEvent(eventType: str, args):
+    # append event to eventList
+    eventList.append(eventType)
+
+    # call subcribers function
+    if not eventType in subscribers:
         return
-    for fn in subscribers[event_type]:
+    for fn in subscribers[eventType]:
         fn(args)
 
-def post_event(event_type: str):
-    if not event_type in subscribers:
+# no args
+def postEvent(eventType: str):
+    # append event to eventList
+    eventList.append(eventType)
+
+    # call subcribers function
+    if not eventType in subscribers:
         return
-    for fn in subscribers[event_type]:
+    for fn in subscribers[eventType]:
         fn()
+
+# clear the eventList
+def clearEventList():
+    eventList.clear()
+
+# check if an event is in the eventList
+def eventOccured(eventType: str) -> bool:
+    return eventType in eventList
+    
