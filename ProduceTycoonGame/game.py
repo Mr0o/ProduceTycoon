@@ -80,16 +80,13 @@ class Game():
         self.previousMouseClicked = self.mouseClicked
         self.mouseClicked = False
         self.rightMouseClicked = False
-        currency = self.shopMenu.getCurrency()
 
         if len(self.objects):
             self.hideGUI = not self.objects[len(self.objects) - 1].info.placed
         else:
             self.hideGUI = False
 
-        events = []
         for event in pygame.event.get():
-            events.append(event)
             # will stop running and exit
             if event.type == pygame.QUIT:
                 self.running = False
@@ -134,7 +131,7 @@ class Game():
         objectPlaced = False
 
         for currentObject in self.objects:
-            currentObject.events(self.previousMouseClicked, self.mouseClicked, events)
+            currentObject.events(self.previousMouseClicked, self.mouseClicked, [])
 
             if not currentObject.info.placed:
                 Exit = currentObject.info.objectGUI.exitButton.events(self.mouseClicked)
