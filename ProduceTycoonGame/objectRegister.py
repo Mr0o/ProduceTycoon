@@ -37,22 +37,19 @@ def getMouseClick():
     return pygame.mouse.get_pressed()[0]
 
 class ObjectGUI:
-    typeDict: dict[str, TypeProduceCase]
-    typeButtons: list[Button] = []
-    activeGUI: bool
+    typeDict = {
+        'Watermelon': TypeProduceCase.WATERMELON,
+        'Tomatoes': TypeProduceCase.TOMATOES,
+        'Bananas':  TypeProduceCase.BANANAS,
+        'Apples': TypeProduceCase.APPLES,
+        'Empty': TypeProduceCase.EMPTY 
+    }
+    typeButtons: []
+    active: bool
 
     # Positions
     x = 700; y = 3
-    def __init__(self, activeGUI = False):
-        
-        self.typeDict = {
-            'Watermelon': TypeProduceCase.WATERMELON,
-            'Tomatoes': TypeProduceCase.TOMATOES,
-            'Bananas':  TypeProduceCase.BANANAS,
-            'Apples': TypeProduceCase.APPLES,
-            'Empty': TypeProduceCase.EMPTY 
-        }
-
+    def __init__(self, active = False):
         self.changeDirectionButton = self.createButton('Rotate')
         self.exitButton = self.createButton('X')
 
@@ -64,7 +61,7 @@ class ObjectGUI:
             self.createButton('Empty')
         ]
 
-        self.activeGUI = activeGUI
+        self.active = active
 
         # Resets positions back to (700, 3) fbsr;jbwr
         ObjectGUI.x = 700; ObjectGUI.y = 3
@@ -116,7 +113,7 @@ class ObjectInfo:
             # If button is clicked
             if button.events(getMouseClick()):
                 # Return type of button
-                self.typeCase = self.objectGUI.typeDict[button.name]
+                self.typeCase = ObjectGUI.typeDict[button.info.name]
 
     def setDirection(self):
         # If button is clicked
@@ -140,7 +137,7 @@ class Object:
     image: pygame.Surface
     rectangle: pygame.Rect
 
-    s_currentID = -1
+    currentID = -1
 
     def __init__(self, objectID, info, mainTileID = -1):
         self.objectID = objectID
@@ -226,12 +223,12 @@ class Object:
         mouseClickedObject = mouseClicked and self.rectangle.collidepoint(pygame.mouse.get_pos())
         if mouseClickedObject:
             # Current ID is set to this object's ID
-            Object.s_currentID = self.objectID
-            # The first click on the object will open the GUI
-            self.info.objectGUI.activeGUI = not self.info.objectGUI.activeGUI
-        if Object.s_currentID is not self.objectID :
-            self.info.objectGUI.activeGUI = False
-        return self.info.objectGUI.activeGUI
+            Object.currentID = self.objectID
+            # The first click on the object will open the GUI second click will close it
+            self.info.objectGUI.active = not self.info.objectGUI.active
+        if Object.currentID is not self.objectID :
+            self.info.objectGUI.active = False
+        return self.info.objectGUI.active
 
     def placeObject(self, mouseClicked, previousMouseClick):
         if self.info.canPlace(self.rectangle) and mouseClicked and not previousMouseClick:
@@ -245,6 +242,7 @@ class Object:
         if self.info.placed:
             self.info.setType()
             self.info.setDirection()
+            print(self.openGUI(mouseClicked))
             if self.openGUI(mouseClicked):
                 self.info.objectGUI.events()
             return
@@ -254,7 +252,7 @@ class Object:
 
     def draw(self):
         self.info.screen.blit(self.image, (self.info.position.x, self.info.position.y))
-        if self.info.placed and self.info.objectGUI.activeGUI:
+        if self.info.placed and self.info.objectGUI.active:
             self.info.objectGUI.draw()
         
 
@@ -270,7 +268,6 @@ class ObjectRegister:
         objectID = ObjectRegister.objectID
         ObjectRegister.objectID += 1
         return objectID
-    
     @staticmethod
     def setElementRectangles(elementRectangles):
         ObjectInfo.setElementRectangles(elementRectangles)

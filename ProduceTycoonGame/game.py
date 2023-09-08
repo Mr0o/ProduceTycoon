@@ -8,7 +8,7 @@ from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.objectRegister import ObjectRegister
 from ProduceTycoonGame.UserInterface.clock import Clock
-from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
+#from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.valueHandler import ValueHandler
 
@@ -48,14 +48,13 @@ class Game():
 
         # buttons
         self.buttons = []
+        Button.setScreen(self.screen)
         self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20)
         self.buttons.append(self.button4x4)
         self.button1x1 = Button(Vector(60, 0), "1x1 Tile", 60, 20)
         self.buttons.append(self.button1x1)
-        self.moveObjects = Button(Vector(120, 0), "Move Objects", 120, 20)
-        self.buttons.append(self.moveObjects)
-        self.buttonShop = Button(Vector(240, 0), "Shop", 60, 20)
-        self.buttons.append(self.buttonShop)
+        #self.moveObjects = Button(Vector(120, 0), "Move Objects", 120, 20)
+        #self.buttonShop = Button(Vector(240, 0), "Shop", 60, 20)
 
         # placed objects
         self.objects: list[ObjectRegister] = []
@@ -64,7 +63,7 @@ class Game():
 
         self.displayClock = Clock(self.clock, self.screen, Vector(WIDTH - 100, 0))
 
-        self.shopMenu = ShopMenu(self.screen, Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2, self.playerValues)
+        #self.shopMenu = ShopMenu(self.screen, Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2, self.playerValues)
 
         self.hideGUI = False
         self.mouseClicked = False
@@ -73,13 +72,12 @@ class Game():
         self.moveObject = False
 
         self.elements = []
-        Button.setScreen(self.screen)
 
     def events(self):
         self.previousMouseClicked = self.mouseClicked
         self.mouseClicked = False
         self.rightMouseClicked = False
-        currency = self.shopMenu.getCurrency()
+        #currency = self.shopMenu.getCurrency()
 
         if len(self.objects):
             self.hideGUI = not self.objects[len(self.objects) - 1].info.placed
@@ -119,12 +117,12 @@ class Game():
                 ObjectRegister(self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
             if self.button1x1.events(self.mouseClicked):
                 ObjectRegister(self.screen, Vector(0, 0), 1, 1, self.tileMap.tileSize)
-            if self.moveObjects.events(self.mouseClicked):
-                self.hideGUI = True
-                self.moveObject = True
-            if self.buttonShop.events(self.mouseClicked):
-                self.hideGUI = True
-                self.shopMenu.hidden = False
+            #if self.moveObjects.events(self.mouseClicked):
+            #    self.hideGUI = True
+            #    self.moveObject = True
+            #if self.buttonShop.events(self.mouseClicked):
+            #    self.hideGUI = True
+            #    self.shopMenu.hidden = False
 
         self.objects = ObjectRegister.objects
 
@@ -201,14 +199,14 @@ class Game():
 
         self.displayClock.events()
 
-        self.shopMenu.events(self.mouseClicked)
+        #self.shopMenu.events(self.mouseClicked)
         self.elements = []
 
     # set every element's hidden variable to the value of self.hideGUI
     def setHiddenUI(self):
         for button in self.buttons:
             self.elements.append(button.rect)
-            button.hidden = self.hideGUI
+            button.active = self.hideGUI
 
         self.displayClock.hidden = self.hideGUI
         self.elements.append(self.displayClock.rect)
@@ -222,7 +220,7 @@ class Game():
         # pathfinder update will check for any changes and update the vector fields
         self.pathfinder.update()
 
-        self.shopMenu.update()
+        #self.shopMenu.update()
         
         if self.debug:
             pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
@@ -251,7 +249,7 @@ class Game():
 
         self.displayClock.draw()
 
-        self.shopMenu.draw()
+        #self.shopMenu.draw()
 
         ## DEBUG STUFF ##
         if self.debug:
