@@ -93,9 +93,9 @@ class Game():
                     postEvent(Event("backspace_pressed"))
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    postEvent(Event("left_mouse_clicked"))
+                    postEvent(Event("left_mouse_clicked", eventData=Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])))
                 if event.button == 3:
-                    postEvent(Event("right_mouse_clicked"))
+                    postEvent(Event("right_mouse_clicked", eventData=Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])))
 
         if len(self.objects):
             self.hideGUI = not self.objects[len(self.objects) - 1].info.placed
