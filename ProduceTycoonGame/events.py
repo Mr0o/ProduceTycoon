@@ -4,39 +4,64 @@ from collections import defaultdict
 subscribers = defaultdict(list)
 
 # Every event that is posted will be appended to this list
-eventList = []
+eventList: list['Event'] = []
 
 
-def subscribe(eventType: str, fn):
+def subscribe(eventType: 'Event', fn):
     subscribers[eventType].append(fn)
 
-# args
-def postEvent(eventType: str, args):
+
+def postEvent(event: 'Event'):
     # append event to eventList
-    eventList.append(eventType)
+    eventList.append(event)
 
     # call subcribers function
-    if not eventType in subscribers:
+    if not event in subscribers:
         return
-    for fn in subscribers[eventType]:
-        fn(args)
-
-# no args
-def postEvent(eventType: str):
-    # append event to eventList
-    eventList.append(eventType)
-
-    # call subcribers function
-    if not eventType in subscribers:
-        return
-    for fn in subscribers[eventType]:
+    for fn in subscribers[event]:
         fn()
+
 
 # clear the eventList
 def clearEventList():
     eventList.clear()
 
+
 # check if an event is in the eventList
 def eventOccured(eventType: str) -> bool:
-    return eventType in eventList
+    # check if any of the event objects have the same eventType string
+    for event in eventList:
+        if event.getEventType() == eventType:
+            return True
     
+    return False
+
+
+def getEvent(eventType: str) -> 'Event':
+    # check if any of the event objects have the same eventType string
+    for event in eventList:
+        if event.getEventType() == eventType:
+            return event
+        
+    return None
+
+# event class
+class Event:
+    def __init__(self, eventType: str, args=None):
+        self.eventType = eventType
+        self.args = args
+
+        # this can be used to store relevent event data
+        self.eventData = None
+
+    def getEventType(self) -> str:
+        return self.eventType
+
+    def getArgs(self):
+        return self.args
+    
+    def getData(self):
+        return self.eventData
+
+    def __str__(self):
+        return self.eventType
