@@ -1,5 +1,5 @@
 from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
-from ProduceTycoonGame.pathfinding import Pathfinder, VectorField
+from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.tile import Type

@@ -2,7 +2,7 @@ import pygame
 
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tile import Tile, Type
-from ProduceTycoonGame.objectRegister import Object, Direction
+from ProduceTycoonGame.objectRegister import Object
 
 
 class TileMap():

@@ -1,7 +1,6 @@
 import time
 from ProduceTycoonGame.tileMap import TileMap
 from ProduceTycoonGame.tile import Tile, Type
-from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
 
