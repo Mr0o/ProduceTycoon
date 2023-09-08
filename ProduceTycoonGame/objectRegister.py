@@ -240,10 +240,9 @@ class Object:
         self.setImage()
 
         if self.info.placed:
-            self.info.setType()
-            self.info.setDirection()
-            print(self.openGUI(mouseClicked))
             if self.openGUI(mouseClicked):
+                self.info.setType()
+                self.info.setDirection()
                 self.info.objectGUI.events()
             return
  
@@ -268,6 +267,7 @@ class ObjectRegister:
         objectID = ObjectRegister.objectID
         ObjectRegister.objectID += 1
         return objectID
+
     @staticmethod
     def setElementRectangles(elementRectangles):
         ObjectInfo.setElementRectangles(elementRectangles)
