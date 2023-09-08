@@ -262,6 +262,7 @@ class ObjectRegister:
     objectID = 0
     objects = []
 
+    # fix code __init__ or generateObject moethod they should not both take in the same arguments basically
     def __init__(self, screen, position, rows, colums, tileSize):
         self.objects.append(self.generateObject(screen, position, rows, colums, tileSize))
 
