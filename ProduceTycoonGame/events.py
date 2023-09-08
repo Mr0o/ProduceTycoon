@@ -47,12 +47,12 @@ def getEvent(eventType: str) -> 'Event':
 
 # event class
 class Event:
-    def __init__(self, eventType: str, args=None):
+    def __init__(self, eventType: str, args=None, eventData=None):
         self.eventType = eventType
         self.args = args
 
         # this can be used to store relevent event data
-        self.eventData = None
+        self.eventData = eventData
 
     def getEventType(self) -> str:
         return self.eventType
