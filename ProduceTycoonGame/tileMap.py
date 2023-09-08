@@ -3,6 +3,7 @@ import pygame
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tile import Tile, Type
 from ProduceTycoonGame.objectRegister import Object
+from ProduceTycoonGame.events import eventOccured, Event
 
 
 class TileMap():
@@ -75,7 +76,7 @@ class TileMap():
                 self.selectedTile.isSelected = True
         
 
-    def events(self, mouseClicked: bool = False):
+    def events(self):
         # checking if mouse is hovering over tile
         self.highlightedTile = None
         for tile in self.tileMapGrid:
@@ -83,7 +84,7 @@ class TileMap():
             if tile.rect.collidepoint(pygame.mouse.get_pos()):
                 self.highlightedTile = tile
                 tile.isHighlighted = True
-                self.selectTile(tile, mouseClicked)
+                self.selectTile(tile, eventOccured("left_mouse_clicked"))
 
     def changeTileType(self, tile: Tile, currentObject: Object):
         if currentObject.info.placed and tile.rect.colliderect(currentObject.rectangle):

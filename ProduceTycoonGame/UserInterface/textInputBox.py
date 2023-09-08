@@ -16,25 +16,27 @@ class TextInputBox():
         self.textFont = pygame.font.Font(None, 32)
         self.text = ''
     
-    def events(self, events: list = []):
+    def events(self):
+        return
+        ###### TODO: get rid of this lmao, or at least switch to events
         #print()
-        for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.rect.collidepoint(event.pos):
-                    self.active = True
-                else:
-                    self.active = False
-            if event.type == pygame.KEYDOWN:
-                if self.active:
-                    if event.key == pygame.K_BACKSPACE:
-                        self.text = self.text[:-1]
-                    elif   (event.key == pygame.K_0 or event.key == pygame.K_1 
-                         or event.key == pygame.K_2 or event.key == pygame.K_3 
-                         or event.key == pygame.K_4 or event.key == pygame.K_5 
-                         or event.key == pygame.K_6 or event.key == pygame.K_7 
-                         or event.key == pygame.K_8 or event.key == pygame.K_9):
+        # for event in events:
+        #     if event.type == pygame.MOUSEBUTTONDOWN:
+        #         if self.rect.collidepoint(event.pos):
+        #             self.active = True
+        #         else:
+        #             self.active = False
+        #     if event.type == pygame.KEYDOWN:
+        #         if self.active:
+        #             if event.key == pygame.K_BACKSPACE:
+        #                 self.text = self.text[:-1]
+        #             elif   (event.key == pygame.K_0 or event.key == pygame.K_1 
+        #                  or event.key == pygame.K_2 or event.key == pygame.K_3 
+        #                  or event.key == pygame.K_4 or event.key == pygame.K_5 
+        #                  or event.key == pygame.K_6 or event.key == pygame.K_7 
+        #                  or event.key == pygame.K_8 or event.key == pygame.K_9):
 
-                        self.text += event.unicode
+        #                 self.text += event.unicode
 
     def update(self):
         pass

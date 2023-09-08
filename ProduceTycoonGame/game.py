@@ -11,7 +11,7 @@ from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.valueHandler import ValueHandler
-from ProduceTycoonGame.events import postEvent, clearEventList, eventOccured
+from ProduceTycoonGame.events import postEvent, clearEventList, eventOccured, Event
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -22,8 +22,10 @@ class Game():
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
 
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         self.running = True
+        
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
@@ -68,31 +70,19 @@ class Game():
         self.shopMenu = ShopMenu(self.screen, Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2, self.playerValues)
 
         self.hideGUI = False
-        self.mouseClicked = False
-        self.backspacePressed = False
-        self.previousMouseClicked = False
         self.moveObject = False
 
         self.elements = []
         Button.setScreen(self.screen)
 
     def events(self):
-        self.previousMouseClicked = self.mouseClicked
-        self.mouseClicked = False
-        self.rightMouseClicked = False
-
-        if len(self.objects):
-            self.hideGUI = not self.objects[len(self.objects) - 1].info.placed
-        else:
-            self.hideGUI = False
-
         for event in pygame.event.get():
             # will stop running and exit
             if event.type == pygame.QUIT:
-                self.running = False
+                postEvent(Event("quit"))
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.running = False
+                    postEvent(Event("quit"))
                 # press '1' to toggle debug
                 if event.key == pygame.K_1:
                     self.debug = not self.debug
@@ -100,27 +90,31 @@ class Game():
                 if event.key == pygame.K_2:
                     self.debugPlaceableObjects = not self.debugPlaceableObjects
                 if event.key == pygame.K_BACKSPACE:
-                    self.backspacePressed = True
+                    postEvent(Event("backspace_pressed"))
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
-                    self.mouseClicked = True
+                    postEvent(Event("left_mouse_clicked"))
                 if event.button == 3:
-                    self.rightMouseClicked = True
+                    postEvent(Event("right_mouse_clicked"))
 
-        
-        self.tileMap.events(self.mouseClicked)
+        if len(self.objects):
+            self.hideGUI = not self.objects[len(self.objects) - 1].info.placed
+        else:
+            self.hideGUI = False
+
+        self.tileMap.events()
 
         ObjectRegister.setElementRectangles(self.elements)
 
         if not self.hideGUI:
-            if self.button4x4.events(self.mouseClicked):
+            if self.button4x4.events():
                 ObjectRegister(self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
-            if self.button1x1.events(self.mouseClicked):
+            if self.button1x1.events():
                 ObjectRegister(self.screen, Vector(0, 0), 1, 1, self.tileMap.tileSize)
-            if self.moveObjects.events(self.mouseClicked):
+            if self.moveObjects.events():
                 self.hideGUI = True
                 self.moveObject = True
-            if self.buttonShop.events(self.mouseClicked):
+            if self.buttonShop.events():
                 self.hideGUI = True
                 self.shopMenu.hidden = False
 
@@ -131,17 +125,17 @@ class Game():
         objectPlaced = False
 
         for currentObject in self.objects:
-            currentObject.events(self.previousMouseClicked, self.mouseClicked, [])
+            currentObject.events()
 
             if not currentObject.info.placed:
-                Exit = currentObject.info.objectGUI.exitButton.events(self.mouseClicked)
+                Exit = currentObject.info.objectGUI.exitButton.events()
                 if Exit:
                     self.objects.remove(currentObject)
                 continue
 
             self.elements.append(currentObject.rectangle)
             #if self.moveObject:
-            #    if self.mouseClicked and self.previousMouseClicked:
+            #    if eventOccured("left_mouse_clicked"):
             #        self.moveObject = currentObject.moveToNewPos()
             
             # do some stuff when the object is placed (only once on the frame the object is placed)
@@ -170,7 +164,7 @@ class Game():
             self.pathfinder.update()
 
         # place guests down on mouse click (testing, remove this later)
-        if self.rightMouseClicked and len(self.objects):
+        if eventOccured("right_mouse_clicked") and len(self.objects):
             # pick a random currentObject
             randomIndex = randint(0, len(self.objects) - 1)
             
@@ -199,10 +193,14 @@ class Game():
 
         self.displayClock.events()
 
-        self.shopMenu.events(self.mouseClicked)
+        self.shopMenu.events()
         self.elements = []
 
-        # clear the eventList
+        # check for quit event
+        if eventOccured("quit"):
+            self.running = False
+
+        # clear the eventList every frame
         clearEventList()
 
     # set every element's hidden variable to the value of self.hideGUI

@@ -2,6 +2,7 @@ import pygame
 
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.text import Text
+from ProduceTycoonGame.events import eventOccured, Event
 
 class Button():
     static_screen = pygame.Surface((0, 0))
@@ -22,17 +23,17 @@ class Button():
     def setScreen(screen: pygame.Surface):
         Button.static_screen = screen
     
-    def events(self, mouseClicked: bool):
+    def events(self):
         if self.hidden:
             return False
 
         # check if mouse position is on the button rect
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             # if mouse is clicked and the button is not already selected
-            if mouseClicked and not self.isSelected:
+            if eventOccured('left_mouse_clicked') and not self.isSelected:
                 self.isSelected = True
         
-        if not mouseClicked:
+        if not eventOccured('left_mouse_clicked'):
             self.isSelected = False
         self.textRenderer = Text(Button.static_screen, self.pos, self.width, self.height, self.name)
 
