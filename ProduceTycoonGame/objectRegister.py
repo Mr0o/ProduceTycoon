@@ -39,11 +39,11 @@ def getMouseClick():
 class ObjectGUI:
     typeDict: dict[str, TypeProduceCase]
     typeButtons: list[Button] = []
-    activeGUI: bool
+    active: bool
 
     # Positions
     x = 700; y = 3
-    def __init__(self, activeGUI = False):
+    def __init__(self, active = False):
         
         self.typeDict = {
             'Watermelon': TypeProduceCase.WATERMELON,
@@ -64,7 +64,7 @@ class ObjectGUI:
             self.createButton('Empty')
         ]
 
-        self.activeGUI = activeGUI
+        self.active = active
 
         # Resets positions back to (700, 3) fbsr;jbwr
         ObjectGUI.x = 700; ObjectGUI.y = 3
@@ -74,6 +74,7 @@ class ObjectGUI:
         x = ObjectGUI.x
         y = ObjectGUI.y
         ObjectGUI.y += 20
+        # Fix magic constants
         return Button(Vector(x, y), nameButton, 100, 20)
 
     # Main methods
@@ -228,10 +229,10 @@ class Object:
             # Current ID is set to this object's ID
             Object.s_currentID = self.objectID
             # The first click on the object will open the GUI
-            self.info.objectGUI.activeGUI = not self.info.objectGUI.activeGUI
+            self.info.objectGUI.active = not self.info.objectGUI.active
         if Object.s_currentID is not self.objectID :
-            self.info.objectGUI.activeGUI = False
-        return self.info.objectGUI.activeGUI
+            self.info.objectGUI.active = False
+        return self.info.objectGUI.active
 
     def placeObject(self, mouseClicked, previousMouseClick):
         if self.info.canPlace(self.rectangle) and mouseClicked and not previousMouseClick:
@@ -254,7 +255,7 @@ class Object:
 
     def draw(self):
         self.info.screen.blit(self.image, (self.info.position.x, self.info.position.y))
-        if self.info.placed and self.info.objectGUI.activeGUI:
+        if self.info.placed and self.info.objectGUI.active:
             self.info.objectGUI.draw()
         
 
