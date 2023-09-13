@@ -56,7 +56,26 @@ class ObjectGUI:
         x = ObjectGUI.x
         y = ObjectGUI.y
         ObjectGUI.y += 20
-        return Button(Vector(x, y), nameButton, 100, 20)
+        return Button(Vector(x, y), nameButton, 100, 20, func)
+
+    def createButtons(self):
+        return [
+            self.createButton('Watermelon', lambda: self.setTypeCase(TypeProduceCase.WATERMELON)),
+            self.createButton('Bananas', lambda: self.setTypeCase(TypeProduceCase.BANANAS)),
+            self.createButton('Apples', lambda: self.setTypeCase(TypeProduceCase.APPLES)),
+            self.createButton('Tomatoes', lambda: self.setTypeCase(TypeProduceCase.TOMATOES)),
+            self.createButton('Empty', lambda: self.setTypeCase(TypeProduceCase.EMPTY))
+        ]
+    
+    def setDirection(self, direction: Direction):
+        self.direction = getNextDirection(direction)
+
+    def setTypeCase(self, typeCase: TypeProduceCase):
+        self.typeCase = typeCase
+
+    def exitGUI(self):
+        self.active = False
+        Object.currentID = -1
 
     # Main methods
     def events(self):
