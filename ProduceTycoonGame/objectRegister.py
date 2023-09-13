@@ -49,7 +49,7 @@ class ObjectGUI:
         self.direction = direction
         self.typeCase = typeCase
 
-        self.changeDirectionButton = self.createButton('Rotate', self.setDirection(self.direction))
+        self.changeDirectionButton = self.createButton('Rotate', lambda: self.setDirection(self.direction))
         self.exitButton = self.createButton('X', lambda: self.exitGUI())
 
         self.typeButtons = self.createButtons()
