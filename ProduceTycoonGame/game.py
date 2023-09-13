@@ -8,9 +8,13 @@ from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.objectRegister import ObjectRegister
 from ProduceTycoonGame.UserInterface.clock import Clock
-from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
+#from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.valueHandler import ValueHandler
+
+# Helper Functions
+def createObject(screen: pygame.Surface, pos: Vector, width: int, height: int, tileSize: int):
+    return ObjectRegister(screen, pos, width, height, tileSize)
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -47,15 +51,16 @@ class Game():
         self.playerValues = ValueHandler.getStaticValues()
 
         # buttons
+        object4x4Args = (self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
+        object1x1Args = (self.screen, Vector(0, 0), 1, 1, self.tileMap.tileSize)
         self.buttons = []
-        self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20)
+        Button.setScreen(self.screen)
+        self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20, lambda: createObject(*object4x4Args))
         self.buttons.append(self.button4x4)
-        self.button1x1 = Button(Vector(60, 0), "1x1 Tile", 60, 20)
+        self.button1x1 = Button(Vector(60, 0), "1x1 Tile", 60, 20, lambda: createObject(*object1x1Args))
         self.buttons.append(self.button1x1)
-        self.moveObjects = Button(Vector(120, 0), "Move Objects", 120, 20)
-        self.buttons.append(self.moveObjects)
-        self.buttonShop = Button(Vector(240, 0), "Shop", 60, 20)
-        self.buttons.append(self.buttonShop)
+        #self.moveObjects = Button(Vector(120, 0), "Move Objects", 120, 20)
+        #self.buttonShop = Button(Vector(240, 0), "Shop", 60, 20)
 
         # placed objects
         self.objects: list[ObjectRegister] = []
@@ -64,7 +69,7 @@ class Game():
 
         self.displayClock = Clock(self.clock, self.screen, Vector(WIDTH - 100, 0))
 
-        self.shopMenu = ShopMenu(self.screen, Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2, self.playerValues)
+        #self.shopMenu = ShopMenu(self.screen, Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2, self.playerValues)
 
         self.hideGUI = False
         self.mouseClicked = False
@@ -73,13 +78,12 @@ class Game():
         self.moveObject = False
 
         self.elements = []
-        Button.setScreen(self.screen)
 
     def events(self):
         self.previousMouseClicked = self.mouseClicked
         self.mouseClicked = False
         self.rightMouseClicked = False
-        currency = self.shopMenu.getCurrency()
+        #currency = self.shopMenu.getCurrency()
 
         if len(self.objects):
             self.hideGUI = not self.objects[len(self.objects) - 1].info.placed
@@ -115,16 +119,14 @@ class Game():
         ObjectRegister.setElementRectangles(self.elements)
 
         if not self.hideGUI:
-            if self.button4x4.events(self.mouseClicked):
-                ObjectRegister(self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
-            if self.button1x1.events(self.mouseClicked):
-                ObjectRegister(self.screen, Vector(0, 0), 1, 1, self.tileMap.tileSize)
-            if self.moveObjects.events(self.mouseClicked):
-                self.hideGUI = True
-                self.moveObject = True
-            if self.buttonShop.events(self.mouseClicked):
-                self.hideGUI = True
-                self.shopMenu.hidden = False
+            for button in self.buttons:
+                button.events(self.mouseClicked)
+            #if self.moveObjects.events(self.mouseClicked):
+            #    self.hideGUI = True
+            #    self.moveObject = True
+            #if self.buttonShop.events(self.mouseClicked):
+            #    self.hideGUI = True
+            #    self.shopMenu.hidden = False
 
         self.objects = ObjectRegister.objects
 
@@ -135,11 +137,11 @@ class Game():
         for currentObject in self.objects:
             currentObject.events(self.previousMouseClicked, self.mouseClicked, events)
 
-            if not currentObject.info.placed:
-                Exit = currentObject.info.objectGUI.exitButton.events(self.mouseClicked)
-                if Exit:
-                    self.objects.remove(currentObject)
-                continue
+            #if not currentObject.info.placed:
+                #Exit = currentObject.info.objectGUI.exitButton.events(self.mouseClicked)
+                #if Exit:
+                #    self.objects.remove(currentObject)
+                #continue
 
             self.elements.append(currentObject.rectangle)
             #if self.moveObject:
@@ -201,14 +203,14 @@ class Game():
 
         self.displayClock.events()
 
-        self.shopMenu.events(self.mouseClicked)
+        #self.shopMenu.events(self.mouseClicked)
         self.elements = []
 
     # set every element's hidden variable to the value of self.hideGUI
     def setHiddenUI(self):
         for button in self.buttons:
             self.elements.append(button.rect)
-            button.hidden = self.hideGUI
+            button.active = self.hideGUI
 
         self.displayClock.hidden = self.hideGUI
         self.elements.append(self.displayClock.rect)
@@ -222,7 +224,7 @@ class Game():
         # pathfinder update will check for any changes and update the vector fields
         self.pathfinder.update()
 
-        self.shopMenu.update()
+        #self.shopMenu.update()
         
         if self.debug:
             pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
@@ -251,7 +253,7 @@ class Game():
 
         self.displayClock.draw()
 
-        self.shopMenu.draw()
+        #self.shopMenu.draw()
 
         ## DEBUG STUFF ##
         if self.debug:
