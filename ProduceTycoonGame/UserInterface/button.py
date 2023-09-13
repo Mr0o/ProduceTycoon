@@ -37,23 +37,25 @@ class ButtonInfo():
     name: str
     width: int
     height: int
+    func: callable
     color: tuple[int, int, int]= (110, 190, 210)
     active: bool = False
     isSelected: bool = False
 
-    def __init__(self, pos: Vector, name: str, width: int, height: int, active = True, isSelected = False):
+    def __init__(self, pos, name, width, height, func, active = True, isSelected = False):
         self.pos = pos
         self.name = name
         self.width = width
         self.height = height
+        self.func = func
 
         self.active = active
         self.isSelected = isSelected
 
 class Button():
-    info: ButtonInfo
-    rect: pygame.Rect
     text: Text
+    rect: pygame.Rect
+    info: ButtonInfo
 
     # static variables
     screen = pygame.Surface((0, 0))
@@ -64,25 +66,24 @@ class Button():
         Button.screen = screen
 
     # instance methods
-    def __init__(self, pos: Vector, name: str, width: int, height: int):
+    def __init__(self, pos: Vector, name: str, width: int, height: int, func: callable):
         self.text = createText(pos, width, height, name)
         self.rect = createRect(pos, width, height)
-        self.info = createInfo(pos, name, width, height)
+        self.info = createInfo(pos, name, width, height, func)
 
     # main methods
     def events(self, mouseClicked: bool):
         if not self.info.active:
-            return False
-
+            return
         # check if mouse position is on the button rect
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             # if mouse is clicked and the button is not already selected
             if mouseClicked and not self.info.isSelected:
                 self.info.isSelected = True
-    
+                # call the function
+                self.info.func()
         if not mouseClicked:
             self.info.isSelected = False
-        return self.info.isSelected
     
     def draw(self):
         if not self.info.active:
@@ -97,8 +98,9 @@ def createText(pos, width, height, name):
 def createRect(pos, width, height):
     return pygame.Rect((pos.x, pos.y), (width, height))
 
-def createInfo(pos, name, width, height):
-    return ButtonInfo(pos, name, width, height)
+def createInfo(pos, name, width, height, func):
+    return ButtonInfo(pos, name, width, height, func)
+
 
         
 

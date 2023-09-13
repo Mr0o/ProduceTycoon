@@ -12,6 +12,10 @@ from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.valueHandler import ValueHandler
 
+# Helper Functions
+def createObject(screen: pygame.Surface, pos: Vector, width: int, height: int, tileSize: int):
+    return ObjectRegister(screen, pos, width, height, tileSize)
+
 # this is the main game loop (events, update, draw)
 class Game():
     def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
@@ -47,11 +51,13 @@ class Game():
         self.playerValues = ValueHandler.getStaticValues()
 
         # buttons
+        object4x4Args = (self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
+        object1x1Args = (self.screen, Vector(0, 0), 1, 1, self.tileMap.tileSize)
         self.buttons = []
         Button.setScreen(self.screen)
-        self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20)
+        self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20, lambda: createObject(*object4x4Args))
         self.buttons.append(self.button4x4)
-        self.button1x1 = Button(Vector(60, 0), "1x1 Tile", 60, 20)
+        self.button1x1 = Button(Vector(60, 0), "1x1 Tile", 60, 20, lambda: createObject(*object1x1Args))
         self.buttons.append(self.button1x1)
         #self.moveObjects = Button(Vector(120, 0), "Move Objects", 120, 20)
         #self.buttonShop = Button(Vector(240, 0), "Shop", 60, 20)
@@ -113,10 +119,8 @@ class Game():
         ObjectRegister.setElementRectangles(self.elements)
 
         if not self.hideGUI:
-            if self.button4x4.events(self.mouseClicked):
-                ObjectRegister(self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
-            if self.button1x1.events(self.mouseClicked):
-                ObjectRegister(self.screen, Vector(0, 0), 1, 1, self.tileMap.tileSize)
+            for button in self.buttons:
+                button.events(self.mouseClicked)
             #if self.moveObjects.events(self.mouseClicked):
             #    self.hideGUI = True
             #    self.moveObject = True
@@ -133,11 +137,11 @@ class Game():
         for currentObject in self.objects:
             currentObject.events(self.previousMouseClicked, self.mouseClicked, events)
 
-            if not currentObject.info.placed:
-                Exit = currentObject.info.objectGUI.exitButton.events(self.mouseClicked)
-                if Exit:
-                    self.objects.remove(currentObject)
-                continue
+            #if not currentObject.info.placed:
+                #Exit = currentObject.info.objectGUI.exitButton.events(self.mouseClicked)
+                #if Exit:
+                #    self.objects.remove(currentObject)
+                #continue
 
             self.elements.append(currentObject.rectangle)
             #if self.moveObject:

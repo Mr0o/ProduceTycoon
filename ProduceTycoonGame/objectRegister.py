@@ -37,48 +37,64 @@ def getMouseClick():
     return pygame.mouse.get_pressed()[0]
 
 class ObjectGUI:
-    typeDict = {
-        'Watermelon': TypeProduceCase.WATERMELON,
-        'Tomatoes': TypeProduceCase.TOMATOES,
-        'Bananas':  TypeProduceCase.BANANAS,
-        'Apples': TypeProduceCase.APPLES,
-        'Empty': TypeProduceCase.EMPTY 
-    }
-    typeButtons: []
+    typeButtons = []
     active: bool
+    direction: Direction
+    typeCase: TypeProduceCase
 
     # Positions
     x = 700; y = 3
-    def __init__(self, active = False):
-        self.changeDirectionButton = self.createButton('Rotate')
-        self.exitButton = self.createButton('X')
-
-        self.typeButtons = [
-            self.createButton('Watermelon'),
-            self.createButton('Tomatoes'),
-            self.createButton('Bananas'),
-            self.createButton('Apples'),
-            self.createButton('Empty')
-        ]
-
+    def __init__(self, active = False, direction = Direction.NORTH, typeCase = TypeProduceCase.WATERMELON):
         self.active = active
+        self.direction = direction
+        self.typeCase = typeCase
+
+        self.changeDirectionButton = self.createButton('Rotate', self.setDirection(self.direction))
+        self.exitButton = self.createButton('X', lambda: self.exitGUI())
+
+        self.typeButtons = self.createButtons()
 
         # Resets positions back to (700, 3) fbsr;jbwr
         ObjectGUI.x = 700; ObjectGUI.y = 3
 
     # Helper methods
-    def createButton(self, nameButton: str):
+    def createButton(self, nameButton: str, func: callable):
         x = ObjectGUI.x
         y = ObjectGUI.y
         ObjectGUI.y += 20
-        return Button(Vector(x, y), nameButton, 100, 20)
+        return Button(Vector(x, y), nameButton, 100, 20, func)
+
+    def createButtons(self):
+        return [
+            self.createButton('Empty', lambda: self.setType(TypeProduceCase.EMPTY)),
+            self.createButton('Watermelon', lambda: self.setType(TypeProduceCase.WATERMELON)),
+            self.createButton('Bananas', lambda: self.setType(TypeProduceCase.BANANAS)),
+            self.createButton('Apples', lambda: self.setType(TypeProduceCase.APPLES)),
+            self.createButton('Tomatoes', lambda: self.setType(TypeProduceCase.TOMATOES)) 
+        ]
+
+    def setDirection(self, direction: Direction):
+        self.direction = getNextDirection(direction)
+
+    def setType(self, typeCase: TypeProduceCase):
+        self.typeCase = typeCase
+
+    def exitGUI(self):
+        self.active = False
+        Object.currentID = -1
 
     # Main methods
     def events(self):
-        pass
+        for button in self.typeButtons:
+            button.events(getMouseClick())
+        self.changeDirectionButton.events(getMouseClick())
+        self.exitButton.events(getMouseClick())
+
     def draw(self):
         for button in self.typeButtons:
             button.draw()
+        self.changeDirectionButton.draw()
+        self.exitButton.draw()
 
 class ObjectInfo:
     screen: pygame.Surface
@@ -87,38 +103,20 @@ class ObjectInfo:
     rows: int
     colums: int
     tileSize: int
-    direction: Direction
-    typeCase: TypeProduceCase
     placed: bool
     hasPlaced: bool
 
     elementRectangles = []
 
-    def __init__(self, screen, position, objectGUI, rows, colums, tileSize, direction = Direction.NORTH, typeCase = TypeProduceCase.WATERMELON, placed = False, hasPlaced = False):
+    def __init__(self, screen, position, objectGUI, rows, colums, tileSize, placed = False, hasPlaced = False):
         self.screen = screen
         self.position = position
         self.objectGUI = objectGUI
         self.rows = rows
         self.colums = colums
         self.tileSize = tileSize
-        self.direction = direction
-        self.typeCase = typeCase
         self.placed = placed
         self.hasPlaced = hasPlaced
-        
-    # Some method for changing type
-    def setType(self):
-        typeButtons = self.objectGUI.typeButtons
-        for button in typeButtons:
-            # If button is clicked
-            if button.events(getMouseClick()):
-                # Return type of button
-                self.typeCase = ObjectGUI.typeDict[button.info.name]
-
-    def setDirection(self):
-        # If button is clicked
-        if self.objectGUI.changeDirectionButton.events(getMouseClick()):
-            self.direction = self.getNextDirection(self.direction)
 
     def canPlace(self, objectRectangle: pygame.Rect):
         for rectangle in ObjectInfo.elementRectangles:
@@ -183,7 +181,7 @@ class Object:
         return self.info.tileSize - mousePos % self.info.tileSize
 
     def setImage(self):
-        match self.info.typeCase:
+        match self.info.objectGUI.typeCase:
             case TypeProduceCase.WATERMELON:
                 image = pygame.image.load('./Resources/Images/WatermelonBin.png')
             case TypeProduceCase.BANANAS:
@@ -241,8 +239,6 @@ class Object:
 
         if self.info.placed:
             if self.openGUI(mouseClicked):
-                self.info.setType()
-                self.info.setDirection()
                 self.info.objectGUI.events()
             return
  
