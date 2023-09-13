@@ -9,9 +9,9 @@ from ProduceTycoonGame.UserInterface.textInputBox import TextInputBox
 from ProduceTycoonGame.UserInterface.dropdownButton import DropdownButton
 from ProduceTycoonGame.UserInterface.text import Text
 
-from enum import Enum
+from enum import Enum, IntEnum
 
-class TypeObject(Enum):
+class TypeObject(IntEnum):
     WALL = 0
     PRODUCE_CASE = 1
     REGISTER = 2
@@ -23,14 +23,14 @@ class TypeProduceCase(Enum):
     APPLES = 'Apples'
     TOMATOES = 'Tomatoes'
 
-class Direction(Enum):
+class Direction(IntEnum):
     NORTH = 0
     EAST = 1
     SOUTH = 2
     WEST = 3
 
 # Helder functions
-def getNextDirection(direction):
+def getNextDirection(direction: Direction):
     return direction + 1 if direction + 1 < 4 else direction - 3
 
 def getMouseClick():
