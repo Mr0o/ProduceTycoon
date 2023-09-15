@@ -1,5 +1,6 @@
 import pygame
 
+from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 
 class Slider():
@@ -16,9 +17,9 @@ class Slider():
 
         self.isSelected = False
 
-    def events(self, mouseClicked: bool = False):
+    def events(self):
         if self.slider.collidepoint(pygame.mouse.get_pos()):
-            if mouseClicked:
+            if eventOccured("leftMouseDown"):
                 self.isSelected = not self.isSelected
 
         return self.isSelected
