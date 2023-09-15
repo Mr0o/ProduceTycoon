@@ -1,245 +1,239 @@
 import pygame
 
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.tile import Tile, Type
 from ProduceTycoonGame.objectRegister import Object
 
+from enum import Enum, IntEnum
 
-class TileMap():
-    def __init__(self, screen: pygame.Surface, pos: Vector):
-        self.screen = screen
+class Type(IntEnum):
+    WALKABLE = 1
+    BOUNDARY = 2
+    EDGE = 3
+
+WALKABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/FloorTile.png')
+BOUNDARY_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/Barrier.png')
+
+class TileInfo():
+    pos: Vector
+    typeTile: Type = Type.WALKABLE
+    rect: pygame.Rect
+
+    # Static variables
+    size = 0
+    screen = pygame.Surface((0, 0))
+
+    def __init__(self, pos, typeTile):
         self.pos = pos
-        self.mov = Vector(0, 0)
+        self.typeTile = typeTile
+        self.rect = pygame.Rect((self.pos.x, self.pos.y), (TileInfo.size, TileInfo.size))
 
-        self.width = self.screen.get_width()
-        self.height = self.screen.get_height()
+    @staticmethod
+    def setSize(size):
+        TileInfo.size = size
 
-        self.zoom = self.screen.get_width()
+    @staticmethod
+    def setScreen(screen):
+        TileInfo.screen = screen
 
-        self.rows = self.screen.get_height() // 25
-        self.cols = self.screen.get_width() // 25
-        self.tileMapStartingPos = self.pos.copy()
+class Tile():
+    id: int
+    info: TileInfo
+    image: pygame.Surface
+    currentTile: int = -1
 
-        # create grid of tiles
-        self.tileSize = self.zoom // self.cols
-        
-        # create the grid of tiles
-        self.tileMapGrid = self.createTileGrid() 
+    # Sattic Variables
+    tiles = []
+    WALKABLE_TILE_IMG_SCALED = pygame.transform.scale(WALKABLE_TILE_IMG.copy(), (TileInfo.size, TileInfo.size))
+    BOUNDARY_TILE_IMG_SCALED = pygame.transform.scale(BOUNDARY_TILE_IMG.copy(), (TileInfo.size, TileInfo.size))
 
-        # creates rectangle size of screen for border
-        self.rect = pygame.Rect((0, 0), (self.width, self.height))
+    def __init__(self, pos: Vector, typeTile: Type = Type.WALKABLE):
+        self.info = TileInfo(pos, typeTile)
+        self.setImage()
+        self.setID()
+        Tile.tiles.append(self)
 
-        # highlighted tile
-        self.highlightedTile = None
+    def setType(self, typeTile: Type):
+        self.info.type = typeTile
+        self.changed = True
 
-        # selected tile
-        self.selectedTile = None
+    def setImage(self):
+        match self.info.typeTile:
+            case Type.WALKABLE:
+                self.image = Tile.WALKABLE_TILE_IMG_SCALED
+            case Type.EDGE:
+                self.image = Tile.WALKABLE_TILE_IMG_SCALED
+            case Type.BOUNDARY:
+                self.image = Tile.BOUNDARY_TILE_IMG_SCALED
 
-        # static surface for drawing tileMap
-        self.staticSurface: pygame.Surface
-        self.updateStaticImage()
-
-        # tile lines surface (created once on init, assuming it will not change)
-        self.tileLinesSurface = createStaticTileLineSurface(self, self.width, self.height)
-
-    def createTileGrid(self) -> list[Tile]:
-        Tile.static_id = 0 # reset the static id for assignment of the tiles
-
-        # create a list of tiles (skipping the first row, to make room for buttons at the top)
-        tileMapGrid: list[Tile] = []
-        for row in range(1, self.rows):
-            for col in range(self.cols):
-                tileMapGrid.append(Tile(self.screen, Vector(self.tileMapStartingPos.x + col * self.tileSize, self.tileMapStartingPos.y + row * self.tileSize), self.tileSize))
-        
-        # set the edges of the tileMapGrid to be EDGE tiles
-        for tile in tileMapGrid:
-            if tile.pos.x == self.tileMapStartingPos.x or tile.pos.x == self.tileMapStartingPos.x + (self.cols - 1) * self.tileSize or tile.pos.y == self.tileMapStartingPos.y or tile.pos.y == self.tileMapStartingPos.y + (self.rows - 1) * self.tileSize:
-                tile.type = Type.EDGE
-            if tile.pos.y == self.tileMapStartingPos.y + self.tileSize:
-                tile.type = Type.EDGE
-
-        return tileMapGrid
-
-    def selectTile(self, tile: Tile, mouseClicked: bool = False):
-        if mouseClicked:
-            if self.selectedTile is not None:
-                # deselecting selected tile
-                self.selectedTile.isSelected = False
-            if self.selectedTile == tile:
-                # deselecting tile
-                tile.isSelected = False
-                self.selectedTile = None
-            else:
-                # selecting tile
-                self.selectedTile = tile
-                self.selectedTile.isSelected = True
-        
-
-    def events(self, mouseClicked: bool = False):
-        # checking if mouse is hovering over tile
-        self.highlightedTile = None
-        for tile in self.tileMapGrid:
-            tile.isHighlighted = False
-            if tile.rect.collidepoint(pygame.mouse.get_pos()):
-                self.highlightedTile = tile
-                tile.isHighlighted = True
-                self.selectTile(tile, mouseClicked)
-
-    def changeTileType(self, tile: Tile, currentObject: Object):
-        if currentObject.info.placed and tile.rect.colliderect(currentObject.rectangle):
-            if tile.type == Type.WALKABLE:
-                tile.type = Type.BOUNDARY
-
-    def getTilesInRect(self, rect: pygame.Rect) -> list[Tile]:
-        collidedTiles: list[Tile] = []
-        for tile in self.tileMapGrid:
-            if rect.colliderect(tile.rect):
-                collidedTiles.append(tile)
-        return collidedTiles
-
-    def getMainTile(self, tile: Tile, currentObject: Object):
-        if tile.rect.colliderect(currentObject.rectangle) and currentObject.mainTileID == -1 and currentObject.info.placed:
-            currentObject.mainTileID = tile.id
-
-    def update(self, currentObjects: list[Object] = None):
-        if currentObjects is not None:
-            for currentObject in currentObjects:
-                for tile in self.tileMapGrid:  
-                    self.getMainTile(tile, currentObject)
-                    self.changeTileType(tile, currentObject)
-
-
-        changed = False
-        for tile in self.tileMapGrid:
-            # check for any changes to tiles
-            if tile.changed:
-                tile.changed = False
-                changed = True
-
-        # update static surface if any tiles changed
-        if changed:
-            self.updateStaticImage()
-
-    # update the static surface, use this instead of importing createStaticTileSurface in other files
-    def updateStaticImage(self):
-        self.staticSurface = createStaticTileSurface(self.tileMapGrid, self.width, self.height)
+    def setID(self):
+        self.id = Tile.currentTile
+        Tile.currentTile += 1
 
     def draw(self):
-        # drawing tileMap
-        self.screen.blit(self.staticSurface, (self.pos.x, self.pos.y))
+        self.info.screen.blit(self.image, (self.info.pos.x, self.info.pos.y))
 
-        # # drawing highlighted tile
-        # if self.highlightedTile is not None:
-        #     self.highlightedTile.draw()
+class TileMapInfo():
+    pos: Vector
+    rows: int
+    columns: int
+    tileSize: int
 
-        # # drawing selected tile
-        # if self.selectedTile is not None:
-        #     self.selectedTile.draw()
+    # Static variables
+    screen = pygame.Surface((0, 0))
 
-        # draws border
-        pygame.draw.rect(self.screen, (255, 0, 0), self.rect, 2)
+    # Static methods
+    @staticmethod
+    def setScreen(screen: pygame.Surface):
+        TileMapInfo.screen = screen
 
-    def drawTileLines(self):
-        self.screen.blit(self.tileLinesSurface, (self.pos.x, self.pos.y))
+    def __init__(self, pos, rows, columns):
+        self.pos = pos
+        self.rows = rows
+        self.columns = columns
+
+        self.tileSize = self.createTileSize()
+
+        # Define TileInfo static variables
+        TileInfo.setSize(self.tileSize)
+        TileInfo.setScreen(TileMapInfo.screen)
+
+    def createTileSize(self):
+        return int(TileMapInfo.screen.get_width() / self.columns)
+
+class TileMap():
+    info: TileMapInfo
+    pos: Vector
+    grid: []
+
+    # Static variables
+    linesSurface = pygame.Surface((0, 0))
+
+    # Static methods
+    @staticmethod
+    def setScreen(screen: pygame.Surface):
+        TileMapInfo.setScreen(screen)
+    
+    @staticmethod
+    def drawTileLines():
+        TileMapInfo.screen.blit(TileMap.lineSurface, (0, 0))
+
+    # Instance methods
+    def __init__(self, pos: Vector):
+        # Initializing the tileMap
+        self.pos = pos
+        rows = self.getRows()
+        columns = self.getColumns()
+        self.info = TileMapInfo(self.pos, rows, columns)
+        TileMap.lineSurface = createStaticLineSurface(self, 800, 600)
+
+        self.createGrid()
+        self.grid = Tile.tiles
+
+    def getRows(self):
+        return int(TileMapInfo.screen.get_height() / 25)
+
+    def getColumns(self):
+        return int(TileMapInfo.screen.get_width() / 25)
+
+    # Creating the grid of tiles
+    def createGrid(self):
+        for row in range(self.info.rows):
+            x = row * self.info.tileSize
+            for column in range(self.info.columns):
+                y = column * self.info.tileSize
+                # Check if edge tile
+                if row == 0 or row == self.info.rows - 1 or column == 0 or column == self.info.columns - 1:
+                    Tile(Vector(x, y), Type.EDGE)
+                # Else make a walkable tile
+                else:
+                    Tile(Vector(x, y))
 
     def getTileByID(self, tileID: int):
-        return self.tileMapGrid[tileID]
-    
+        return self.grid[tileID]
+
     def getTileByPos(self, pos: Vector):
-        for tile in self.tileMapGrid:
-            # if pos collides with tile rect
-            if tile.rect.collidepoint(pos.x, pos.y):
+        for tile in self.grid:
+            rect = tile.info.rect
+            if rect.collidepoint(pos.x, pos.y):
                 return tile
 
-    # returns the neighbors of a tile
-    def getNeighbors(self, tile: Tile) -> list[Tile]:
-        neighbors: list[Tile] = []
-
-        # determine the neighbors by using the id
-        # top left
-        if tile.id - self.cols - 1 >= 0:
-            neighbors.append(self.getTileByID(tile.id - self.cols - 1))
-        # top center
-        if tile.id - self.cols >= 0:
-            neighbors.append(self.getTileByID(tile.id - self.cols))
-        # top right
-        if tile.id - self.cols + 1 >= 0:
-            neighbors.append(self.getTileByID(tile.id - self.cols + 1))
-        # left center
-        if tile.id - 1 >= 0:
-            neighbors.append(self.getTileByID(tile.id - 1))
-        # right
-        if tile.id + 1 < len(self.tileMapGrid):
-            neighbors.append(self.getTileByID(tile.id + 1))
-
-        # bottom left
-        if tile.id + self.cols - 1 < len(self.tileMapGrid):
-            neighbors.append(self.getTileByID(tile.id + self.cols - 1))
-        # bottom
-        if tile.id + self.cols < len(self.tileMapGrid):
-            neighbors.append(self.getTileByID(tile.id + self.cols))
-        # bottom right
-        if tile.id + self.cols + 1 < len(self.tileMapGrid):
-            neighbors.append(self.getTileByID(tile.id + self.cols + 1))
-
-        return neighbors
-
-        # get walkable tiles
-    def getWalkableTiles(self) -> list[Tile]:
-        walkableTiles: list[Tile] = []
-        for tile in self.tileMapGrid:
-            if tile.type == Type.WALKABLE:
-                walkableTiles.append(tile)
-        return walkableTiles
-    
-    def getNonWalkableTiles(self) -> list[Tile]:
-        boundaryTiles: list[Tile] = []
-        for tile in self.tileMapGrid:
-            if tile.type != Type.WALKABLE:
-                boundaryTiles.append(tile)
-        return boundaryTiles
-    
-    def setTileType(self, tile: Tile, type: Type):
-        tile.type = type
-        self.updateStaticImage()
+    def getTilesInRect(self, rect: pygame.Rect) -> list[Tile]:
+        tiles: list[Tile] = []
+        for tile in self.grid:
+            if rect.colliderect(tile.info.rect):
+                tiles.append(tile)
+        return tiles
 
 
-# create a surface of Tiles that can be used statically (this will not reflect changes to the tileMap unless a new static surface is created)
-def createStaticTileSurface(tiles: list[Tile], width: int, height: int) -> pygame.Surface:
-    staticSurface = pygame.Surface((width, height))
-    staticSurface.fill((0, 0, 0))
+    # Main methods
+    def events(self, mouseClicked: bool = False):
+        pass
 
-    # get the original screen of the tiles
-    ogScreen = tiles[0].screen
+    def draw(self):
+        for tile in self.grid:
+            tile.setImage()
+            tile.draw()
 
-    for tile in tiles:
-        tile.screen = staticSurface
-        tile.draw()
-        # restore the original screen of the tiles
-        tile.screen = ogScreen
+# returns the neighbors of a tile
+def getNeighbors(tile: Tile) -> list[Tile]:
+    neighbors: list[Tile] = []
+    maxTile = len(self.tileMapGrid) - 1
+    minTile = 0
 
-    return staticSurface
+    # determine the neighbors by using the id
+    topLeft = tile.id - self.columns - 1
+    if  topLeft >= minTile:
+        neighbors.append(self.getTileByID(topLeft))
 
+    topCenter = tile.id - self.columns
+    if topCenter >= minTile:
+        neighbors.append(self.getTileByID(topCenter))
+
+    topRight = tile.id - self.columns + 1
+    if topRight >= minTile:
+        neighbors.append(self.getTileByID(topRight))
+
+    leftCenter = tile.id - 1
+    if leftCenter >= minTile:
+        neighbors.append(self.getTileByID(leftCenter))
+
+    rightCenter = tile.id + 1
+    if rightCenter <= maxTile:
+        neighbors.append(self.getTileByID(rightCenter))
+
+    bottomLeft = tile.id + self.columns - 1
+    if bottomLeft <= maxTile:
+        neighbors.append(self.getTileByID(bottomLeft))
+
+    bottomCenter = tile.id + self.columns
+    if bottomCenter <= maxTile:
+        neighbors.append(self.getTileByID(bottomCenter))
+
+    bottomRight = tile.id + self.columns + 1
+    if bottomRight <= maxTile:
+        neighbors.append(self.getTileByID(bottomRight))
+
+    return neighbors
 
 # create static surface of tile lines
-def createStaticTileLineSurface(tileMap: TileMap, width: int, height: int) -> pygame.Surface:
+def createStaticLineSurface(tileMap: TileMap, width: int, height: int) -> pygame.Surface:
     staticSurface = pygame.Surface((width, height))
     staticSurface.fill((0, 0, 0))
 
     # the surface should be transparent
     staticSurface.set_colorkey((0, 0, 0))
 
-    numCols = tileMap.cols
-    numRows = tileMap.rows
+    numCols = tileMap.info.columns
+    numRows = tileMap.info.rows
 
     color = (50, 50, 50)
 
     # draw horizontal lines
-    for row in range(1, numRows-1):
-        pygame.draw.line(staticSurface, color, (0, row * tileMap.tileSize), (width, row * tileMap.tileSize))
+    for row in range(numRows):
+        pygame.draw.line(staticSurface, color, (0, row * tileMap.info.tileSize), (width, row * tileMap.info.tileSize))
 
     # draw vertical lines
-    for col in range(1, numCols):
-        pygame.draw.line(staticSurface, color, (col * tileMap.tileSize, tileMap.tileSize), (col * tileMap.tileSize, height))
+    for col in range(numCols):
+        pygame.draw.line(staticSurface, color, (col * tileMap.info.tileSize, tileMap.info.tileSize), (col * tileMap.info.tileSize, height))
 
     return staticSurface
