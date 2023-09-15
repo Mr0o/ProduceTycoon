@@ -1,5 +1,6 @@
 import pygame
 
+from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.button import Button
 
@@ -10,14 +11,14 @@ class DropdownButton(Button):
         self.isSelected = False
         self.hidden = False
     
-    def events(self, mouseClicked: bool = False):
+    def events(self):
         if self.hidden:
             return
 
         # check if mouse position is on the button rect
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             # if mouse is clicked and the button is not already selecte
-            if mouseClicked:
+            if eventOccured("leftMouseDown"):
                 self.isSelected = not self.isSelected
 
         return self.isSelected
