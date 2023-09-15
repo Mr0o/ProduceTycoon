@@ -70,7 +70,7 @@ class Tile():
         Tile.currentTile += 1
 
     def draw(self):
-        self.info.screen.blit(self.image, (self.info.pos.x, self.info.pos.y))
+        TileInfo.screen.blit(self.image, (self.info.pos.x, self.info.pos.y))
 
 class TileMapInfo():
     pos: Vector
