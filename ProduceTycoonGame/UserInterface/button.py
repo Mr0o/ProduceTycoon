@@ -57,30 +57,29 @@ class Button():
     rect: pygame.Rect
     info: ButtonInfo
 
-    # static variables
+    # Static variables
     screen = pygame.Surface((0, 0))
 
-    #static methods
+    # Static methods
     @staticmethod
     def setScreen(screen: pygame.Surface):
         Button.screen = screen
 
-    # instance methods
+    # Instance methods
     def __init__(self, pos: Vector, name: str, width: int, height: int, func: callable):
         self.text = createText(pos, width, height, name)
         self.rect = createRect(pos, width, height)
         self.info = createInfo(pos, name, width, height, func)
 
-    # main methods
+    # Main methods
     def events(self, mouseClicked: bool):
         if not self.info.active:
             return
-        # check if mouse position is on the button rect
+        # Check if mouse position is on the button rect
         if self.rect.collidepoint(pygame.mouse.get_pos()):
-            # if mouse is clicked and the button is not already selected
+            # If mouse is clicked and the button is not already selected
             if mouseClicked and not self.info.isSelected:
                 self.info.isSelected = True
-                # call the function
                 self.info.func()
         if not mouseClicked:
             self.info.isSelected = False
@@ -88,8 +87,12 @@ class Button():
     def draw(self):
         if not self.info.active:
             return
+        
+        # Draw button and border
         pygame.draw.rect(Button.screen, self.info.color, self.rect)
         pygame.draw.rect(Button.screen, (0, 0, 0), self.rect, 2)
+
+        # Draw text over button
         self.text.draw()
 
 def createText(pos, width, height, name):
