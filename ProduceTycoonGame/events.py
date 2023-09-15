@@ -51,7 +51,7 @@ class Event:
         self.eventType = eventType
         self.args = args
 
-        # this can be used to store relevent event data
+        # this can be used to store relevent event data such as x and y coords, etc.
         self.eventData = eventData
 
     def getEventType(self) -> str:
