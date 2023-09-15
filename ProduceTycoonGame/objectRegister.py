@@ -37,7 +37,7 @@ class ObjectGUI:
     typeCase: TypeProduceCase
 
     # Positions
-    x = 700; y = 3
+    x = 700; y = 30
     def __init__(self, active = False, direction = Direction.NORTH, typeCase = TypeProduceCase.WATERMELON):
         self.active = active
         self.direction = direction
@@ -48,8 +48,8 @@ class ObjectGUI:
 
         self.typeButtons = self.createButtons()
 
-        # Resets positions back to (700, 3) fbsr;jbwr
-        ObjectGUI.x = 700; ObjectGUI.y = 3
+        # Resets positions back to (700, 30) fbsr;jbwr
+        ObjectGUI.x = 700; ObjectGUI.y = 30
 
     # Helper methods
     def createButton(self, nameButton: str, func: callable):
@@ -59,6 +59,7 @@ class ObjectGUI:
         return Button(Vector(x, y), nameButton, 100, 20, func)
 
     def createButtons(self):
+        # Create each button with a lambda function that calls the setTypeCase method with the correct type
         return [
             self.createButton('Watermelon', lambda: self.setTypeCase(TypeProduceCase.WATERMELON)),
             self.createButton('Bananas', lambda: self.setTypeCase(TypeProduceCase.BANANAS)),
@@ -139,7 +140,7 @@ class Object:
         self.configureImage(self.image)
         self.rectangle = self.createRectangle()
 
-    # Helper methods
+    # Instance methods
     def configureImage(self, image: pygame.Surface):
         self.image = pygame.transform.scale(image, (self.info.rows * self.info.tileSize, self.info.colums * self.info.tileSize))
         #self.image.rotate(self.info.direction * 90)
@@ -147,7 +148,7 @@ class Object:
     def createRectangle(self):
         return self.image.get_rect()
 
-    def updateRectangle(self, x, y):
+    def setRectanglePos(self, x, y):
         self.rectangle.topleft = (x, y)
 
     def setPosition(self):
@@ -169,7 +170,7 @@ class Object:
             posY = mousePos[1] + yOffset - self.info.rows * tileSize
 
         self.info.position = Vector(posX, posY)
-        self.updateRectangle(posX, posY)
+        self.setRectanglePos(posX, posY)
 
     def getOffset(self, mousePos):
         return self.info.tileSize - mousePos % self.info.tileSize
@@ -187,6 +188,9 @@ class Object:
             case TypeProduceCase.EMPTY:
                 image = pygame.image.load('./Resources/Images/WatermelonBin.png')
         self.configureImage(image)
+
+    def setMainTileID(ID):
+        self.mainTileID = ID
 
     def getFrontTiles(self):
         tileMapWidth = 32
