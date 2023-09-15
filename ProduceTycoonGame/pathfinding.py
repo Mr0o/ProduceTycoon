@@ -173,8 +173,8 @@ class Pathfinder():
     def update(self) -> None:
         # check for any changes in the tilemap and update the vector fields accordingly
         tileMapChanged = False
-        for tile in self.tileMap.tileMapGrid:
-            if tile.changed:
+        for tile in self.tileMap.grid:
+            if True:
                 tileMapChanged = True
                 break
         if tileMapChanged:
