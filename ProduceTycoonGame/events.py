@@ -10,7 +10,7 @@ eventList: list['Event'] = []
 def subscribe(eventType: 'Event', fn):
     subscribers[eventType].append(fn)
 
-
+# post using an Event object
 def postEvent(event: 'Event'):
     # append event to eventList
     eventList.append(event)
@@ -21,8 +21,16 @@ def postEvent(event: 'Event'):
     for fn in subscribers[event]:
         fn()
 
+# post without passing an Event object
+def postEvent(eventType: str, args=None, eventData=None):
+    # create the Event object
+    event = Event(eventType, args, eventData)
 
-# clear the eventList
+    # post Event object
+    postEvent(event)
+
+
+# clear the eventList (should be called at the beginning of every frame)
 def clearEventList():
     eventList.clear()
 
