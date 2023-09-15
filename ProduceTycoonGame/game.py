@@ -287,25 +287,25 @@ class Game():
             # debug placeable objects
             if self.debugPlaceableObjects:
                 for currentObject in self.objects:
-                    if currentObject.placed:
-                        # get the tiles that fall within the currentObject's rect
-                        placedObjectTiles = self.tileMap.getTilesInRect(currentObject.rect)
-                        for tile in placedObjectTiles:
-                            pygame.draw.rect(self.screen, (255, 255, 255), tile.rect, 2)
+                        if currentObject.info.placed:
+                            # get the tiles that fall within the currentObject's rect
+                            placedObjectTiles = self.tileMap.getTilesInRect(currentObject.createRectangle())
+                            for tile in placedObjectTiles:
+                                pygame.draw.rect(self.screen, (255, 255, 255), tile.rect, 2)
                         
 
                 # draw a red square over the front tiles of the placeable objects
                 for currentObject in self.objects:
-                    if currentObject.placed:
-                        for frontTileID in currentObject.frontTileIDs:
-                            frontTile = self.tileMap.getTileByID(frontTileID)
-                            pygame.draw.rect(self.screen, (255, 0, 0), frontTile.rect, 2)
+                        if currentObject.info.placed:
+                            for frontTileID in currentObject.getFrontTiles():
+                                frontTile = self.tileMap.getTileByID(frontTileID)
+                                pygame.draw.rect(self.screen, (255, 0, 0), frontTile.rect, 2)
 
                 # draw a green square over the main tiles of the placeable objects
                 for currentObject in self.objects:
-                    if currentObject.placed:
-                        mainTile = self.tileMap.getTileByID(currentObject.mainTileID)
-                        pygame.draw.rect(self.screen, (0, 255, 0), mainTile.rect, 2)
+                        if currentObject.info.placed:
+                            mainTile = self.tileMap.getTileByID(currentObject.mainTileID)
+                            pygame.draw.rect(self.screen, (0, 255, 0), mainTile.rect, 2)
 
         pygame.display.update()
 
