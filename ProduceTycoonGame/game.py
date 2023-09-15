@@ -26,6 +26,7 @@ class Game():
         self.HEIGHT = HEIGHT
 
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        TileMap.setScreen(self.screen)
         self.running = True
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
@@ -43,7 +44,7 @@ class Game():
         # debug variable that when true will draw the tiles that make up each currentObject (this could impact performance, therefore it is disabled by default)
         self.debugPlaceableObjects = False
 
-        self.tileMap = TileMap(self.screen, Vector(0, 0))
+        self.tileMap = TileMap(Vector(0, 0))
 
         # pathfinding (Vector Fields)
         self.pathfinder = Pathfinder(self.tileMap)
@@ -51,8 +52,8 @@ class Game():
         self.playerValues = ValueHandler.getStaticValues()
 
         # buttons
-        object4x4Args = (self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
-        object1x1Args = (self.screen, Vector(0, 0), 1, 1, self.tileMap.tileSize)
+        object4x4Args = (self.screen, Vector(0, 0), 4, 4, self.tileMap.info.tileSize)
+        object1x1Args = (self.screen, Vector(0, 0), 1, 1, self.tileMap.info.tileSize)
         self.buttons = []
         Button.setScreen(self.screen)
         self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20, lambda: createObject(*object4x4Args))
@@ -216,8 +217,6 @@ class Game():
         self.elements.append(self.displayClock.rect)
 
     def update(self):
-        self.tileMap.update(self.objects)
-
         for guest in self.guests:
             guest.update()
 
@@ -273,15 +272,15 @@ class Game():
             text = self.debugFont.render(str(int(self.clock.get_fps())) + " FPS ", True, (255, 255, 255))
             self.screen.blit(text, (0, text.get_height() + 20))
 
-            # draw the highlighted tile id
-            if self.tileMap.highlightedTile is not None:
-                text = self.debugFont.render("Tile ID: " + str(self.tileMap.highlightedTile.id), True, (255, 255, 0))
-                self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, 0))
-
-            # draw the selected tile id
-            if self.tileMap.selectedTile is not None:
-                text = self.debugFont.render("Selected ID: " + str(self.tileMap.selectedTile.id), True, (255, 0, 255))
-                self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height()))
+            ## draw the highlighted tile id
+            #if self.tileMap.highlightedTile is not None:
+            #    text = self.debugFont.render("Tile ID: " + str(self.tileMap.highlightedTile.id), True, (255, 255, #0))
+            #    self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, 0))
+            #
+            ## draw the selected tile id
+            #if self.tileMap.selectedTile is not None:
+            #    text = self.debugFont.render("Selected ID: " + str(self.tileMap.selectedTile.id), True, (255, 0, #255))
+            #    self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height()))
 
             # draw the size of the pathfinder vector fields list
             text = self.debugFont.render("Vector Fields: " + str(len(self.pathfinder.vectorFields)), True, (255, 255, 255))
@@ -310,7 +309,7 @@ class Game():
                         mainTile = self.tileMap.getTileByID(currentObject.mainTileID)
                         pygame.draw.rect(self.screen, (0, 255, 0), mainTile.rect, 2)
 
-        pygame.display.update()
+        pygame.display.flip()
 
     def run(self):
         while self.running:
@@ -321,3 +320,19 @@ class Game():
 
         # exit pygame gracefully
         pygame.quit()
+
+# Code that shouldgo in here
+#def getMainTile(self, tile: Tile, currentObject: Object):
+#        ifTileCollidesWithRect = tile.info.rect.colliderect(currentObject.rectangle)
+#        ifObjectIsPlaced = currentObject.info.placed
+#        if ifTileCollidesWithRect and currentObject.mainTileID == -1 and ifObjectIsPlaced:
+#            currentObject.setMainTileID(tile.id)
+#def changeTileType(self, tile: Tile, currentObject: Object):
+#    if currentObject.info.placed and tile.info.rect.colliderect(currentObject.rectangle):
+#        if tile.info.typeTile == Type.WALKABLE:
+#            tile.info.typeTile = Type.BOUNDARY
+#if currentObjects is not None:
+#    for currentObject in currentObjects:
+#        for tile in self.tileMapGrid:  
+#            self.getMainTile(tile, currentObject)
+#            self.changeTileType(tile, currentObject)
