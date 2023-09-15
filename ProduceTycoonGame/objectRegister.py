@@ -189,7 +189,7 @@ class Object:
                 image = pygame.image.load('./Resources/Images/WatermelonBin.png')
         self.configureImage(image)
 
-    def setMainTileID(ID):
+    def setMainTileID(self, ID):
         self.mainTileID = ID
 
     def getFrontTiles(self):
