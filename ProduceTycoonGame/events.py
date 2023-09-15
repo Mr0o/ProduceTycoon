@@ -26,8 +26,14 @@ def postEvent(eventType: str, args=None, eventData=None):
     # create the Event object
     event = Event(eventType, args, eventData)
 
-    # post Event object
-    postEvent(event)
+    # append event to eventList
+    eventList.append(event)
+
+    # call subcribers function
+    if not event in subscribers:
+        return
+    for fn in subscribers[event]:
+        fn()
 
 
 # clear the eventList (should be called at the beginning of every frame)
