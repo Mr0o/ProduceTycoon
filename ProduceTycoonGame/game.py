@@ -25,7 +25,6 @@ class Game():
         self.HEIGHT = HEIGHT
 
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        TileMap.setScreen(self.screen)
         self.running = True
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
@@ -43,6 +42,7 @@ class Game():
         # debug variable that when true will draw the tiles that make up each currentObject (this could impact performance, therefore it is disabled by default)
         self.debugPlaceableObjects = False
 
+        TileMap.setScreen(self.screen)
         self.tileMap = TileMap(Vector(0, 0))
 
         # pathfinding (Vector Fields)
@@ -51,8 +51,8 @@ class Game():
         self.playerValues = ValueHandler.getStaticValues()
 
         # buttons
-        object4x4Args = (self.screen, Vector(0, 0), 4, 4, self.tileMap.info.tileSize)
-        object1x1Args = (self.screen, Vector(0, 0), 1, 1, self.tileMap.info.tileSize)
+        object4x4Args = (self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
+        object1x1Args = (self.screen, Vector(0, 0), 1, 1, self.tileMap.tileSize)
         self.buttons = []
         Button.setScreen(self.screen)
         self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20, lambda: createObject(*object4x4Args))
@@ -112,9 +112,6 @@ class Game():
                     self.mouseClicked = True
                 if event.button == 3:
                     self.rightMouseClicked = True
-
-        
-        self.tileMap.events(self.mouseClicked)
 
         ObjectRegister.setElementRectangles(self.elements)
 

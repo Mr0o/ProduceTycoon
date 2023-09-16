@@ -94,7 +94,7 @@ class ObjectGUI:
 class ObjectInfo:
     screen: pygame.Surface
     position: Vector
-    objectGUI: ObjectGUI
+    gui: ObjectGUI
     rows: int
     colums: int
     tileSize: int
@@ -103,10 +103,10 @@ class ObjectInfo:
 
     elementRectangles = []
 
-    def __init__(self, screen, position, objectGUI, rows, colums, tileSize, placed = False, hasPlaced = False):
+    def __init__(self, screen, position, gui, rows, colums, tileSize, placed = False, hasPlaced = False):
         self.screen = screen
         self.position = position
-        self.objectGUI = objectGUI
+        self.gui = gui
         self.rows = rows
         self.colums = colums
         self.tileSize = tileSize
@@ -176,7 +176,7 @@ class Object:
         return self.info.tileSize - mousePos % self.info.tileSize
 
     def setImage(self):
-        match self.info.objectGUI.typeCase:
+        match self.info.gui.typeCase:
             case TypeProduceCase.WATERMELON:
                 image = pygame.image.load('./Resources/Images/WatermelonBin.png')
             case TypeProduceCase.BANANAS:
@@ -195,7 +195,7 @@ class Object:
     def getFrontTiles(self):
         tileMapWidth = 32
         frontTileIDs = []
-        match self.info.direction:
+        match self.info.gui.direction:
             case Direction.NORTH:
                 for i in range(self.info.rows):
                     newTileID = self.mainTileID + i
@@ -221,10 +221,10 @@ class Object:
             # Current ID is set to this object's ID
             Object.currentID = self.objectID
             # The first click on the object will open the GUI second click will close it
-            self.info.objectGUI.active = not self.info.objectGUI.active
+            self.info.gui.active = not self.info.gui.active
         if Object.currentID is not self.objectID :
-            self.info.objectGUI.active = False
-        return self.info.objectGUI.active
+            self.info.gui.active = False
+        return self.info.gui.active
 
     def placeObject(self, mouseClicked, previousMouseClick):
         if self.info.canPlace(self.rectangle) and mouseClicked and not previousMouseClick:
@@ -237,7 +237,7 @@ class Object:
 
         if self.info.placed:
             if self.openGUI(mouseClicked):
-                self.info.objectGUI.events()
+                self.info.gui.events()
             return
  
         self.setPosition()
@@ -245,8 +245,8 @@ class Object:
 
     def draw(self):
         self.info.screen.blit(self.image, (self.info.position.x, self.info.position.y))
-        if self.info.placed and self.info.objectGUI.active:
-            self.info.objectGUI.draw()
+        if self.info.placed and self.info.gui.active:
+            self.info.gui.draw()
         
 
 class ObjectRegister:
@@ -268,7 +268,7 @@ class ObjectRegister:
 
     def generateObject(self, screen, position, rows, colums, tileSize):
         objectID = self.generateObjectID()    
-        objectGUI = ObjectGUI()    
-        objectInfo = ObjectInfo(screen, position, objectGUI, rows, colums, tileSize)
+        gui = ObjectGUI()    
+        objectInfo = ObjectInfo(screen, position, gui, rows, colums, tileSize)
         return Object(objectID, objectInfo)
     

@@ -9,7 +9,7 @@ from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
 # create a heatmap of the tilemap
 def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
     # reset the cost and parent attributes of each tile
-    for tile in tileMap.tileMapGrid:
+    for tile in tileMap.grid:
         tile.cost = 0
         tile.parent = None
         tile.vector = Vector(0, 0)
