@@ -8,7 +8,6 @@ from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.objectRegister import ObjectRegister
 from ProduceTycoonGame.UserInterface.clock import Clock
-#from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.valueHandler import ValueHandler
 
