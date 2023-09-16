@@ -6,7 +6,7 @@ subscribers = defaultdict(list)
 # Every event that is posted will be appended to this list
 eventList: list['Event'] = []
 
-debug = True
+debug = False
 
 def subscribe(eventType: 'Event', fn):
     subscribers[eventType].append(fn)
