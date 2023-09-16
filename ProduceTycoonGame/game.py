@@ -170,19 +170,19 @@ class Game():
         
             self.pathfinder.update()
 
-        # # place guests down on mouse click (testing, remove this later)
-        # if eventOccured("rightMouseDown") and len(self.objects):
-        #     # pick a random currentObject
-        #     randomIndex = randint(0, len(self.objects) - 1)
+        # place guests down on mouse click (testing, remove this later)
+        if eventOccured("rightMouseDown") and len(self.objects):
+            # pick a random currentObject
+            randomIndex = randint(0, len(self.objects) - 1)
             
-        #     mousePos = pygame.mouse.get_pos()
-        #     newGuest = Guest(self.screen, Vector(mousePos[0], mousePos[1]))
-        #     targetTileID = self.objects[randomIndex].getFrontTiles()[0]
-        #     newGuest.targetTile = self.tileMap.getTileByID(targetTileID)
+            mousePos = pygame.mouse.get_pos()
+            newGuest = Guest(self.screen, Vector(mousePos[0], mousePos[1]))
+            targetTileID = self.objects[randomIndex].getFrontTiles()[0]
+            newGuest.targetTile = self.tileMap.getTileByID(targetTileID)
 
-        #     # make sure the guest is not None
-        #     if newGuest.targetTile is not None:
-        #         self.guests.append(newGuest)
+            # make sure the guest is not None
+            if newGuest.targetTile is not None:
+                self.guests.append(newGuest)
         
         for guest in self.guests:
             self.elements.append(guest.rect)
