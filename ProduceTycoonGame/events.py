@@ -6,6 +6,7 @@ subscribers = defaultdict(list)
 # Every event that is posted will be appended to this list
 eventList: list['Event'] = []
 
+debug = True
 
 def subscribe(eventType: 'Event', fn):
     subscribers[eventType].append(fn)
@@ -14,11 +15,18 @@ def subscribe(eventType: 'Event', fn):
 def postEvent(event: 'Event'):
     # append event to eventList
     eventList.append(event)
+    
+    if debug:
+        print(f"Event Posted\nEvent: {event.eventType} args: {event.args} data: {event.eventData}")
 
     # call subcribers function
     if not event in subscribers:
         return
     for fn in subscribers[event]:
+        if debug:
+            print(f"Function called on event: {event.eventType}")
+            print(f"Function: {fn.__name__}")
+
         fn()
 
 # post without passing an Event object
@@ -29,10 +37,17 @@ def postEvent(eventType: str, args=None, eventData=None):
     # append event to eventList
     eventList.append(event)
 
+    if debug:
+        print(f"Event Posted\nEvent: {event.eventType} args: {event.args} data: {event.eventData}")
+
     # call subcribers function
     if not event in subscribers:
         return
     for fn in subscribers[event]:
+        if debug:
+            print(f"Function called on event: {event.eventType}")
+            print(f"Function: {fn.__name__}")
+
         fn()
 
 
