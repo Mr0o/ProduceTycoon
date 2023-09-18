@@ -188,7 +188,6 @@ class Object:
         self.mainTileID = ID
 
     def getFrontTiles(self):
-        print(self.info.columns, self.info.rows)
         tileMapWidth = 32
         frontTileIDs = []
         match self.info.gui.direction:
