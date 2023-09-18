@@ -34,10 +34,10 @@ class ShopMenu():
         currencyBoxHeight, str(self.playerValues[self.currency]))
 
 
-    def events(self, mouseClicked: bool = False):
-        if self.exitButton.events(mouseClicked):
+    def events(self):
+        if self.exitButton.events():
             self.hidden = True
-        if self.watermelonButton.events(mouseClicked):
+        if self.watermelonButton.events():
             self.playerValues[self.currency] -= 100
             self.playerValues["Watermelon-amount"] += 1
 

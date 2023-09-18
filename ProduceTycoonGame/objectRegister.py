@@ -1,5 +1,6 @@
 import pygame
 
+from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.button import Button
 
@@ -26,9 +27,6 @@ class Direction(IntEnum):
 # Helder functions
 def getNextDirection(direction: Direction):
     return direction + 1 if direction + 1 < 4 else direction - 3
-
-def getMouseClick():
-    return pygame.mouse.get_pressed()[0]
 
 class ObjectGUI:
     typeButtons = []
@@ -81,9 +79,9 @@ class ObjectGUI:
     # Main methods
     def events(self):
         for button in self.typeButtons:
-            button.events(getMouseClick())
-        self.changeDirectionButton.events(getMouseClick())
-        self.exitButton.events(getMouseClick())
+            button.events()
+        self.changeDirectionButton.events()
+        self.exitButton.events()
 
     def draw(self):
         for button in self.typeButtons:
@@ -214,9 +212,9 @@ class Object:
                     frontTileIDs.append(newTileID)
         return frontTileIDs
     
-    def openGUI(self, mouseClicked):
+    def openGUI(self):
         # If clicked happen on object
-        mouseClickedObject = mouseClicked and self.rectangle.collidepoint(pygame.mouse.get_pos())
+        mouseClickedObject = eventOccured("leftMouseDown") and self.rectangle.collidepoint(pygame.mouse.get_pos())
         if mouseClickedObject:
             # Current ID is set to this object's ID
             Object.currentID = self.objectID
@@ -226,13 +224,13 @@ class Object:
             self.info.gui.active = False
         return self.info.gui.active
 
-    def placeObject(self, mouseClicked, previousMouseClick):
-        if self.info.canPlace(self.rectangle) and mouseClicked and not previousMouseClick:
+    def placeObject(self):
+        if self.info.canPlace(self.rectangle) and eventOccured("leftMouseDown"):
             self.info.placed = True
             self.info.hasPlaced = True
     
     # Main methods
-    def events(self, previousMouseClick: bool = False, mouseClicked: bool = False, events: list = []):
+    def events(self):
         self.setImage()
 
         if self.info.placed:
@@ -241,7 +239,7 @@ class Object:
             return
  
         self.setPosition()
-        self.placeObject(mouseClicked, previousMouseClick)
+        self.placeObject()
 
     def draw(self):
         self.info.screen.blit(self.image, (self.info.position.x, self.info.position.y))

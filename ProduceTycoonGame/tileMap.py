@@ -1,5 +1,6 @@
 import pygame
 
+from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 
 from enum import IntEnum

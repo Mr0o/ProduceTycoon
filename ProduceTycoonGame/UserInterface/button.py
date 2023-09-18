@@ -1,5 +1,6 @@
 import pygame
 
+from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.text import Text
 
@@ -20,7 +21,7 @@ from ProduceTycoonGame.UserInterface.text import Text
 #
 #    
 #    
-#    def events(self, mouseClicked: bool):
+#    def events(self, eventOccured("leftMouseDown"): bool):
 #        
 #
 #    def draw(self):
@@ -71,17 +72,18 @@ class Button():
         self.rect = createRect(pos, width, height)
         self.info = createInfo(pos, name, width, height, func)
 
-    # Main methods
-    def events(self, mouseClicked: bool):
+
+    # main methods
+    def events(self):
         if not self.info.active:
             return
         # Check if mouse position is on the button rect
         if self.rect.collidepoint(pygame.mouse.get_pos()):
-            # If mouse is clicked and the button is not already selected
-            if mouseClicked and not self.info.isSelected:
+            # if mouse is clicked and the button is not already selected
+            if eventOccured("leftMouseDown") and not self.info.isSelected:
                 self.info.isSelected = True
                 self.info.func()
-        if not mouseClicked:
+        if not eventOccured("leftMouseDown"):
             self.info.isSelected = False
     
     def draw(self):
