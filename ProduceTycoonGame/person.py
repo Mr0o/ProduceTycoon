@@ -1,6 +1,6 @@
 import pygame
 
-from ProduceTycoonGame.tile import Tile
+from ProduceTycoonGame.tileMap import Tile
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.eventTriggers import TimedEvent
 

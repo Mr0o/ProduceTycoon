@@ -3,7 +3,7 @@ import pygame
 
 # local imports
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.tileMap import TileMap
+from ProduceTycoonGame.tileMap import TileMap, Tile, Type
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.objectRegister import ObjectRegister
@@ -17,6 +17,26 @@ def createObject(screen: pygame.Surface, pos: Vector, width: int, height: int, t
 
 # this is the main game loop (events, update, draw)
 class Game():
+    def getMainTile(self, tile: Tile, currentObject):
+        # Gets the first tile that collides with the object it sets it as the main tile
+        if tile.rect.colliderect(currentObject.rectangle) and currentObject.mainTileID == -1:
+            currentObject.setMainTileID(tile.id)
+
+    def changeTileType(self, tile: Tile, currentObject):
+        # If the tile is walkable and the tile is colliding with the current object, change the tile type to boundary
+        if tile.rect.colliderect(currentObject.rectangle):
+            if tile.typeTile == Type.WALKABLE:
+                tile.typeTile = Type.BOUNDARY
+                tile.changed = True
+
+    def updateTileMap(self):
+        # Loop through each object and 
+        for currentObject in self.objects:
+            if currentObject.info.placed:
+                for tile in self.tileMap.grid:  
+                    self.getMainTile(tile, currentObject)
+                    self.changeTileType(tile, currentObject)
+
     def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
         pygame.init()
         #random.seed(100)
@@ -215,6 +235,9 @@ class Game():
     def update(self):
         for guest in self.guests:
             guest.update()
+        
+        if len(self.objects) > 0:
+            self.updateTileMap()
 
         # pathfinder update will check for any changes and update the vector fields
         self.pathfinder.update()
@@ -316,19 +339,3 @@ class Game():
 
         # exit pygame gracefully
         pygame.quit()
-
-# Code that shouldgo in here
-#def getMainTile(self, tile: Tile, currentObject: Object):
-#        ifTileCollidesWithRect = tile.info.rect.colliderect(currentObject.rectangle)
-#        ifObjectIsPlaced = currentObject.info.placed
-#        if ifTileCollidesWithRect and currentObject.mainTileID == -1 and ifObjectIsPlaced:
-#            currentObject.setMainTileID(tile.id)
-#def changeTileType(self, tile: Tile, currentObject: Object):
-#    if currentObject.info.placed and tile.info.rect.colliderect(currentObject.rectangle):
-#        if tile.info.typeTile == Type.WALKABLE:
-#            tile.info.typeTile = Type.BOUNDARY
-#if currentObjects is not None:
-#    for currentObject in currentObjects:
-#        for tile in self.tileMapGrid:  
-#            self.getMainTile(tile, currentObject)
-#            self.changeTileType(tile, currentObject)

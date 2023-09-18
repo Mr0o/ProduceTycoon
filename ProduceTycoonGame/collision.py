@@ -1,7 +1,7 @@
 from math import sqrt
 
 from ProduceTycoonGame.guest import Guest
-from ProduceTycoonGame.tile import Tile
+from ProduceTycoonGame.tileMap import Tile
 
 def isGuestTouchingTile(guest: Guest, tile: Tile) -> bool:
     """
