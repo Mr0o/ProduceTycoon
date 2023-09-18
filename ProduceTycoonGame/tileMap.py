@@ -16,6 +16,10 @@ class Tile():
     pos: Vector
     typeTile: Type = Type.WALKABLE
     rect: pygame.Rect
+    parent: 'Tile' = None
+    cost: int = 0
+    vector: Vector = Vector(0, 0)
+    changed: bool = False
 
     # Sattic Variables
     size = 0
@@ -28,14 +32,13 @@ class Tile():
 
     @staticmethod
     def scaleImage():
-        Tile.image = pygame.transform.scale(Tile.image, (Tile.size, Tile.size))
+        Tile.image = pygame.transform.scale(WALKABLE_TILE_IMG, (Tile.size, Tile.size))
 
     def __init__(self, pos: Vector, typeTile: Type = Type.WALKABLE):
         self.pos = pos
         self.typeTile = typeTile
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (Tile.size, Tile.size))
         self.setID()
-        print(Tile.image)
 
     def setID(self):
         self.id = Tile.currentTile
@@ -119,47 +122,46 @@ class TileMap():
         for tile in self.grid:
             pygame.draw.rect(TileMap.screen, (255, 255, 255), tile.rect, 2)
             TileMap.screen.blit(Tile.image, (tile.pos.x, tile.pos.y))
+    # returns the neighbors of a tile
+    def getNeighbors(self, tile: Tile) -> list[Tile]:
+        neighbors: list[Tile] = []
+        maxTile = len(self.grid) - 1
+        minTile = 0
 
-# returns the neighbors of a tile
-def getNeighbors(tile: Tile) -> list[Tile]:
-    neighbors: list[Tile] = []
-    maxTile = len(self.tileMapGrid) - 1
-    minTile = 0
+        # determine the neighbors by using the id
+        topLeft = tile.id - self.columns - 1
+        if  topLeft >= minTile:
+            neighbors.append(self.getTileByID(topLeft))
 
-    # determine the neighbors by using the id
-    topLeft = tile.id - self.columns - 1
-    if  topLeft >= minTile:
-        neighbors.append(self.getTileByID(topLeft))
+        topCenter = tile.id - self.columns
+        if topCenter >= minTile:
+            neighbors.append(self.getTileByID(topCenter))
 
-    topCenter = tile.id - self.columns
-    if topCenter >= minTile:
-        neighbors.append(self.getTileByID(topCenter))
+        topRight = tile.id - self.columns + 1
+        if topRight >= minTile:
+            neighbors.append(self.getTileByID(topRight))
 
-    topRight = tile.id - self.columns + 1
-    if topRight >= minTile:
-        neighbors.append(self.getTileByID(topRight))
+        leftCenter = tile.id - 1
+        if leftCenter >= minTile:
+            neighbors.append(self.getTileByID(leftCenter))
 
-    leftCenter = tile.id - 1
-    if leftCenter >= minTile:
-        neighbors.append(self.getTileByID(leftCenter))
+        rightCenter = tile.id + 1
+        if rightCenter <= maxTile:
+            neighbors.append(self.getTileByID(rightCenter))
 
-    rightCenter = tile.id + 1
-    if rightCenter <= maxTile:
-        neighbors.append(self.getTileByID(rightCenter))
+        bottomLeft = tile.id + self.columns - 1
+        if bottomLeft <= maxTile:
+            neighbors.append(self.getTileByID(bottomLeft))
 
-    bottomLeft = tile.id + self.columns - 1
-    if bottomLeft <= maxTile:
-        neighbors.append(self.getTileByID(bottomLeft))
+        bottomCenter = tile.id + self.columns
+        if bottomCenter <= maxTile:
+            neighbors.append(self.getTileByID(bottomCenter))
 
-    bottomCenter = tile.id + self.columns
-    if bottomCenter <= maxTile:
-        neighbors.append(self.getTileByID(bottomCenter))
+        bottomRight = tile.id + self.columns + 1
+        if bottomRight <= maxTile:
+            neighbors.append(self.getTileByID(bottomRight))
 
-    bottomRight = tile.id + self.columns + 1
-    if bottomRight <= maxTile:
-        neighbors.append(self.getTileByID(bottomRight))
-
-    return neighbors
+        return neighbors
 
 # create static surface of tile lines
 def createStaticLineSurface(tileMap: TileMap, width: int, height: int) -> pygame.Surface:
