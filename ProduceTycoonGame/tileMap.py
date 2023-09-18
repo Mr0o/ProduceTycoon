@@ -98,10 +98,10 @@ class TileMap():
 
     # Creating the grid of tiles
     def createGrid(self):
-        for column in range(self.columns):
-            x = column * self.tileSize
-            for row in range(self.rows):
-                y = row * self.tileSize
+        for row in range(self.rows):
+            y = row * self.tileSize
+            for column in range(self.columns):
+                x = column * self.tileSize
                 # Check if edge tile
                 if row == 0 or row == self.rows - 1 or column == 0 or column == self.columns - 1:
                     self.grid.append(Tile(Vector(x, y), Type.EDGE))
@@ -200,6 +200,26 @@ def createStaticLineSurface(tileMap: TileMap, width: int, height: int) -> pygame
 
     # draw vertical lines
     for col in range(numCols):
-        pygame.draw.line(staticSurface, color, (col * tileMap.tileSize, tileMap.tileSize), (col * tileMap.tileSize, height))
+        pygame.draw.line(staticSurface, color, (col * tileMap.tileSize, 0), (col * tileMap.tileSize, height))
 
     return staticSurface
+
+def getMainTile(tile: Tile, currentObject):
+        # Gets the first tile that collides with the object it sets it as the main tile
+        if tile.rect.colliderect(currentObject.rectangle) and currentObject.mainTileID == -1:
+            currentObject.setMainTileID(tile.id)
+
+def changeTileType(tile: Tile, currentObject):
+    # If the tile is walkable and the tile is colliding with the current object, change the tile type toboundary
+    if tile.rect.colliderect(currentObject.rectangle):
+        if tile.typeTile == Type.WALKABLE:
+            tile.typeTile = Type.BOUNDARY
+            tile.changed = True
+
+def updateTileMap(tileMap, objects):
+    # Loop through each object and 
+    for currentObject in objects:
+        if currentObject.info.placed:
+            for tile in tileMap.grid:  
+                getMainTile(tile, currentObject)
+                changeTileType(tile, currentObject)

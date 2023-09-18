@@ -94,19 +94,19 @@ class ObjectInfo:
     position: Vector
     gui: ObjectGUI
     rows: int
-    colums: int
+    columns: int
     tileSize: int
     placed: bool
     hasPlaced: bool
 
     elementRectangles = []
 
-    def __init__(self, screen, position, gui, rows, colums, tileSize, placed = False, hasPlaced = False):
+    def __init__(self, screen, position, gui, rows, columns, tileSize, placed = False, hasPlaced = False):
         self.screen = screen
         self.position = position
         self.gui = gui
         self.rows = rows
-        self.colums = colums
+        self.columns = columns
         self.tileSize = tileSize
         self.placed = placed
         self.hasPlaced = hasPlaced
@@ -136,15 +136,12 @@ class Object:
         self.mainTileID = mainTileID
         self.setImage()
         self.configureImage(self.image)
-        self.rectangle = self.createRectangle()
+        self.rectangle = self.image.get_rect()
 
     # Instance methods
     def configureImage(self, image: pygame.Surface):
-        self.image = pygame.transform.scale(image, (self.info.rows * self.info.tileSize, self.info.colums * self.info.tileSize))
+        self.image = pygame.transform.scale(image, (self.info.rows * self.info.tileSize, self.info.columns * self.info.tileSize))
         #self.image.rotate(self.info.direction * 90)
-
-    def createRectangle(self):
-        return self.image.get_rect()
 
     def setRectanglePos(self, x, y):
         self.rectangle.topleft = (x, y)
@@ -157,10 +154,10 @@ class Object:
         yOffset = self.getOffset(mousePos[1])
 
         # X Position 
-        if self.info.colums % 2 == 0:
-            posX = mousePos[0] + xOffset - self.info.colums * tileSize // 2
+        if self.info.columns % 2 == 0:
+            posX = mousePos[0] + xOffset - self.info.columns * tileSize // 2
         else:
-            posX = mousePos[0] + xOffset - self.info.colums * tileSize
+            posX = mousePos[0] + xOffset - self.info.columns * tileSize
         # Y Position
         if self.info.rows % 2 == 0:
             posY = mousePos[1] + yOffset - self.info.rows * tileSize // 2
@@ -191,23 +188,24 @@ class Object:
         self.mainTileID = ID
 
     def getFrontTiles(self):
+        print(self.info.columns, self.info.rows)
         tileMapWidth = 32
         frontTileIDs = []
         match self.info.gui.direction:
             case Direction.NORTH:
-                for i in range(self.info.rows):
+                for i in range(self.info.columns):
                     newTileID = self.mainTileID + i
                     frontTileIDs.append(newTileID)
             case Direction.EAST:
-                for i in range(self.info.colums):
+                for i in range(self.info.rows):
                     newTileID = self.mainTileID + i * tileMapWidth + self.info.rows - 1
                     frontTileIDs.append(newTileID)
             case Direction.SOUTH:
-                for i in range(self.info.rows):
-                    newTileID = self.mainTileID + i + (self.info.colums - 1) * tileMapWidth
+                for i in range(self.info.columns):
+                    newTileID = self.mainTileID + i + (self.info.columns - 1) * tileMapWidth
                     frontTileIDs.append(newTileID)
             case Direction.WEST:
-                for i in range(self.info.colums):
+                for i in range(self.info.rows):
                     newTileID = self.mainTileID + i * tileMapWidth
                     frontTileIDs.append(newTileID)
         return frontTileIDs
@@ -252,8 +250,8 @@ class ObjectRegister:
     objects = []
 
     # fix code __init__ or generateObject moethod they should not both take in the same arguments basically
-    def __init__(self, screen, position, rows, colums, tileSize):
-        self.objects.append(self.generateObject(screen, position, rows, colums, tileSize))
+    def __init__(self, screen, position, rows, columns, tileSize):
+        self.objects.append(self.generateObject(screen, position, rows, columns, tileSize))
 
     def generateObjectID(self):
         objectID = ObjectRegister.objectID
@@ -264,9 +262,9 @@ class ObjectRegister:
     def setElementRectangles(elementRectangles):
         ObjectInfo.setElementRectangles(elementRectangles)
 
-    def generateObject(self, screen, position, rows, colums, tileSize):
+    def generateObject(self, screen, position, rows, columns, tileSize):
         objectID = self.generateObjectID()    
         gui = ObjectGUI()    
-        objectInfo = ObjectInfo(screen, position, gui, rows, colums, tileSize)
+        objectInfo = ObjectInfo(screen, position, gui, rows, columns, tileSize)
         return Object(objectID, objectInfo)
     

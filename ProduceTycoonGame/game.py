@@ -4,7 +4,7 @@ import pygame
 # local imports
 from ProduceTycoonGame.events import postEvent, eventOccured, clearEventList
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.tileMap import TileMap, Tile, Type
+from ProduceTycoonGame.tileMap import TileMap, Tile, Type, updateTileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.objectRegister import ObjectRegister
@@ -18,26 +18,6 @@ def createObject(screen: pygame.Surface, pos: Vector, width: int, height: int, t
 
 # this is the main game loop (events, update, draw)
 class Game():
-    def getMainTile(self, tile: Tile, currentObject):
-        # Gets the first tile that collides with the object it sets it as the main tile
-        if tile.rect.colliderect(currentObject.rectangle) and currentObject.mainTileID == -1:
-            currentObject.setMainTileID(tile.id)
-
-    def changeTileType(self, tile: Tile, currentObject):
-        # If the tile is walkable and the tile is colliding with the current object, change the tile type to boundary
-        if tile.rect.colliderect(currentObject.rectangle):
-            if tile.typeTile == Type.WALKABLE:
-                tile.typeTile = Type.BOUNDARY
-                tile.changed = True
-
-    def updateTileMap(self):
-        # Loop through each object and 
-        for currentObject in self.objects:
-            if currentObject.info.placed:
-                for tile in self.tileMap.grid:  
-                    self.getMainTile(tile, currentObject)
-                    self.changeTileType(tile, currentObject)
-
     def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
         pygame.init()
 
@@ -236,7 +216,7 @@ class Game():
             guest.update()
         
         if len(self.objects) > 0:
-            self.updateTileMap()
+            updateTileMap(self.tileMap, self.objects)
 
         # pathfinder update will check for any changes and update the vector fields
         self.pathfinder.update()
@@ -307,25 +287,25 @@ class Game():
             # debug placeable objects
             if self.debugPlaceableObjects:
                 for currentObject in self.objects:
-                        if currentObject.info.placed:
-                            # get the tiles that fall within the currentObject's rect
-                            placedObjectTiles = self.tileMap.getTilesInRect(currentObject.createRectangle())
-                            for tile in placedObjectTiles:
-                                pygame.draw.rect(self.screen, (255, 255, 255), tile.rect, 2)
+                    if currentObject.info.placed:
+                        # get the tiles that fall within the currentObject's rect
+                        placedObjectTiles = self.tileMap.getTilesInRect(currentObject.rectangle)
+                        for tile in placedObjectTiles:
+                            pygame.draw.rect(self.screen, (255, 255, 255), tile.rect, 2)
                         
 
                 # draw a red square over the front tiles of the placeable objects
                 for currentObject in self.objects:
-                        if currentObject.info.placed:
-                            for frontTileID in currentObject.getFrontTiles():
-                                frontTile = self.tileMap.getTileByID(frontTileID)
-                                pygame.draw.rect(self.screen, (255, 0, 0), frontTile.rect, 2)
+                    if currentObject.info.placed:
+                        for frontTileID in currentObject.getFrontTiles():
+                            frontTile = self.tileMap.getTileByID(frontTileID)
+                            pygame.draw.rect(self.screen, (255, 0, 0), frontTile.rect, 2)
 
                 # draw a green square over the main tiles of the placeable objects
                 for currentObject in self.objects:
-                        if currentObject.info.placed:
-                            mainTile = self.tileMap.getTileByID(currentObject.mainTileID)
-                            pygame.draw.rect(self.screen, (0, 255, 0), mainTile.rect, 2)
+                    if currentObject.info.placed:
+                        mainTile = self.tileMap.getTileByID(currentObject.mainTileID)
+                        pygame.draw.rect(self.screen, (0, 255, 0), mainTile.rect, 2)
 
         pygame.display.flip()
 

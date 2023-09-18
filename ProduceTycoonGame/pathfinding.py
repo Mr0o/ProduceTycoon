@@ -169,7 +169,6 @@ class Pathfinder():
             if tile.changed:
                 tileMapChanged = True
                 tile.changed = False
-                break
         if tileMapChanged:
             #print("Updating vector fields")
             startTime = time.time()
