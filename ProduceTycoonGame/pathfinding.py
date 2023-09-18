@@ -1,6 +1,5 @@
 import time
-from ProduceTycoonGame.tileMap import TileMap
-from ProduceTycoonGame.tile import Tile, Type
+from ProduceTycoonGame.tileMap import TileMap, Tile, Type
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
 
@@ -9,10 +8,10 @@ from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
 # create a heatmap of the tilemap
 def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
     # reset the cost and parent attributes of each tile
-    for tile in tileMap.tileMapGrid:
-        tile.cost = 0
-        tile.parent = None
-        tile.vector = Vector(0, 0)
+    #for tile in tileMap.grid:
+    #    tile.cost = 0
+    #    tile.parent = None
+    #    tile.vector = Vector(0, 0)
 
     # list of open tiles
     openTiles: list[Tile] = []
@@ -57,7 +56,7 @@ def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
                     # set the parent of the neighbor to the current tile
                     neighbor.parent = currentTile
 
-            if neighbor.type == Type.BOUNDARY or neighbor.type == Type.EDGE:
+            if neighbor.typeTile == Type.BOUNDARY or neighbor.typeTile == Type.EDGE:
                 neighbor.cost = 1000
 
     # return the closed tiles
@@ -71,17 +70,11 @@ def calcVector(tileMap: TileMap, tile: Tile) -> Vector:
     vector = Vector(0, 0)
 
     neighboringVecs: list[Vector] = []
-
-    # get the nu,ber of boundary tiles in the neighbors
-    boundaryTiles = 0
-    for neighbor in neighbors:
-        if neighbor.type == Type.BOUNDARY or neighbor.type == Type.EDGE:
-            boundaryTiles += 1
     
     # for each neighbor of the tile
     for neighbor in neighbors:
         # check that its not a boundary tile or an edge tile
-        if neighbor.type != Type.BOUNDARY and neighbor.type != Type.EDGE:
+        if neighbor.typeTile != Type.BOUNDARY and neighbor.typeTile != Type.EDGE:
             # if the neighbor has a parent
             if neighbor.parent != None:
                 # get the vector from the neighbor to the parent using the centers of the tiles
@@ -129,7 +122,7 @@ def createVectorField(tileMap: TileMap, target: Tile) -> list[Vector]:
     # so we will loop throught the tileMap and get the vectors
     # Note: using the tile.vector attribute should be avoided because it will always be set to the last vector calculated
     # it is only used for the vectorField calculation, and should not be used for anything else
-    for tile in tileMap.tileMapGrid:
+    for tile in tileMap.grid:
         vectorField.append(tile.vector)
 
     # return the vector field
@@ -146,15 +139,14 @@ class VectorField():
         self.update()
 
     def update(self):
-        self.vectors= createVectorField(self.tileMap, self.target)
+        self.vectors = createVectorField(self.tileMap, self.target)
 
     def getVector(self, tile: Tile) -> Vector:
         if tile is None:
             print("WARN: VectorField.getVector() -> tile is None")
             return Vector(0, 0)
         
-        vector: Vector = self.vectors[tile.id]
-        return vector
+        return self.vectors[tile.id]
 
     def getVectors(self) -> list[Vector]:
         return self.vectors
@@ -173,9 +165,10 @@ class Pathfinder():
     def update(self) -> None:
         # check for any changes in the tilemap and update the vector fields accordingly
         tileMapChanged = False
-        for tile in self.tileMap.tileMapGrid:
+        for tile in self.tileMap.grid:
             if tile.changed:
                 tileMapChanged = True
+                tile.changed = False
                 break
         if tileMapChanged:
             #print("Updating vector fields")

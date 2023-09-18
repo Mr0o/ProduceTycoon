@@ -4,12 +4,11 @@ import pygame
 # local imports
 from ProduceTycoonGame.events import postEvent, eventOccured, clearEventList
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.tileMap import TileMap
+from ProduceTycoonGame.tileMap import TileMap, Tile, Type
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.objectRegister import ObjectRegister
 from ProduceTycoonGame.UserInterface.clock import Clock
-#from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.valueHandler import ValueHandler
 
@@ -19,6 +18,26 @@ def createObject(screen: pygame.Surface, pos: Vector, width: int, height: int, t
 
 # this is the main game loop (events, update, draw)
 class Game():
+    def getMainTile(self, tile: Tile, currentObject):
+        # Gets the first tile that collides with the object it sets it as the main tile
+        if tile.rect.colliderect(currentObject.rectangle) and currentObject.mainTileID == -1:
+            currentObject.setMainTileID(tile.id)
+
+    def changeTileType(self, tile: Tile, currentObject):
+        # If the tile is walkable and the tile is colliding with the current object, change the tile type to boundary
+        if tile.rect.colliderect(currentObject.rectangle):
+            if tile.typeTile == Type.WALKABLE:
+                tile.typeTile = Type.BOUNDARY
+                tile.changed = True
+
+    def updateTileMap(self):
+        # Loop through each object and 
+        for currentObject in self.objects:
+            if currentObject.info.placed:
+                for tile in self.tileMap.grid:  
+                    self.getMainTile(tile, currentObject)
+                    self.changeTileType(tile, currentObject)
+
     def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
         pygame.init()
 
@@ -43,7 +62,8 @@ class Game():
         # debug variable that when true will draw the tiles that make up each currentObject (this could impact performance, therefore it is disabled by default)
         self.debugPlaceableObjects = False
 
-        self.tileMap = TileMap(self.screen, Vector(0, 0))
+        TileMap.setScreen(self.screen)
+        self.tileMap = TileMap(Vector(0, 0))
 
         # pathfinding (Vector Fields)
         self.pathfinder = Pathfinder(self.tileMap)
@@ -213,10 +233,11 @@ class Game():
         self.elements.append(self.displayClock.rect)
 
     def update(self):
-        self.tileMap.update(self.objects)
-
         for guest in self.guests:
             guest.update()
+        
+        if len(self.objects) > 0:
+            self.updateTileMap()
 
         # pathfinder update will check for any changes and update the vector fields
         self.pathfinder.update()
@@ -270,15 +291,15 @@ class Game():
             text = self.debugFont.render(str(int(self.clock.get_fps())) + " FPS ", True, (255, 255, 255))
             self.screen.blit(text, (0, text.get_height() + 20))
 
-            # draw the highlighted tile id
-            if self.tileMap.highlightedTile is not None:
-                text = self.debugFont.render("Tile ID: " + str(self.tileMap.highlightedTile.id), True, (255, 255, 0))
-                self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, 0))
-
-            # draw the selected tile id
-            if self.tileMap.selectedTile is not None:
-                text = self.debugFont.render("Selected ID: " + str(self.tileMap.selectedTile.id), True, (255, 0, 255))
-                self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height()))
+            ## draw the highlighted tile id
+            #if self.tileMap.highlightedTile is not None:
+            #    text = self.debugFont.render("Tile ID: " + str(self.tileMap.highlightedTile.id), True, (255, 255, #0))
+            #    self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, 0))
+            #
+            ## draw the selected tile id
+            #if self.tileMap.selectedTile is not None:
+            #    text = self.debugFont.render("Selected ID: " + str(self.tileMap.selectedTile.id), True, (255, 0, #255))
+            #    self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height()))
 
             # draw the size of the pathfinder vector fields list
             text = self.debugFont.render("Vector Fields: " + str(len(self.pathfinder.vectorFields)), True, (255, 255, 255))
@@ -307,7 +328,7 @@ class Game():
                             mainTile = self.tileMap.getTileByID(currentObject.mainTileID)
                             pygame.draw.rect(self.screen, (0, 255, 0), mainTile.rect, 2)
 
-        pygame.display.update()
+        pygame.display.flip()
 
     def run(self):
         while self.running:

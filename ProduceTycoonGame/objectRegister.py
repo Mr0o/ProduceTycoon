@@ -35,7 +35,7 @@ class ObjectGUI:
     typeCase: TypeProduceCase
 
     # Positions
-    x = 700; y = 3
+    x = 700; y = 30
     def __init__(self, active = False, direction = Direction.NORTH, typeCase = TypeProduceCase.WATERMELON):
         self.active = active
         self.direction = direction
@@ -46,8 +46,8 @@ class ObjectGUI:
 
         self.typeButtons = self.createButtons()
 
-        # Resets positions back to (700, 3) fbsr;jbwr
-        ObjectGUI.x = 700; ObjectGUI.y = 3
+        # Resets positions back to (700, 30) fbsr;jbwr
+        ObjectGUI.x = 700; ObjectGUI.y = 30
 
     # Helper methods
     def createButton(self, nameButton: str, func: callable):
@@ -57,6 +57,7 @@ class ObjectGUI:
         return Button(Vector(x, y), nameButton, 100, 20, func)
 
     def createButtons(self):
+        # Create each button with a lambda function that calls the setTypeCase method with the correct type
         return [
             self.createButton('Watermelon', lambda: self.setTypeCase(TypeProduceCase.WATERMELON)),
             self.createButton('Bananas', lambda: self.setTypeCase(TypeProduceCase.BANANAS)),
@@ -91,7 +92,7 @@ class ObjectGUI:
 class ObjectInfo:
     screen: pygame.Surface
     position: Vector
-    objectGUI: ObjectGUI
+    gui: ObjectGUI
     rows: int
     colums: int
     tileSize: int
@@ -100,10 +101,10 @@ class ObjectInfo:
 
     elementRectangles = []
 
-    def __init__(self, screen, position, objectGUI, rows, colums, tileSize, placed = False, hasPlaced = False):
+    def __init__(self, screen, position, gui, rows, colums, tileSize, placed = False, hasPlaced = False):
         self.screen = screen
         self.position = position
-        self.objectGUI = objectGUI
+        self.gui = gui
         self.rows = rows
         self.colums = colums
         self.tileSize = tileSize
@@ -137,7 +138,7 @@ class Object:
         self.configureImage(self.image)
         self.rectangle = self.createRectangle()
 
-    # Helper methods
+    # Instance methods
     def configureImage(self, image: pygame.Surface):
         self.image = pygame.transform.scale(image, (self.info.rows * self.info.tileSize, self.info.colums * self.info.tileSize))
         #self.image.rotate(self.info.direction * 90)
@@ -145,7 +146,7 @@ class Object:
     def createRectangle(self):
         return self.image.get_rect()
 
-    def updateRectangle(self, x, y):
+    def setRectanglePos(self, x, y):
         self.rectangle.topleft = (x, y)
 
     def setPosition(self):
@@ -167,13 +168,13 @@ class Object:
             posY = mousePos[1] + yOffset - self.info.rows * tileSize
 
         self.info.position = Vector(posX, posY)
-        self.updateRectangle(posX, posY)
+        self.setRectanglePos(posX, posY)
 
     def getOffset(self, mousePos):
         return self.info.tileSize - mousePos % self.info.tileSize
 
     def setImage(self):
-        match self.info.objectGUI.typeCase:
+        match self.info.gui.typeCase:
             case TypeProduceCase.WATERMELON:
                 image = pygame.image.load('./Resources/Images/WatermelonBin.png')
             case TypeProduceCase.BANANAS:
@@ -186,10 +187,13 @@ class Object:
                 image = pygame.image.load('./Resources/Images/WatermelonBin.png')
         self.configureImage(image)
 
+    def setMainTileID(self, ID):
+        self.mainTileID = ID
+
     def getFrontTiles(self):
         tileMapWidth = 32
         frontTileIDs = []
-        match self.info.objectGUI.direction:
+        match self.info.gui.direction:
             case Direction.NORTH:
                 for i in range(self.info.rows):
                     newTileID = self.mainTileID + i
@@ -215,10 +219,10 @@ class Object:
             # Current ID is set to this object's ID
             Object.currentID = self.objectID
             # The first click on the object will open the GUI second click will close it
-            self.info.objectGUI.active = not self.info.objectGUI.active
+            self.info.gui.active = not self.info.gui.active
         if Object.currentID is not self.objectID :
-            self.info.objectGUI.active = False
-        return self.info.objectGUI.active
+            self.info.gui.active = False
+        return self.info.gui.active
 
     def placeObject(self):
         if self.info.canPlace(self.rectangle) and eventOccured("leftMouseDown"):
@@ -230,8 +234,8 @@ class Object:
         self.setImage()
 
         if self.info.placed:
-            if self.openGUI():
-                self.info.objectGUI.events()
+            if self.openGUI(mouseClicked):
+                self.info.gui.events()
             return
  
         self.setPosition()
@@ -239,8 +243,8 @@ class Object:
 
     def draw(self):
         self.info.screen.blit(self.image, (self.info.position.x, self.info.position.y))
-        if self.info.placed and self.info.objectGUI.active:
-            self.info.objectGUI.draw()
+        if self.info.placed and self.info.gui.active:
+            self.info.gui.draw()
         
 
 class ObjectRegister:
@@ -262,7 +266,7 @@ class ObjectRegister:
 
     def generateObject(self, screen, position, rows, colums, tileSize):
         objectID = self.generateObjectID()    
-        objectGUI = ObjectGUI()    
-        objectInfo = ObjectInfo(screen, position, objectGUI, rows, colums, tileSize)
+        gui = ObjectGUI()    
+        objectInfo = ObjectInfo(screen, position, gui, rows, colums, tileSize)
         return Object(objectID, objectInfo)
     
