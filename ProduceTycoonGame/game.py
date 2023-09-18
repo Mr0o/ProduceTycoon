@@ -131,7 +131,6 @@ class Game():
         else:
             self.hideGUI = False
 
-        self.tileMap.events()
 
         ObjectRegister.setElementRectangles(self.elements)
 
