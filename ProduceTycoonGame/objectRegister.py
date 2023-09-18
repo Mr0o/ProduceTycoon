@@ -234,7 +234,7 @@ class Object:
         self.setImage()
 
         if self.info.placed:
-            if self.openGUI(mouseClicked):
+            if self.openGUI():
                 self.info.gui.events()
             return
  
