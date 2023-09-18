@@ -54,6 +54,7 @@ class TileMap():
     # Static variables
     screen = pygame.Surface((0, 0))
     linesSurface = pygame.Surface((0, 0))
+    staticSurface = pygame.Surface((0, 0))
 
     # Static methods
     @staticmethod
@@ -63,6 +64,10 @@ class TileMap():
     @staticmethod
     def drawTileLines():
         TileMap.screen.blit(TileMap.lineSurface, (0, 0))
+
+    @staticmethod
+    def drawTiles():
+        TileMap.screen.blit(TileMap.staticSurface, (0, 0))
 
     # Instance methods
     def __init__(self, pos: Vector):
@@ -74,11 +79,12 @@ class TileMap():
         # Tile static variables
         Tile.setSize(self.tileSize)
         Tile.scaleImage()
-
-        TileMap.lineSurface = createStaticLineSurface(self, 800, 600)
         
         self.grid = []
         self.createGrid()
+
+        TileMap.lineSurface = createStaticLineSurface(self, 800, 600)
+        TileMap.staticSurface = createStaticTileSurface(self.grid, 800, 600)
 
     def getRows(self):
         return int(TileMap.screen.get_height() / 25)
@@ -119,9 +125,8 @@ class TileMap():
         return tiles
 
     def draw(self):
-        for tile in self.grid:
-            pygame.draw.rect(TileMap.screen, (255, 255, 255), tile.rect, 2)
-            TileMap.screen.blit(Tile.image, (tile.pos.x, tile.pos.y))
+        TileMap.drawTiles()
+        
     # returns the neighbors of a tile
     def getNeighbors(self, tile: Tile) -> list[Tile]:
         neighbors: list[Tile] = []
@@ -162,6 +167,18 @@ class TileMap():
             neighbors.append(self.getTileByID(bottomRight))
 
         return neighbors
+
+def createStaticTileSurface(tiles: list[Tile], width: int, height: int) -> pygame.Surface:
+    staticSurface = pygame.Surface((width, height))
+    staticSurface.fill((0, 0, 0))
+
+    # get the original screen of the tiles
+    tempScreen = TileMap.screen
+
+    for tile in tiles:
+        staticSurface.blit(tile.image, (tile.pos.x, tile.pos.y))
+
+    return staticSurface
 
 # create static surface of tile lines
 def createStaticLineSurface(tileMap: TileMap, width: int, height: int) -> pygame.Surface:
