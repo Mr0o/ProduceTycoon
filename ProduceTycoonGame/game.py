@@ -80,14 +80,14 @@ class Game():
 
         self.elements = []
 
-        # currency box
-        currencyBoxWidth = 40
-        currencyBoxHeight = 20
-        currencyBoxX = 0
-        currencyBoxY = self.HEIGHT - currencyBoxHeight
-        self.currencyBox = pygame.Rect((currencyBoxX, currencyBoxY), (currencyBoxWidth, currencyBoxHeight))
+        # money box
+        moneyBoxWidth = 40
+        moneyBoxHeight = 20
+        moneyBoxX = 0
+        moneyBoxY = self.HEIGHT - moneyBoxHeight
+        self.moneyBox = pygame.Rect((moneyBoxX, moneyBoxY), (moneyBoxWidth, moneyBoxHeight))
 
-        self.textRenderer = Text(ShopMenu.screen, Vector(currencyBoxX, currencyBoxY), currencyBoxWidth, currencyBoxHeight, str(PlayerData.money))
+        self.textRenderer = Text(ShopMenu.screen, Vector(moneyBoxX, moneyBoxY), moneyBoxWidth, moneyBoxHeight, str(PlayerData.money))
 
     def events(self):
         clearEventList()
@@ -237,9 +237,9 @@ class Game():
         else:
             pygame.display.set_caption('Produce Tycoon')
 
-    def displayCurrency(self):
-        pygame.draw.rect(self.screen, (255, 255, 255), self.currencyBox)
-        pygame.draw.rect(self.screen, (0, 0, 0), self.currencyBox, 2)
+    def displayMoney(self):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.moneyBox)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.moneyBox, 2)
         self.textRenderer.setText(str(PlayerData.money))
         self.textRenderer.draw() 
 
@@ -264,7 +264,7 @@ class Game():
             guest.draw()
 
         self.displayClock.draw()
-        self.displayCurrency()
+        self.displayMoney()
 
         self.shopMenu.draw()
 
