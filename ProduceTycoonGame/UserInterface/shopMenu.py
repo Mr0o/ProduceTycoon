@@ -4,6 +4,7 @@ from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.text import Text
 from ProduceTycoonGame.playerData import PlayerData
+from ProduceTycoonGame.produce import Produce, Watermelon, Bananas, Apples, Tomatoes
 
 class ShopMenu():
     # Variables
@@ -28,32 +29,32 @@ class ShopMenu():
         if PlayerData.money < 100:
             print("---- Insufficient funds ----")
             return
-        PlayerData.money -= 100
-        PlayerData.amountWatermelons += 1
+        PlayerData.money -= Watermelon.buy
+        Watermelon.amount += 1
         print("---- Purchased watermelon ----")
 
     def buyBananas(self):
         if PlayerData.money < 100:
             print("---- Insufficient funds ----")
             return
-        PlayerData.money -= 100
-        PlayerData.amountBananas += 1
+        PlayerData.money -= Bananas.buy
+        Bananas.amount += 1
         print("---- Purchased bananas ----")
 
     def buyApples(self):
         if PlayerData.money < 100:
             print("---- Insufficient funds ----")
             return
-        PlayerData.money -= 100
-        PlayerData.amountApples += 1
+        PlayerData.money -= Apples.buy
+        Apples.amount += 1
         print("---- Purchased apples ----")
 
     def buyTomatoes(self):
         if PlayerData.money < 100:
             print("---- Insufficient funds ----")
             return
-        PlayerData.money -= 100
-        PlayerData.amountTomatoes += 1
+        PlayerData.money -= Tomatoes.buy
+        Tomatoes.amount += 1
         print("---- Purchased tomatoes ----")
 
     # Static methods
