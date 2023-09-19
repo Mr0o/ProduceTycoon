@@ -3,25 +3,103 @@ import pygame
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.text import Text
-from ProduceTycoonGame.valueHandler import ValueHandler
+from ProduceTycoonGame.playerData import PlayerData
 
 class ShopMenu():
-    def __init__(self, screen: pygame.Surface, pos: Vector, width: int, height: int, playerValues: dict, color: tuple[int, int, int] | pygame.Color = (90, 140, 200)):
-        self.screen = screen
+    pos: Vector
+    width: int
+    height: int
+    color: tuple
+    active: bool = False
+    rect: pygame.Rect
+    # Static variables
+    buttons = []
+    screen = pygame.Surface((0, 0))
+
+    def displayCurrency(self):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.currencyBox)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.currencyBox, 2)
+        self.textRenderer.draw() 
+
+    def openGUI(self):
+        self.active = True
+
+    def exitGUI(self):
+        self.active = False
+
+    def buyWatermelon(self):
+        if PlayerData.money < 100:
+            print("---- Insufficient funds ----")
+            return
+        PlayerData.money -= 100
+        PlayerData.amountWatermelons += 1
+
+    def buyBananas(self):
+        if PlayerData.money < 100:
+            print("---- Insufficient funds ----")
+            return
+        PlayerData.money -= 100
+        PlayerData.amountBananas += 1
+
+    def buyApples(self):
+        if PlayerData.money < 100:
+            print("---- Insufficient funds ----")
+            return
+        PlayerData.money -= 100
+        PlayerData.amountApples += 1
+
+    def buyTomatoes(self):
+        if PlayerData.money < 100:
+            print("---- Insufficient funds ----")
+            return
+        PlayerData.money -= 100
+        PlayerData.amountTomatoes += 1
+
+    # Static methods
+    @staticmethod
+    def setScreen(screen):
+        ShopMenu.screen = screen
+
+    x = 0
+    y = 0
+    def defineXandY(self):
+        ShopMenu.x = self.pos.x + 10
+        ShopMenu.y = self.pos.y + 10
+
+    def createButton(self, name: str, width: int, height: int, func: callable):
+        button = Button(Vector(ShopMenu.x, ShopMenu.y), name, width, height, func)
+        ShopMenu.x += 20 + width
+        if ShopMenu.x + width > self.width + self.pos.x:
+            ShopMenu.x = self.pos.x + 20
+            ShopMenu.y += 20
+        return button
+
+    def createButtonWithPos(self, name: str, pos: Vector, width: int, height: int, func: callable):
+        return Button(pos, name, width, height, func)
+
+    def createButtons(self):
+        size = 4
+        offset = 20 * size
+        buttonWidth = int((self.width - offset) / size)
+        buttonHeight = int((self.height - offset) / size)
+        return [
+            self.createButton('Watermelon', buttonWidth, buttonHeight, self.buyWatermelon),
+            self.createButton('Bananas', buttonWidth, buttonHeight, self.buyBananas),
+            self.createButton('Apples', buttonWidth, buttonHeight, self.buyApples),
+            self.createButton('Tomatoes', buttonWidth, buttonHeight, self.buyTomatoes),
+
+            self.createButtonWithPos('X', self.pos, 20, 20, self.exitGUI)
+        ]
+
+    def __init__(self, pos: Vector, width: int, height: int):
         self.pos = pos
         self.width = width
         self.height = height
-        self.playerValues = playerValues
-        self.color = color
+        self.color = (122, 238, 186)
 
-        self.playerValues = ValueHandler.getStaticValues()
-
-        self.hidden = True
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
 
-        self.buttons = []
-        self.exitButton = Button(Vector(self.pos.x, self.pos.y), 'X', 20, 20)
-        self.watermelonButton = Button(Vector(self.pos.x + 20, self.pos.y + 20), 'Watermelon', 100, 100)
+        ShopMenu.defineXandY(self)
 
         currencyBoxWidth = 40
         currencyBoxHeight = 20
@@ -29,33 +107,22 @@ class ShopMenu():
         currencyBoxY = self.pos.y
         self.currencyBox = pygame.Rect((currencyBoxX, currencyBoxY), (currencyBoxWidth, currencyBoxHeight))
 
-        self.currency = 'currency'
-        self.textRenderer = Text(self.screen, Vector(currencyBoxX, currencyBoxY), currencyBoxWidth, 
-        currencyBoxHeight, str(self.playerValues[self.currency]))
+        self.textRenderer = Text(ShopMenu.screen, Vector(currencyBoxX, currencyBoxY), currencyBoxWidth, 
+        currencyBoxHeight, str(PlayerData.money))
 
+        ShopMenu.buttons = self.createButtons()
 
+    # Main methods
     def events(self):
-        if self.exitButton.events():
-            self.hidden = True
-        if self.watermelonButton.events():
-            self.playerValues[self.currency] -= 100
-            self.playerValues["Watermelon-amount"] += 1
-
-    def update(self):
-        self.textRenderer.setText(str(self.playerValues[self.currency]))
+        for button in ShopMenu.buttons:
+            button.events()
+        self.textRenderer.setText(str(PlayerData.money))
 
     def draw(self):
-        if not self.hidden:
+        if self.active:
            pygame.draw.rect(self.screen, self.color, self.rect)
            pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
-           self.exitButton.draw()
-           self.watermelonButton.draw()
+           for button in ShopMenu.buttons:
+               button.draw()
            self.displayCurrency()
-
-    def displayCurrency(self):
-        pygame.draw.rect(self.screen, (255, 255, 255), self.currencyBox)
-        pygame.draw.rect(self.screen, (0, 0, 0), self.currencyBox, 2)
-        self.textRenderer.draw()    
-
-    def getCurrency(self):
-        return self.playerValues[self.currency]
+      

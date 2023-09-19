@@ -10,7 +10,8 @@ from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.objectRegister import ObjectRegister
 from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.pathfinding import Pathfinder
-from ProduceTycoonGame.valueHandler import ValueHandler
+from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
+from ProduceTycoonGame.playerData import PlayerData
 
 # Helper Functions
 def createObject(screen: pygame.Surface, pos: Vector, width: int, height: int, tileSize: int):
@@ -48,7 +49,6 @@ class Game():
         # pathfinding (Vector Fields)
         self.pathfinder = Pathfinder(self.tileMap)
 
-        self.playerValues = ValueHandler.getStaticValues()
 
         # buttons
         object4x4Args = (self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
@@ -60,7 +60,10 @@ class Game():
         self.button1x1 = Button(Vector(60, 0), "1x1 Tile", 60, 20, lambda: createObject(*object1x1Args))
         self.buttons.append(self.button1x1)
         #self.moveObjects = Button(Vector(120, 0), "Move Objects", 120, 20)
-        #self.buttonShop = Button(Vector(240, 0), "Shop", 60, 20)
+        ShopMenu.setScreen(self.screen)
+        self.shopMenu = ShopMenu(Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2)
+        self.openShop = Button(Vector(240, 0), "Shop", 60, 20, self.shopMenu.openGUI)
+        self.buttons.append(self.openShop)
 
         # placed objects
         self.objects: list[ObjectRegister] = []
@@ -117,12 +120,6 @@ class Game():
         if not self.hideGUI:
             for button in self.buttons:
                 button.events()
-            #if self.moveObjects.events(eventOccured("leftMouseDown")):
-            #    self.hideGUI = True
-            #    self.moveObject = True
-            #if self.buttonShop.events(eventOccured("leftMouseDown")):
-            #    self.hideGUI = True
-            #    self.shopMenu.hidden = False
 
         self.objects = ObjectRegister.objects
 
@@ -199,7 +196,7 @@ class Game():
 
         self.displayClock.events()
 
-        #self.shopMenu.events()
+        self.shopMenu.events()
         self.elements = []
 
     # set every element's hidden variable to the value of self.hideGUI
@@ -250,7 +247,7 @@ class Game():
 
         self.displayClock.draw()
 
-        #self.shopMenu.draw()
+        self.shopMenu.draw()
 
         ## DEBUG STUFF ##
         if self.debug:
