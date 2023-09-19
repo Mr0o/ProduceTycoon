@@ -40,18 +40,15 @@ class ButtonInfo():
     height: int
     func: callable
     color: tuple[int, int, int]= (110, 190, 210)
-    active: bool = False
+    active: bool = True
     isSelected: bool = False
 
-    def __init__(self, pos, name, width, height, func, active = True, isSelected = False):
+    def __init__(self, pos, name, width, height, func):
         self.pos = pos
         self.name = name
         self.width = width
         self.height = height
         self.func = func
-
-        self.active = active
-        self.isSelected = isSelected
 
 class Button():
     text: Text

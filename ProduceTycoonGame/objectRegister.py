@@ -3,9 +3,11 @@ import pygame
 from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.button import Button
+from ProduceTycoonGame.playerData import PlayerData
 
 from enum import Enum, IntEnum
 
+# Enums
 class TypeObject(IntEnum):
     WALL = 0
     PRODUCE_CASE = 1
