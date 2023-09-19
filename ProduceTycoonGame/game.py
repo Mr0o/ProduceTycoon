@@ -136,7 +136,7 @@ class Game():
                 #    self.objects.remove(currentObject)
                 #continue
 
-            self.elements.append(currentObject.rectangle)
+            self.elements.append(currentObject.info.rect)
             #if self.moveObject:
             #    if eventOccured("leftMouseDown") and self.previousMouseClicked:
             #        self.moveObject = currentObject.moveToNewPos()
@@ -146,7 +146,7 @@ class Game():
                 currentObject.info.hasPlaced = False
                 
                 # set the currentObject's mainTile to changed (important for detecting changes in the tileMap)
-                placedTileID = currentObject.mainTileID
+                placedTileID = currentObject.info.mainTileID
                 placedTile = self.tileMap.getTileByID(placedTileID)
 
                 if placedTile is not None:
@@ -156,11 +156,11 @@ class Game():
 
         if objectPlaced:
             # get the tiles that fall within the currentObject's rect
-            placedObjectTiles = self.tileMap.getTilesInRect(self.objects[len(self.objects) - 1].rectangle)
+            placedObjectTiles = self.tileMap.getTilesInRect(self.objects[len(self.objects) - 1].info.rect)
 
             # remove the main tile from the list
             for tile in placedObjectTiles:
-                if tile.id == self.objects[len(self.objects) - 1].mainTileID:
+                if tile.id == self.objects[len(self.objects) - 1].info.mainTileID:
                     placedObjectTiles.remove(tile)
                     break
         
@@ -198,6 +198,8 @@ class Game():
 
         self.shopMenu.events()
         self.elements = []
+
+        Button.HAS_CLICKED = False
 
     # set every element's hidden variable to the value of self.hideGUI
     def setHiddenUI(self):
@@ -286,7 +288,7 @@ class Game():
                 for currentObject in self.objects:
                     if currentObject.info.placed:
                         # get the tiles that fall within the currentObject's rect
-                        placedObjectTiles = self.tileMap.getTilesInRect(currentObject.rectangle)
+                        placedObjectTiles = self.tileMap.getTilesInRect(currentObject.info.rect)
                         for tile in placedObjectTiles:
                             pygame.draw.rect(self.screen, (255, 255, 255), tile.rect, 2)
                         
@@ -301,7 +303,7 @@ class Game():
                 # draw a green square over the main tiles of the placeable objects
                 for currentObject in self.objects:
                     if currentObject.info.placed:
-                        mainTile = self.tileMap.getTileByID(currentObject.mainTileID)
+                        mainTile = self.tileMap.getTileByID(currentObject.info.mainTileID)
                         pygame.draw.rect(self.screen, (0, 255, 0), mainTile.rect, 2)
 
         pygame.display.flip()
