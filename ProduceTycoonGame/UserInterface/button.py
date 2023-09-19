@@ -57,6 +57,7 @@ class Button():
 
     # Static variables
     screen = pygame.Surface((0, 0))
+    HAS_CLICKED = False
 
     # Static methods
     @staticmethod
@@ -72,13 +73,14 @@ class Button():
 
     # main methods
     def events(self):
-        if not self.info.active:
+        if not self.info.active or Button.HAS_CLICKED:
             return
         # Check if mouse position is on the button rect
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             # if mouse is clicked and the button is not already selected
             if eventOccured("leftMouseDown") and not self.info.isSelected:
                 self.info.isSelected = True
+                Button.HAS_CLICKED = True
                 self.info.func()
         if not eventOccured("leftMouseDown"):
             self.info.isSelected = False
