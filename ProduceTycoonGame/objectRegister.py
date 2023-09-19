@@ -22,7 +22,7 @@ class TypeObject(IntEnum):
     REGISTER = 2
 
 class TypeProduceCase(Enum):
-    EMPTY = None
+    EMPTY = Produce
     WATERMELON = Watermelon
     BANANAS = Bananas
     APPLES = Apples
@@ -46,6 +46,7 @@ class ObjectGUI:
     # Positions
     x = 700; y = 30
 
+    # ---------- Constructor ----------
     def __init__(self, active = False, direction = Direction.NORTH, typeCase = TypeProduceCase.WATERMELON):
         self.active = active
         self.buttons = self.createButtons()
@@ -110,7 +111,7 @@ class ObjectInfo:
 
     elementRectangles = []
 
-    # ---------- Initialize ----------  
+    # ---------- Constructor ----------  
     def __init__(self, screen, pos, gui, rows, columns, tileSize):
         self.screen = screen
         self.pos = pos
@@ -149,7 +150,7 @@ class Object:
     # Static variables
     currentID = -1
 
-    # ---------- Initialize ----------
+    # ---------- Constructor ----------
     def __init__(self, objectID, info):
         self.objectID = objectID
         self.info = info
@@ -241,6 +242,31 @@ class Object:
         print(f"{PRODUCE.name}: {self.info.amount}")
         PRODUCE.amount -= 1
 
+    def removeProduce(self):
+        PRODUCE = self.info.typeCase.value
+        if self.info.typeCase is TypeProduceCase.EMPTY:
+            print("---- Cannot remove produce from EMPTY case ----")
+            return
+        if self.info.amount == 0:
+            print("---- Insufficient produce ----")
+            return
+        self.info.amount -= 1
+        print(f"{PRODUCE.name}: {self.info.amount}")
+        PRODUCE.amount += 1
+
+    def sellProduce(self):
+        PRODUCE = self.info.typeCase.value
+        if self.info.typeCase is TypeProduceCase.EMPTY:
+            print("---- Cannot sell produce from EMPTY case ----")
+            return
+        if self.info.amount == 0:
+            print("---- Insufficient produce ----")
+            return
+        PlayerData.money += PRODUCE.sell
+        self.info.amount -= 1
+        print(f"{PRODUCE.name}: {self.info.amount}")
+        print(f"Money: {PlayerData.money}")
+
     def openGUI(self):
         # If clicked happen on object
         mouseClickedObject = eventOccured("leftMouseDown") and self.info.rect.collidepoint(pygame.mouse.get_pos())
@@ -286,7 +312,7 @@ class ObjectRegister:
     def setElementRectangles(elementRectangles):
         ObjectInfo.elementRectangles = elementRectangles
 
-    # ---------- Initialize ----------
+    # ---------- Constructor ----------
     def __init__(self, screen, pos, rows, columns, tileSize):
         self.objects.append(self.generateObject(screen, pos, rows, columns, tileSize))
 
