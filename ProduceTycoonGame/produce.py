@@ -2,9 +2,9 @@ import pygame
 
 class Produce:
     name = "Produce"
-    amount = 0
-    sell = 0
-    buy = 0
+    amount = None
+    sell = None
+    buy = None
 
 class Watermelon(Produce):
     name = "Watermelon"
