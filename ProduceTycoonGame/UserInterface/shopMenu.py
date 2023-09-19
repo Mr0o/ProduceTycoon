@@ -6,6 +6,7 @@ from ProduceTycoonGame.UserInterface.text import Text
 from ProduceTycoonGame.playerData import PlayerData
 
 class ShopMenu():
+    # Variables
     pos: Vector
     width: int
     height: int
@@ -13,14 +14,9 @@ class ShopMenu():
     active: bool = False
     rect: pygame.Rect
     
-    # Static variables
+    # Static Variables
     buttons = []
     screen = pygame.Surface((0, 0))
-
-    def displayCurrency(self):
-        pygame.draw.rect(self.screen, (255, 255, 255), self.currencyBox)
-        pygame.draw.rect(self.screen, (0, 0, 0), self.currencyBox, 2)
-        self.textRenderer.draw() 
 
     def openGUI(self):
         self.active = True
@@ -106,15 +102,6 @@ class ShopMenu():
 
         ShopMenu.defineXandY(self)
 
-        currencyBoxWidth = 40
-        currencyBoxHeight = 20
-        currencyBoxX = self.pos.x + width - currencyBoxWidth
-        currencyBoxY = self.pos.y
-        self.currencyBox = pygame.Rect((currencyBoxX, currencyBoxY), (currencyBoxWidth, currencyBoxHeight))
-
-        self.textRenderer = Text(ShopMenu.screen, Vector(currencyBoxX, currencyBoxY), currencyBoxWidth, 
-        currencyBoxHeight, str(PlayerData.money))
-
         ShopMenu.buttons = self.createButtons()
 
     # Main methods
@@ -122,7 +109,6 @@ class ShopMenu():
         if self.active:
             for button in reversed(ShopMenu.buttons):
                 button.events()
-            self.textRenderer.setText(str(PlayerData.money))
 
     def draw(self):
         if self.active:
@@ -130,5 +116,4 @@ class ShopMenu():
            pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
            for button in ShopMenu.buttons:
                button.draw()
-           self.displayCurrency()
       

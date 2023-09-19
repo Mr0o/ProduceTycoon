@@ -12,6 +12,7 @@ from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.playerData import PlayerData
+from ProduceTycoonGame.UserInterface.text import Text
 
 # Helper Functions
 def createObject(screen: pygame.Surface, pos: Vector, width: int, height: int, tileSize: int):
@@ -78,6 +79,15 @@ class Game():
         self.moveObject = False
 
         self.elements = []
+
+        # currency box
+        currencyBoxWidth = 40
+        currencyBoxHeight = 20
+        currencyBoxX = 0
+        currencyBoxY = self.HEIGHT - currencyBoxHeight
+        self.currencyBox = pygame.Rect((currencyBoxX, currencyBoxY), (currencyBoxWidth, currencyBoxHeight))
+
+        self.textRenderer = Text(ShopMenu.screen, Vector(currencyBoxX, currencyBoxY), currencyBoxWidth, currencyBoxHeight, str(PlayerData.money))
 
     def events(self):
         clearEventList()
@@ -227,6 +237,12 @@ class Game():
         else:
             pygame.display.set_caption('Produce Tycoon')
 
+    def displayCurrency(self):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.currencyBox)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.currencyBox, 2)
+        self.textRenderer.setText(str(PlayerData.money))
+        self.textRenderer.draw() 
+
     def draw(self):
         self.screen.fill((0, 0, 0))
 
@@ -248,6 +264,7 @@ class Game():
             guest.draw()
 
         self.displayClock.draw()
+        self.displayCurrency()
 
         self.shopMenu.draw()
 
