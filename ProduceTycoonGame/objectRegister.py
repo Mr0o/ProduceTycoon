@@ -4,6 +4,7 @@ from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.playerData import PlayerData
+from ProduceTycoonGame.produce import Produce, Watermelon, Bananas, Apples, Tomatoes
 
 from enum import Enum, IntEnum
 
@@ -21,11 +22,11 @@ class TypeObject(IntEnum):
     REGISTER = 2
 
 class TypeProduceCase(Enum):
-    EMPTY = 'Empty'
-    WATERMELON = 'Watermelon'
-    BANANAS = 'Bananas'
-    APPLES = 'Apples'
-    TOMATOES = 'Tomatoes'
+    EMPTY = None
+    WATERMELON = Watermelon
+    BANANAS = Bananas
+    APPLES = Apples
+    TOMATOES = Tomatoes
 
 class Direction(IntEnum):
     NORTH = 0
@@ -72,7 +73,7 @@ class ObjectGUI:
             self.createButton('Tomatoes', lambda: self.currentObject.setTypeCase(TypeProduceCase.TOMATOES)),
             self.createButton('Empty', lambda: self.currentObject.setTypeCase(TypeProduceCase.EMPTY)),
             self.createButton('X', lambda: self.exitGUI()),
-            self.createButton('Rotate', lambda: self.currentObject.settDirection()),
+            self.createButton('Rotate', lambda: self.currentObject.setDirection()),
             self.createButton('Add Produce', lambda: self.currentObject.addProduce()),
             self.createButton('Remove Produce', lambda: self.currentObject.removeProduce()),
             self.createButton('Sell Produce', lambda: self.currentObject.sellProduce()),
@@ -181,23 +182,11 @@ class Object:
         # Return nothing if the type is the same
         if self.info.typeCase is typeCase:
             return
-
-        # Adds the produce from the case back into the player data to be used again
-        match self.info.typeCase:
-            case TypeProduceCase.WATERMELON:
-                PlayerData.amountWatermelons += self.info.amount
-            case TypeProduceCase.BANANAS:
-                PlayerData.amountBananas += self.info.amount
-            case TypeProduceCase.APPLES:
-                PlayerData.amountApples += self.info.amount
-            case TypeProduceCase.TOMATOES:
-                PlayerData.amountTomatoes += self.info.amount
-            case TypeProduceCase.EMPTY:
-                pass
-        
-        # Set amount back to 0 to add the new type of produce too it
-        self.info.amount = 0
-
+        if self.info.typeCase is not TypeProduceCase.EMPTY:
+            # Adds the produce from the case back into the player data to be used again
+            self.info.typeCase.value.amount += self.info.amount
+            # Set amount back to 0 to add the new type of produce too it
+            self.info.amount = 0
         self.info.typeCase = typeCase
 
     def setDirection(self):
@@ -241,22 +230,17 @@ class Object:
 
     # ---------- Helpers ----------
     def addProduce(self):
-        match self.info.typeCase:
-            case TypeProduceCase.WATERMELON:
-                if PlayerData.amountWatermelons == 0:
-                    print("---- Insufficient produce ----")
-                    return
-                self.info.amount += 1
-                print("Watermelon: ", self.info.amount)
-                PlayerData.amountWatermelons -= 1
-            case TypeProduceCase.BANANAS:
-                PlayerData.amountBananas += 1
-            case TypeProduceCase.APPLES:
-                PlayerData.amountApples += 1
-            case TypeProduceCase.TOMATOES:
-                PlayerData.amountTomatoes += 1
-            case TypeProduceCase.EMPTY:
-                print("---- Cannot add produce to empty case ----")
+        PRODUCE = self.info.typeCase.value
+        if self.info.typeCase is TypeProduceCase.EMPTY:
+            print("---- Cannot add produce to EMPTY case ----")
+            return
+        if PRODUCE.amount == 0:
+            print("---- Insufficient produce ----")
+            return
+        self.info.amount += 1
+        print(f"{PRODUCE.name}: {self.info.amount}")
+        PRODUCE.amount -= 1
+
     def openGUI(self):
         # If clicked happen on object
         mouseClickedObject = eventOccured("leftMouseDown") and self.info.rect.collidepoint(pygame.mouse.get_pos())
