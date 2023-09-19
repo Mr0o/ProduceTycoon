@@ -12,6 +12,7 @@ class ShopMenu():
     color: tuple
     active: bool = False
     rect: pygame.Rect
+    
     # Static variables
     buttons = []
     screen = pygame.Surface((0, 0))
@@ -33,6 +34,7 @@ class ShopMenu():
             return
         PlayerData.money -= 100
         PlayerData.amountWatermelons += 1
+        print("---- Purchased watermelon ----")
 
     def buyBananas(self):
         if PlayerData.money < 100:
@@ -40,6 +42,7 @@ class ShopMenu():
             return
         PlayerData.money -= 100
         PlayerData.amountBananas += 1
+        print("---- Purchased bananas ----")
 
     def buyApples(self):
         if PlayerData.money < 100:
@@ -47,6 +50,7 @@ class ShopMenu():
             return
         PlayerData.money -= 100
         PlayerData.amountApples += 1
+        print("---- Purchased apples ----")
 
     def buyTomatoes(self):
         if PlayerData.money < 100:
@@ -54,6 +58,7 @@ class ShopMenu():
             return
         PlayerData.money -= 100
         PlayerData.amountTomatoes += 1
+        print("---- Purchased tomatoes ----")
 
     # Static methods
     @staticmethod
@@ -114,9 +119,10 @@ class ShopMenu():
 
     # Main methods
     def events(self):
-        for button in ShopMenu.buttons:
-            button.events()
-        self.textRenderer.setText(str(PlayerData.money))
+        if self.active:
+            for button in reversed(ShopMenu.buttons):
+                button.events()
+            self.textRenderer.setText(str(PlayerData.money))
 
     def draw(self):
         if self.active:
