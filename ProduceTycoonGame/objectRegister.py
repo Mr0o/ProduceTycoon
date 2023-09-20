@@ -8,13 +8,6 @@ from ProduceTycoonGame.produce import Produce, Watermelon, Bananas, Apples, Toma
 
 from enum import Enum, IntEnum
 
-# These should all be in the object class
-#   - Add an addproduce method that takes a produce from player data and adds it into the case quantity.
-#   - Add a removeproduce method that takes a produce from player data and removes it from the case quantity.
-#   - Add a sellproduce method that takes a produce from player data and sells it for money.
-
-# Add a rotate method that rotates the object.
-
 # ---------- Enums ----------
 class TypeObject(IntEnum):
     WALL = 0
@@ -137,10 +130,9 @@ class ObjectInfo:
                 image = pygame.image.load('./Resources/Images/WatermelonBin.png')
         self.configureImage(image)
 
-    # ---------- Helpers ----------
-    def configureImage(self, image: pygame.Surface):
-        self.image = pygame.transform.scale(image, (self.rows * self.tileSize, self.columns * self.tileSize))
-        #self.image.rotate(self.direction * 90) 
+    def configureImage(self, image):
+        self.image = pygame.transform.scale(image, (self.tileSize * self.columns, self.tileSize * self.rows))
+        self.image = pygame.transform.rotate(self.image, self.direction * -90)
 
 class Object:
     # Variables
