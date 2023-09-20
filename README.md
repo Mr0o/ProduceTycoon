@@ -1,30 +1,27 @@
 # Produce Tycoon
 
-Install dependencies:
+## Playing the game
+1. Download and install [Python 3](https://www.python.org/downloads/)
+2. [Download](https://github.com/Mr0o/ProduceTycoon/archive/refs/heads/main.zip) the game and unzip it.
+3. Open the *`ProduceTycoon-main`* folder
+4. Double click on the *`main.py`* file
+
+
+<br/>
+
+# Screenshots
+![Screenshot 1](https://github.com/Mr0o/ProduceTycoon/blob/dev/Resources/Screenshots/Screenshot1.png)
+
+<br/>
+<br/>
+
+## For developers:
+- This game uses Python 3 and Pygame
+- The game will automatically install dependencies but they can also be installed manually using the following command:
 ```
 pip install -r requirements.txt
 ```
-<br/>
-Run the game:
-
+- The game can be run using the following command:
 ```
 python3 main.py
 ```
-or  (Windows)
-```
-py main.py
-```
-
-# Goals
-
-- [X] Create a tile system
-- [X] Create tile types
-- [ ] Create display tiles (tomatoes, bananas, etc)
-- [ ] Make guests walk around
-- [ ] Make guests interact with tiles (collision and interactable tiles)
-- [ ] Create 2 different types of displays (Tomato and Banana)
-- [ ] Make guests buy from displays
-- [ ] Make guests leave when they are done
-- [ ] Create a time system where 1 hr = 1 min
-- [ ] Spawn guests at the front door using the time system (busy hours, slow hours)
-- [ ] Create a simple UI for creating displays and walls and moving the entrance and exit door
