@@ -8,10 +8,10 @@ from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
 # create a heatmap of the tilemap
 def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
     # reset the cost and parent attributes of each tile
-    #for tile in tileMap.grid:
-    #    tile.cost = 0
-    #    tile.parent = None
-    #    tile.vector = Vector(0, 0)
+    for tile in tileMap.grid:
+        tile.cost = 0
+        tile.parent = None
+        tile.vector = Vector(0, 0)
 
     # list of open tiles
     openTiles: list[Tile] = []
@@ -45,22 +45,22 @@ def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
 
         # for each neighbor of the current tile
         for neighbor in neighbors:
-            # if the neighbor is not in the closed tiles
-            if neighbor not in closedTiles:
-                # if the neighbor is not in the open tiles
-                if neighbor not in openTiles:
-                    # add the neighbor to the open tiles
-                    openTiles.append(neighbor)
-                    # set the cost of the neighbor to the cost of the current tile plus 1
-                    neighbor.cost = currentTile.cost + 1
-                    # set the parent of the neighbor to the current tile
-                    neighbor.parent = currentTile
-
-            if neighbor.typeTile == Type.BOUNDARY or neighbor.typeTile == Type.EDGE:
-                neighbor.cost = 1000
+            # if the neighbor is not a boundary tile
+            if neighbor.typeTile != Type.BOUNDARY:
+                # if the neighbor is not in the closed tiles
+                if neighbor not in closedTiles:
+                    # if the neighbor is not in the open tiles
+                    if neighbor not in openTiles:
+                       # add the neighbor to the open tiles
+                        openTiles.append(neighbor)
+                        # set the cost of the neighbor to the cost of the current tile plus 1
+                        neighbor.cost = currentTile.cost + 1
+                        # set the parent of the neighbor to the current tile
+                        neighbor.parent = currentTile
 
     # return the closed tiles
     return closedTiles
+
 
 # get the vector from neighboring tiles using kernel convolution
 def calcVector(tileMap: TileMap, tile: Tile) -> Vector:
@@ -73,19 +73,13 @@ def calcVector(tileMap: TileMap, tile: Tile) -> Vector:
     
     # for each neighbor of the tile
     for neighbor in neighbors:
-        # check that its not a boundary tile or an edge tile
-        if neighbor.typeTile != Type.BOUNDARY and neighbor.typeTile != Type.EDGE:
+        if neighbor.typeTile != Type.BOUNDARY:
             # if the neighbor has a parent
             if neighbor.parent != None:
                 # get the vector from the neighbor to the parent using the centers of the tiles
                 vec = Vector(neighbor.parent.pos.x + neighbor.parent.size - neighbor.pos.x - neighbor.size, neighbor.parent.pos.y + neighbor.parent.size - neighbor.pos.y - neighbor.size)
                 vec.setMag(neighbor.cost)
                 neighboringVecs.append(vec)
-        else:
-            # pretend that boundary tiles have a vector pointing to the center of the current tile (this will make the guest avoid boundary tiles)
-            vec = Vector(tile.pos.x + tile.size - neighbor.pos.x - neighbor.size, tile.pos.y + tile.size - neighbor.pos.y - neighbor.size)
-            vec.setMag(100)
-            neighboringVecs.append(vec)
 
     # for each neighboring vector
     for neighboringVec in neighboringVecs:
@@ -93,12 +87,6 @@ def calcVector(tileMap: TileMap, tile: Tile) -> Vector:
         vector.add(neighboringVec)
 
     vector.setMag(10)
-
-    # check if the vector is 0
-    if vector.getMag() == 0:
-        # set the vector to a random vector
-        vector = Vector(0.5, 0.5)
-        vector.setMag(10)
 
     # return the vector
     return vector
