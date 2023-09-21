@@ -10,7 +10,9 @@ from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.objectRegister import ObjectRegister
 from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.pathfinding import Pathfinder
-from ProduceTycoonGame.valueHandler import ValueHandler
+from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
+from ProduceTycoonGame.playerData import PlayerData
+from ProduceTycoonGame.UserInterface.text import Text
 
 # Helper Functions
 def createObject(screen: pygame.Surface, pos: Vector, width: int, height: int, tileSize: int):
@@ -30,7 +32,7 @@ class Game():
         pygame.display.set_caption('Produce Tycoon')
 
         # set the game icon
-        icon = pygame.image.load('./Resources/Images/Tomato.png')
+        icon = pygame.image.load('./Resources/Images/Produce/Tomato.png')
         pygame.display.set_icon(icon)
 
         # load font
@@ -48,7 +50,6 @@ class Game():
         # pathfinding (Vector Fields)
         self.pathfinder = Pathfinder(self.tileMap)
 
-        self.playerValues = ValueHandler.getStaticValues()
 
         # buttons
         object4x4Args = (self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
@@ -60,7 +61,10 @@ class Game():
         self.button1x1 = Button(Vector(60, 0), "1x1 Tile", 60, 20, lambda: createObject(*object1x1Args))
         self.buttons.append(self.button1x1)
         #self.moveObjects = Button(Vector(120, 0), "Move Objects", 120, 20)
-        #self.buttonShop = Button(Vector(240, 0), "Shop", 60, 20)
+        ShopMenu.setScreen(self.screen)
+        self.shopMenu = ShopMenu(Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2)
+        self.openShop = Button(Vector(240, 0), "Shop", 60, 20, self.shopMenu.openGUI)
+        self.buttons.append(self.openShop)
 
         # placed objects
         self.objects: list[ObjectRegister] = []
@@ -75,6 +79,15 @@ class Game():
         self.moveObject = False
 
         self.elements = []
+
+        # money box
+        moneyBoxWidth = 40
+        moneyBoxHeight = 20
+        moneyBoxX = 0
+        moneyBoxY = self.HEIGHT - moneyBoxHeight
+        self.moneyBox = pygame.Rect((moneyBoxX, moneyBoxY), (moneyBoxWidth, moneyBoxHeight))
+
+        self.textRenderer = Text(ShopMenu.screen, Vector(moneyBoxX, moneyBoxY), moneyBoxWidth, moneyBoxHeight, str(PlayerData.money))
 
     def events(self):
         clearEventList()
@@ -117,12 +130,6 @@ class Game():
         if not self.hideGUI:
             for button in self.buttons:
                 button.events()
-            #if self.moveObjects.events(eventOccured("leftMouseDown")):
-            #    self.hideGUI = True
-            #    self.moveObject = True
-            #if self.buttonShop.events(eventOccured("leftMouseDown")):
-            #    self.hideGUI = True
-            #    self.shopMenu.hidden = False
 
         self.objects = ObjectRegister.objects
 
@@ -139,7 +146,7 @@ class Game():
                 #    self.objects.remove(currentObject)
                 #continue
 
-            self.elements.append(currentObject.rectangle)
+            self.elements.append(currentObject.info.rect)
             #if self.moveObject:
             #    if eventOccured("leftMouseDown") and self.previousMouseClicked:
             #        self.moveObject = currentObject.moveToNewPos()
@@ -149,7 +156,7 @@ class Game():
                 currentObject.info.hasPlaced = False
                 
                 # set the currentObject's mainTile to changed (important for detecting changes in the tileMap)
-                placedTileID = currentObject.mainTileID
+                placedTileID = currentObject.info.mainTileID
                 placedTile = self.tileMap.getTileByID(placedTileID)
 
                 if placedTile is not None:
@@ -159,11 +166,11 @@ class Game():
 
         if objectPlaced:
             # get the tiles that fall within the currentObject's rect
-            placedObjectTiles = self.tileMap.getTilesInRect(self.objects[len(self.objects) - 1].rectangle)
+            placedObjectTiles = self.tileMap.getTilesInRect(self.objects[len(self.objects) - 1].info.rect)
 
             # remove the main tile from the list
             for tile in placedObjectTiles:
-                if tile.id == self.objects[len(self.objects) - 1].mainTileID:
+                if tile.id == self.objects[len(self.objects) - 1].info.mainTileID:
                     placedObjectTiles.remove(tile)
                     break
         
@@ -199,8 +206,10 @@ class Game():
 
         self.displayClock.events()
 
-        #self.shopMenu.events()
+        self.shopMenu.events()
         self.elements = []
+
+        Button.HAS_CLICKED = False
 
     # set every element's hidden variable to the value of self.hideGUI
     def setHiddenUI(self):
@@ -228,6 +237,12 @@ class Game():
         else:
             pygame.display.set_caption('Produce Tycoon')
 
+    def displayMoney(self):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.moneyBox)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.moneyBox, 2)
+        self.textRenderer.setText(str(PlayerData.money))
+        self.textRenderer.draw() 
+
     def draw(self):
         self.screen.fill((0, 0, 0))
 
@@ -249,8 +264,9 @@ class Game():
             guest.draw()
 
         self.displayClock.draw()
+        self.displayMoney()
 
-        #self.shopMenu.draw()
+        self.shopMenu.draw()
 
         ## DEBUG STUFF ##
         if self.debug:
@@ -289,7 +305,7 @@ class Game():
                 for currentObject in self.objects:
                     if currentObject.info.placed:
                         # get the tiles that fall within the currentObject's rect
-                        placedObjectTiles = self.tileMap.getTilesInRect(currentObject.rectangle)
+                        placedObjectTiles = self.tileMap.getTilesInRect(currentObject.info.rect)
                         for tile in placedObjectTiles:
                             pygame.draw.rect(self.screen, (255, 255, 255), tile.rect, 2)
                         
@@ -304,7 +320,7 @@ class Game():
                 # draw a green square over the main tiles of the placeable objects
                 for currentObject in self.objects:
                     if currentObject.info.placed:
-                        mainTile = self.tileMap.getTileByID(currentObject.mainTileID)
+                        mainTile = self.tileMap.getTileByID(currentObject.info.mainTileID)
                         pygame.draw.rect(self.screen, (0, 255, 0), mainTile.rect, 2)
 
         pygame.display.flip()

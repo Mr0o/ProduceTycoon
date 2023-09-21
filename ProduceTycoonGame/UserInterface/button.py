@@ -40,18 +40,15 @@ class ButtonInfo():
     height: int
     func: callable
     color: tuple[int, int, int]= (110, 190, 210)
-    active: bool = False
+    active: bool = True
     isSelected: bool = False
 
-    def __init__(self, pos, name, width, height, func, active = True, isSelected = False):
+    def __init__(self, pos, name, width, height, func):
         self.pos = pos
         self.name = name
         self.width = width
         self.height = height
         self.func = func
-
-        self.active = active
-        self.isSelected = isSelected
 
 class Button():
     text: Text
@@ -60,6 +57,7 @@ class Button():
 
     # Static variables
     screen = pygame.Surface((0, 0))
+    HAS_CLICKED = False
 
     # Static methods
     @staticmethod
@@ -75,13 +73,14 @@ class Button():
 
     # main methods
     def events(self):
-        if not self.info.active:
+        if not self.info.active or Button.HAS_CLICKED:
             return
         # Check if mouse position is on the button rect
         if self.rect.collidepoint(pygame.mouse.get_pos()):
             # if mouse is clicked and the button is not already selected
             if eventOccured("leftMouseDown") and not self.info.isSelected:
                 self.info.isSelected = True
+                Button.HAS_CLICKED = True
                 self.info.func()
         if not eventOccured("leftMouseDown"):
             self.info.isSelected = False

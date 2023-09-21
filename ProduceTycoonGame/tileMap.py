@@ -206,12 +206,12 @@ def createStaticLineSurface(tileMap: TileMap, width: int, height: int) -> pygame
 
 def getMainTile(tile: Tile, currentObject):
         # Gets the first tile that collides with the object it sets it as the main tile
-        if tile.rect.colliderect(currentObject.rectangle) and currentObject.mainTileID == -1:
+        if tile.rect.colliderect(currentObject.info.rect) and currentObject.info.mainTileID == -1:
             currentObject.setMainTileID(tile.id)
 
 def changeTileType(tile: Tile, currentObject):
     # If the tile is walkable and the tile is colliding with the current object, change the tile type toboundary
-    if tile.rect.colliderect(currentObject.rectangle):
+    if tile.rect.colliderect(currentObject.info.rect):
         if tile.typeTile == Type.WALKABLE:
             tile.typeTile = Type.BOUNDARY
             tile.changed = True

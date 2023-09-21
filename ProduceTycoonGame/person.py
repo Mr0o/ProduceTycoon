@@ -4,6 +4,13 @@ from ProduceTycoonGame.tileMap import Tile
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.eventTriggers import TimedEvent
 
+def getImage(sheet: pygame.Surface, x: int, y: int, width: int, height: int, scale: int = 1):
+    image = pygame.Surface((width, height)).convert_alpha()
+    image.blit(sheet, (0, 0), (x, y, width, height))
+    image = pygame.transform.scale(image, (width * scale, height * scale))
+    image.set_colorkey((0, 0, 0))
+    return image
+
 # super class for guests and employees
 class Person():
     def __init__(self, screen: pygame.Surface, pos: Vector, id: int, name: str = "Person"):
@@ -25,8 +32,10 @@ class Person():
 
         self.targetTile: Tile = None
 
-        self.animationImages = [
-            (0, 50, 0), (0, 100, 0), (0, 150, 0), (0, 200, 0), (0, 255, 0)]
+        sheet = pygame.image.load("./Resources/Images/Characters/GenericGuest.png").convert_alpha()
+
+        self.images = [getImage(sheet, 0, 0, 16, 16, 2), getImage(sheet, 16, 0, 16, 16, 2), getImage(sheet, 32, 0, 16, 16, 2), getImage(sheet, 48, 0, 16, 16, 2)]
+
         self.animationCount = 0
         self.rect = pygame.Rect(
             (self.pos.x, self.pos.y), (self.size, self.size))
@@ -49,7 +58,7 @@ class Person():
 
     def events(self):
         # counting the frames once we get to 49 we reset to 0 back to the first image in our animation
-        if self.animationCount >= 49:
+        if self.animationCount >= 39:
             self.animationCount = 0
         self.animationCount += 1
 
@@ -89,6 +98,12 @@ class Person():
                 if self.actualVel.getMag() < 0.8:
                     self.isStuck = True
 
+    def scaleImages(self):
+        images = []
+        for image in self.images:
+            images.append(pygame.transform.scale(image, (32, 32)))
+
+        return images
+
     def draw(self):
-        pygame.draw.rect(
-            self.screen, self.animationImages[self.animationCount//10], self.rect)
+        self.screen.blit(self.images[self.animationCount // 10], (self.pos.x, self.pos.y))
