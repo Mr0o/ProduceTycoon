@@ -119,15 +119,15 @@ class ObjectInfo:
     def setImage(self):
         match self.typeCase:
             case TypeProduceCase.WATERMELON:
-                image = pygame.image.load('./Resources/Images/WatermelonBin.png')
+                image = pygame.image.load('./Resources/Images/Produce/WatermelonBin.png')
             case TypeProduceCase.BANANAS:
-                image = pygame.image.load('./Resources/Images/Banana_ProduceTycoon.png')
+                image = pygame.image.load('./Resources/Images/Produce/Banana_ProduceTycoon.png')
             case TypeProduceCase.APPLES:
-                image = pygame.image.load('./Resources/Images/WatermelonBin.png')
+                image = pygame.image.load('./Resources/Images/Produce/WatermelonBin.png')
             case TypeProduceCase.TOMATOES:
-                image = pygame.image.load('./Resources/Images/Tomato.png')
+                image = pygame.image.load('./Resources/Images/Produce/Tomato.png')
             case TypeProduceCase.EMPTY:
-                image = pygame.image.load('./Resources/Images/WatermelonBin.png')
+                image = pygame.image.load('./Resources/Images/Produce/WatermelonBin.png')
         self.configureImage(image)
 
     def configureImage(self, image):

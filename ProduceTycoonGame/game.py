@@ -32,7 +32,7 @@ class Game():
         pygame.display.set_caption('Produce Tycoon')
 
         # set the game icon
-        icon = pygame.image.load('./Resources/Images/Tomato.png')
+        icon = pygame.image.load('./Resources/Images/Produce/Tomato.png')
         pygame.display.set_icon(icon)
 
         # load font
