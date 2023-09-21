@@ -50,7 +50,7 @@ class TileMap():
     rows: int
     columns: int
     tileSize: int
-    grid: []
+    grid: list[Tile]
 
     # Static variables
     screen = pygame.Surface((0, 0))
