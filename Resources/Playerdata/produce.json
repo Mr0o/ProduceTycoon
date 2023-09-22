@@ -1,13 +1,13 @@
 {
     "Watermelon": {
         "name": "Watermelon",
-        "amount": 87,
+        "amount": 100,
         "sell": 10,
         "buy": 5
     },
     "Bananas": {
         "name": "Bananas",
-        "amount": 100,
+        "amount": 90,
         "sell": 20,
         "buy": 10
     },
@@ -19,7 +19,7 @@
     },
     "Tomatoes": {
         "name": "Tomatoes",
-        "amount": 100,
+        "amount": 10,
         "sell": 40,
         "buy": 20
     }
