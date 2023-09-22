@@ -40,7 +40,7 @@ class Button():
         Button.screen = screen
 
     # Instance methods
-    def __init__(self, pos, name, width, height, func, baseImage = None, selectedImage = None):
+    def __init__(self, pos: Vector, name: str, width: int, height: int, func: callable = None, baseImage = None, selectedImage = None):
         self.text = createText(pos, width, height, name)
         self.rect = createRect(pos, width, height)
         self.info = createInfo(pos, name, width, height, func, baseImage, selectedImage)
@@ -56,7 +56,8 @@ class Button():
             if eventOccured("leftMouseDown") and not self.info.isSelected:
                 self.info.isSelected = True
                 Button.HAS_CLICKED = True
-                self.info.func()
+                if self.info.func != None:
+                    self.info.func()
         if not eventOccured("leftMouseDown"):
             self.info.isSelected = False
     
