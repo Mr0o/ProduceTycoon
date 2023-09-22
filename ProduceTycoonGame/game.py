@@ -136,14 +136,6 @@ class Game():
 
         self.messageBox.events()
 
-        # check if any message post events have occured
-        if eventOccured("postMessage"):
-            # get the message event
-            messageEvent = getEvent("postMessage")
-
-            # post the message to the message box
-            self.messageBox.postMessage(str(messageEvent.eventData))
-
         ObjectRegister.setElementRectangles(self.elements)
 
         if not self.hideGUI:
