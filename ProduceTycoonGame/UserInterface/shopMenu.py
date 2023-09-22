@@ -15,6 +15,13 @@ def buy(PRODUCE: Produce):
         PRODUCE.amount += 1
         print(f"---- Purchased {PRODUCE.name} ----")
 
+def getImage(sheet: pygame.Surface, x: int, y: int, width: int, height: int, scale: int = 1):
+    image = pygame.Surface((width, height)).convert_alpha()
+    image.blit(sheet, (0, 0), (x, y, width, height))
+    image = pygame.transform.scale(image, (width * scale, height * scale))
+    image.set_colorkey((0, 0, 0))
+    return image
+
 class ShopMenu():
     # Variables
     pos: Vector
@@ -23,6 +30,7 @@ class ShopMenu():
     color: tuple
     active: bool = False
     rect: pygame.Rect
+    image: pygame.Surface
     
     # Static Variables
     buttons = []
@@ -36,8 +44,8 @@ class ShopMenu():
         ShopMenu.screen = screen
 
     def defineXandY(self):
-        ShopMenu.x = self.pos.x + 10
-        ShopMenu.y = self.pos.y + 10
+        ShopMenu.x = self.pos.x + 20
+        ShopMenu.y = self.pos.y + 20
 
     # ---------- Constructor ----------
     def __init__(self, pos: Vector, width: int, height: int):
@@ -47,6 +55,12 @@ class ShopMenu():
         self.color = (122, 238, 186)
 
         self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
+        self.image = pygame.image.load('./Resources/Images/GUI/ShopMenu.png').convert_alpha()
+        self.image.set_colorkey((0, 0, 0))
+
+        self.buttonImage = pygame.image.load('./Resources/Images/GUI/ShopMenuButtons.png').convert_alpha()
+
+        self.buttonImages = [getImage(self.buttonImage, 0, 0, 75, 55), getImage(self.buttonImage, 75, 0, 75, 55), getImage(self.buttonImage, 150, 0, 75, 55), getImage(self.buttonImage, 225, 0, 75, 55), getImage(self.buttonImage, 0, 55, 75, 55), getImage(self.buttonImage, 75, 55, 75, 55), getImage(self.buttonImage, 150, 55, 75, 55), getImage(self.buttonImage, 225, 55, 75, 55)]
 
         ShopMenu.defineXandY(self)
 
@@ -59,8 +73,8 @@ class ShopMenu():
     def exitGUI(self):
         self.active = False
 
-    def createButton(self, name: str, width: int, height: int, func: callable):
-        button = Button(Vector(ShopMenu.x, ShopMenu.y), name, width, height, func)
+    def createButton(self, name: str, width: int, height: int, func: callable, baseImage: pygame.Surface, selectedImage: pygame.Surface):
+        button = Button(Vector(ShopMenu.x, ShopMenu.y), name, width, height, func, baseImage, selectedImage)
         ShopMenu.x += 20 + width
         if ShopMenu.x + width > self.width + self.pos.x:
             ShopMenu.x = self.pos.x + 20
@@ -73,13 +87,13 @@ class ShopMenu():
     def createButtons(self):
         size = 4
         offset = 20 * size
-        buttonWidth = int((self.width - offset) / size)
+        buttonWidth = 75 #int((self.width - offset) / size)
         buttonHeight = int((self.height - offset) / size)
         return [
-            self.createButton(Watermelon.name, buttonWidth, buttonHeight, lambda: buy(Watermelon)),
-            self.createButton(Bananas.name, buttonWidth, buttonHeight, lambda: buy(Bananas)),
-            self.createButton(Apples.name, buttonWidth, buttonHeight, lambda: buy(Apples)),
-            self.createButton(Tomatoes.name, buttonWidth, buttonHeight, lambda: buy(Tomatoes)),
+            self.createButton(Watermelon.name, buttonWidth, buttonHeight, lambda: buy(Watermelon), self.buttonImages[0], self.buttonImages[4]),
+            self.createButton(Bananas.name, buttonWidth, buttonHeight, lambda: buy(Bananas), self.buttonImages[1], self.buttonImages[5]),
+            self.createButton(Apples.name, buttonWidth, buttonHeight, lambda: buy(Apples), self.buttonImages[2], self.buttonImages[6]),
+            self.createButton(Tomatoes.name, buttonWidth, buttonHeight, lambda: buy(Tomatoes), self.buttonImages[3], self.buttonImages[7]),
 
             self.createButtonWithPos('X', self.pos, 20, 20, self.exitGUI)
         ]
@@ -92,8 +106,7 @@ class ShopMenu():
 
     def draw(self):
         if self.active:
-           pygame.draw.rect(self.screen, self.color, self.rect)
-           pygame.draw.rect(self.screen, (0, 0, 0), self.rect, 2)
+           ShopMenu.screen.blit(self.image, (self.pos.x, self.pos.y))
            for button in ShopMenu.buttons:
                button.draw()
       

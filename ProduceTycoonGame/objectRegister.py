@@ -123,7 +123,7 @@ class ObjectInfo:
             case TypeProduceCase.BANANAS:
                 image = pygame.image.load('./Resources/Images/Produce/Banana_ProduceTycoon.png')
             case TypeProduceCase.APPLES:
-                image = pygame.image.load('./Resources/Images/Produce/WatermelonBin.png')
+                image = pygame.image.load('./Resources/Images/Produce/Apple.png')
             case TypeProduceCase.TOMATOES:
                 image = pygame.image.load('./Resources/Images/Produce/Tomato.png')
             case TypeProduceCase.EMPTY:
