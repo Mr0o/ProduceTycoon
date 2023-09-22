@@ -44,7 +44,11 @@ class Game():
         # debug variable that when true will draw the tiles that make up each currentObject (this could impact performance, therefore it is disabled by default)
         self.debugPlaceableObjects = False
 
+        # set the screens
+        ShopMenu.setScreen(self.screen)
+        Button.setScreen(self.screen)
         TileMap.setScreen(self.screen)
+        
         self.tileMap = TileMap(Vector(0, 0))
 
         # pathfinding (Vector Fields)
@@ -55,13 +59,11 @@ class Game():
         object4x4Args = (self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
         object1x1Args = (self.screen, Vector(0, 0), 1, 1, self.tileMap.tileSize)
         self.buttons = []
-        Button.setScreen(self.screen)
         self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20, lambda: createObject(*object4x4Args))
         self.buttons.append(self.button4x4)
         self.button1x1 = Button(Vector(60, 0), "1x1 Tile", 60, 20, lambda: createObject(*object1x1Args))
         self.buttons.append(self.button1x1)
         #self.moveObjects = Button(Vector(120, 0), "Move Objects", 120, 20)
-        ShopMenu.setScreen(self.screen)
         self.shopMenu = ShopMenu(Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2)
         self.openShop = Button(Vector(240, 0), "Shop", 60, 20, self.shopMenu.openGUI)
         self.buttons.append(self.openShop)
