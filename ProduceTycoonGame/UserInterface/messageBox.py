@@ -1,6 +1,6 @@
 import pygame
 
-from ProduceTycoonGame.events import eventOccured
+from ProduceTycoonGame.events import eventOccured, getEvent
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.button import ButtonInfo, Button
 
@@ -29,6 +29,14 @@ class MessageBox():
         self.text = self.font.render(self.message, True, (0, 0, 0))
 
     def events(self) -> None:
+        # check if any message post events have occured
+        if eventOccured("postMessage"):
+            # get the message event
+            messageEvent = getEvent("postMessage")
+
+            # post the message to the message box
+            self.postMessage(str(messageEvent.eventData))
+
         self.button.events()
         if self.button.HAS_CLICKED:
             self.dismissed = True
