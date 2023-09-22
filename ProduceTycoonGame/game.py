@@ -21,9 +21,11 @@ def createObject(screen: pygame.Surface, pos: Vector, width: int, height: int, t
     return ObjectRegister(screen, pos, width, height, tileSize)
 
 def loadGame():
+    PlayerData.load()
     Produce.load()
 
 def saveGame():
+    PlayerData.save()
     Produce.save()
 
 # this is the main game loop (events, update, draw)
@@ -99,7 +101,7 @@ class Game():
         moneyBoxY = self.HEIGHT - moneyBoxHeight
         self.moneyBox = pygame.Rect((moneyBoxX, moneyBoxY), (moneyBoxWidth, moneyBoxHeight))
 
-        self.textRenderer = Text(ShopMenu.screen, Vector(moneyBoxX, moneyBoxY), moneyBoxWidth, moneyBoxHeight, str(PlayerData.money))
+        self.textRenderer = Text(ShopMenu.screen, Vector(moneyBoxX, moneyBoxY), moneyBoxWidth, moneyBoxHeight, str(PlayerData.data['money']))
 
         # message box instance
         self.messageBox = MessageBox(self.screen)
@@ -260,7 +262,7 @@ class Game():
     def displayMoney(self):
         pygame.draw.rect(self.screen, (255, 255, 255), self.moneyBox)
         pygame.draw.rect(self.screen, (0, 0, 0), self.moneyBox, 2)
-        self.textRenderer.setText(str(PlayerData.money))
+        self.textRenderer.setText(str(PlayerData.data['money']))
         self.textRenderer.draw() 
 
     def draw(self):

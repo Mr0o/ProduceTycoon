@@ -8,10 +8,10 @@ from ProduceTycoonGame.produce import Produce
 
 # ---------- Helper Functions ---------- 
 def buy(PRODUCE: dict):
-        if PlayerData.money < PRODUCE['buy']:
+        if PlayerData.data['money'] < PRODUCE['buy']:
             print("---- Insufficient funds ----")
             return
-        PlayerData.money -= PRODUCE['buy']
+        PlayerData.data['money'] -= PRODUCE['buy']
         PRODUCE['amount'] += 1
         print(f"---- Purchased {PRODUCE['name']} ----")
 

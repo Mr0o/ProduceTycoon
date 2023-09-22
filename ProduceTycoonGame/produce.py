@@ -29,13 +29,10 @@ class Produce:
         }
     }
 
-    def save():
-        with open('./Resources/Playerdata/produce.json', 'w') as savefile:
-            json.dump(Produce.data, savefile, indent=4)
-
     def load():
         with open('./Resources/Playerdata/produce.json', 'r') as savefile:
             Produce.data = json.load(savefile)
-            print(Produce.data['Watermelon']['amount'])
-            
- 
+
+    def save():
+        with open('./Resources/Playerdata/produce.json', 'w') as savefile:
+            json.dump(Produce.data, savefile, indent=4)

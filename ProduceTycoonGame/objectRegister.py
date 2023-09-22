@@ -259,10 +259,10 @@ class Object:
         if self.info.amount == 0:
             print("---- Insufficient produce ----")
             return
-        PlayerData.money += PRODUCE.get('sell')
+        PlayerData.data['money'] += PRODUCE.get('sell')
         self.info.amount -= 1
         print(f"{PRODUCE['name']}: {self.info.amount}")
-        print(f"Money: {PlayerData.money}")
+        print(f"Money: {PlayerData.data['money']}")
 
     def openGUI(self):
         # If clicked happen on object
