@@ -1,8 +1,9 @@
 from random import randint
 import pygame
+from ProduceTycoonGame.UserInterface.messageBox import MessageBox
 
 # local imports
-from ProduceTycoonGame.events import postEvent, eventOccured, clearEventList
+from ProduceTycoonGame.events import postEvent, eventOccured, getEvent, clearEventList
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap, Tile, Type, updateTileMap
 from ProduceTycoonGame.guest import Guest
@@ -91,6 +92,9 @@ class Game():
 
         self.textRenderer = Text(ShopMenu.screen, Vector(moneyBoxX, moneyBoxY), moneyBoxWidth, moneyBoxHeight, str(PlayerData.money))
 
+        # message box instance
+        self.messageBox = MessageBox(self.screen)
+
     def events(self):
         clearEventList()
 
@@ -107,6 +111,10 @@ class Game():
                 # press '2' to toggle debugPlaceableObjects
                 if event.key == pygame.K_2:
                     self.debugPlaceableObjects = not self.debugPlaceableObjects
+
+                # press space to toggle a test message
+                if event.key == pygame.K_SPACE:
+                    postEvent("postMessage", eventData="This is a test message!")
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -126,6 +134,15 @@ class Game():
         else:
             self.hideGUI = False
 
+        self.messageBox.events()
+
+        # check if any message post events have occured
+        if eventOccured("postMessage"):
+            # get the message event
+            messageEvent = getEvent("postMessage")
+
+            # post the message to the message box
+            self.messageBox.postMessage(str(messageEvent.eventData))
 
         ObjectRegister.setElementRectangles(self.elements)
 
@@ -269,6 +286,8 @@ class Game():
         self.displayMoney()
 
         self.shopMenu.draw()
+
+        self.messageBox.draw()
 
         ## DEBUG STUFF ##
         if self.debug:
