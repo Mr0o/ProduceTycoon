@@ -30,7 +30,7 @@ class MessageBox():
 
     def events(self) -> None:
         # check if any message post events have occured
-        if eventOccured("postMessage"):
+        if eventOccured("postMessage") and self.dismissed:
             # get the message event
             messageEvent = getEvent("postMessage")
 
