@@ -4,7 +4,7 @@ from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.playerData import PlayerData
-from ProduceTycoonGame.produce import Produce, Watermelon, Bananas, Apples, Tomatoes
+from ProduceTycoonGame.produce import Produce
 
 from enum import Enum, IntEnum
 
@@ -15,11 +15,11 @@ class TypeObject(IntEnum):
     REGISTER = 2
 
 class TypeProduceCase(Enum):
-    EMPTY = Produce
-    WATERMELON = Watermelon
-    BANANAS = Bananas
-    APPLES = Apples
-    TOMATOES = Tomatoes
+    EMPTY = None
+    WATERMELON = 'Watermelon'
+    BANANAS = 'Bananas'
+    APPLES = 'Apples'
+    TOMATOES = 'Tomatoes'
 
 class Direction(IntEnum):
     NORTH = 0
@@ -172,14 +172,16 @@ class Object:
         self.info.rect.topleft = (x, y)
 
     def setTypeCase(self, typeCase: TypeProduceCase):
+        if self.info.typeCase is not TypeProduceCase.EMPTY:
+            TYPE = self.info.typeCase.value
+            PRODUCE = Produce.data[TYPE]
+            # Adds the produce from the case back into the player data to be used again
+            PRODUCE['amount'] += self.info.amount
+            # Set amount back to 0 to add the new type of produce too it
+            self.info.amount = 0
         # Return nothing if the type is the same
         if self.info.typeCase is typeCase:
             return
-        if self.info.typeCase is not TypeProduceCase.EMPTY:
-            # Adds the produce from the case back into the player data to be used again
-            self.info.typeCase.value.amount += self.info.amount
-            # Set amount back to 0 to add the new type of produce too it
-            self.info.amount = 0
         self.info.typeCase = typeCase
 
     def setDirection(self):
@@ -223,40 +225,43 @@ class Object:
 
     # ---------- Helpers ----------
     def addProduce(self):
-        PRODUCE = self.info.typeCase.value
         if self.info.typeCase is TypeProduceCase.EMPTY:
             print("---- Cannot add produce to EMPTY case ----")
             return
-        if PRODUCE.amount == 0:
+        TYPE = self.info.typeCase.value
+        PRODUCE = Produce.data[TYPE]
+        if PRODUCE['amount'] == 0:
             print("---- Insufficient produce ----")
             return
         self.info.amount += 1
-        print(f"{PRODUCE.name}: {self.info.amount}")
-        PRODUCE.amount -= 1
+        print(f"{PRODUCE['name']}: {self.info.amount}")
+        PRODUCE['amount'] -= 1
 
     def removeProduce(self):
-        PRODUCE = self.info.typeCase.value
         if self.info.typeCase is TypeProduceCase.EMPTY:
             print("---- Cannot remove produce from EMPTY case ----")
             return
+        TYPE = self.info.typeCase.value
+        PRODUCE = Produce.data[TYPE]
         if self.info.amount == 0:
             print("---- Insufficient produce ----")
             return
         self.info.amount -= 1
-        print(f"{PRODUCE.name}: {self.info.amount}")
-        PRODUCE.amount += 1
+        print(f"{PRODUCE['name']}: {self.info.amount}")
+        PRODUCE['amount'] += 1
 
     def sellProduce(self):
-        PRODUCE = self.info.typeCase.value
+        TYPE = self.info.typeCase.value
+        PRODUCE = Produce.data[TYPE]
         if self.info.typeCase is TypeProduceCase.EMPTY:
             print("---- Cannot sell produce from EMPTY case ----")
             return
         if self.info.amount == 0:
             print("---- Insufficient produce ----")
             return
-        PlayerData.money += PRODUCE.sell
+        PlayerData.money += PRODUCE.get('sell')
         self.info.amount -= 1
-        print(f"{PRODUCE.name}: {self.info.amount}")
+        print(f"{PRODUCE['name']}: {self.info.amount}")
         print(f"Money: {PlayerData.money}")
 
     def openGUI(self):

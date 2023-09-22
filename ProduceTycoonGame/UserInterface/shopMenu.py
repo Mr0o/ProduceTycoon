@@ -4,16 +4,16 @@ from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.text import Text
 from ProduceTycoonGame.playerData import PlayerData
-from ProduceTycoonGame.produce import Produce, Watermelon, Bananas, Apples, Tomatoes
+from ProduceTycoonGame.produce import Produce
 
 # ---------- Helper Functions ---------- 
-def buy(PRODUCE: Produce):
-        if PlayerData.money < PRODUCE.buy:
+def buy(PRODUCE: dict):
+        if PlayerData.money < PRODUCE['buy']:
             print("---- Insufficient funds ----")
             return
-        PlayerData.money -= PRODUCE.buy
-        PRODUCE.amount += 1
-        print(f"---- Purchased {PRODUCE.name} ----")
+        PlayerData.money -= PRODUCE['buy']
+        PRODUCE['amount'] += 1
+        print(f"---- Purchased {PRODUCE['name']} ----")
 
 def getImage(sheet: pygame.Surface, x: int, y: int, width: int, height: int, scale: int = 1):
     image = pygame.Surface((width, height)).convert_alpha()
@@ -89,11 +89,15 @@ class ShopMenu():
         offset = 20 * size
         buttonWidth = 75 #int((self.width - offset) / size)
         buttonHeight = int((self.height - offset) / size)
+        WATERMELON = Produce.data.get('Watermelon')
+        BANANAS = Produce.data.get('Bananas')
+        APPLES = Produce.data.get('Apples')
+        TOMATOES = Produce.data.get('Tomatoes')
         return [
-            self.createButton(Watermelon.name, buttonWidth, buttonHeight, lambda: buy(Watermelon), self.buttonImages[0], self.buttonImages[4]),
-            self.createButton(Bananas.name, buttonWidth, buttonHeight, lambda: buy(Bananas), self.buttonImages[1], self.buttonImages[5]),
-            self.createButton(Apples.name, buttonWidth, buttonHeight, lambda: buy(Apples), self.buttonImages[2], self.buttonImages[6]),
-            self.createButton(Tomatoes.name, buttonWidth, buttonHeight, lambda: buy(Tomatoes), self.buttonImages[3], self.buttonImages[7]),
+            self.createButton(WATERMELON['name'], buttonWidth, buttonHeight, lambda: buy(WATERMELON), self.buttonImages[0], self.buttonImages[4]),
+            self.createButton(BANANAS['name'], buttonWidth, buttonHeight, lambda: buy(BANANAS), self.buttonImages[1], self.buttonImages[5]),
+            self.createButton(APPLES['name'], buttonWidth, buttonHeight, lambda: buy(APPLES), self.buttonImages[2], self.buttonImages[6]),
+            self.createButton(TOMATOES['name'], buttonWidth, buttonHeight, lambda: buy(TOMATOES), self.buttonImages[3], self.buttonImages[7]),
 
             self.createButtonWithPos('X', self.pos, 20, 20, self.exitGUI)
         ]

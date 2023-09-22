@@ -12,12 +12,19 @@ from ProduceTycoonGame.objectRegister import ObjectRegister
 from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
+from ProduceTycoonGame.produce import Produce
 from ProduceTycoonGame.playerData import PlayerData
 from ProduceTycoonGame.UserInterface.text import Text
 
 # Helper Functions
 def createObject(screen: pygame.Surface, pos: Vector, width: int, height: int, tileSize: int):
     return ObjectRegister(screen, pos, width, height, tileSize)
+
+def loadGame():
+    Produce.load()
+
+def saveGame():
+    Produce.save()
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -31,6 +38,8 @@ class Game():
         self.running = True
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
+
+        loadGame()
 
         # set the game icon
         icon = pygame.image.load('./Resources/Images/Produce/Tomato.png')
@@ -344,6 +353,8 @@ class Game():
             self.events()
             self.update()
             self.draw()
+        
+        saveGame()
 
         # exit pygame gracefully
         pygame.quit()
