@@ -350,34 +350,29 @@ class ObjectRegister:
         ObjectInfo.tileSize = tileSize
 
     @staticmethod
-    def load():
-        try:
-            # load the data from the file
-            with open ('./Resources/Playerdata/objects.json', 'r') as savefile:
-                for currentObject in json.load(savefile):
-                    objectID = currentObject['objectID']
-                    pos = Vector(currentObject['pos']['x'], currentObject['pos']['y'])
-                    rows = currentObject['info']['rows']
-                    columns = currentObject['info']['columns']
-                    placed = currentObject['info']['placed']
-                    hasPlaced = currentObject['info']['hasPlaced']
-                    mainTileID = currentObject['info']['mainTileID']
-                    direction = currentObject['info']['direction']
-                    typeCase = currentObject['info']['typeCase']
-                    amount = currentObject['info']['amount']
-                    ObjectRegister.objects.append(Object.load(objectID, pos, rows, columns, placed, hasPlaced, mainTileID,  direction, typeCase, amount))
+    def load(filePath):
+        with open (filePath + "objects.json", 'r') as savefile:
+            for currentObject in json.load(savefile):
+                objectID = currentObject['objectID']
+                pos = Vector(currentObject['pos']['x'], currentObject['pos']['y'])
+                rows = currentObject['info']['rows']
+                columns = currentObject['info']['columns']
+                placed = currentObject['info']['placed']
+                hasPlaced = currentObject['info']['hasPlaced']
+                mainTileID = currentObject['info']['mainTileID']
+                direction = currentObject['info']['direction']
+                typeCase = currentObject['info']['typeCase']
+                amount = currentObject['info']['amount']
+                ObjectRegister.objects.append(Object.load(objectID, pos, rows, columns, placed, hasPlaced, mainTileID,  direction, typeCase, amount))
 
-                    ObjectRegister.objectID = objectID + 1
-        except FileNotFoundError:
-            # if the file doesn't exist, create it using the default data
-            ObjectRegister.save()
+                ObjectRegister.objectID = objectID + 1
 
     @staticmethod
-    def save():
+    def save(filePath):
         objectList = []
         for currentObject in ObjectRegister.objects:
             objectList.append(currentObject.save())
-        with open ('./Resources/Playerdata/objects.json', 'w') as savefile:
+        with open (filePath + "objects.json", 'w') as savefile:
             json.dump(objectList, savefile, indent=4)
 
     # ---------- Constructor ----------

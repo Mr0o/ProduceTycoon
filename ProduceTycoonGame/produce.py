@@ -30,16 +30,11 @@ class Produce:
     }
 
     @staticmethod
-    def load():
-        try:
-            # load the data from the file
-            with open('./Resources/Playerdata/produce.json', 'r') as loadfile:
-                Produce.data = json.load(loadfile)
-        except FileNotFoundError:
-            # if the file doesn't exist, create it using the default data
-            Produce.save()
+    def load(filePath):
+        with open(filePath + "produce.json", 'r') as savefile:
+            Produce.data = json.load(savefile)
 
     @staticmethod
-    def save():
-        with open('./Resources/Playerdata/produce.json', 'w') as savefile:
+    def save(filePath):
+        with open(filePath + "produce.json", 'w') as savefile:
             json.dump(Produce.data, savefile, indent=4)

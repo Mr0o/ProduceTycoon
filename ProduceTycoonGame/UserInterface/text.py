@@ -27,7 +27,6 @@ class Text():
         self.renderText = self.objectSize.render(self.text, True, (0, 0, 0))
 
     def draw(self):
-        print(self.x, self.y, self.text)
         Text.screen.blit(self.renderText, (self.x, self.y))
 
     def setText(self, text: str):

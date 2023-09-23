@@ -15,23 +15,50 @@ from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.produce import Produce
 from ProduceTycoonGame.playerData import PlayerData
 from ProduceTycoonGame.UserInterface.text import Text
+from ProduceTycoonGame.UserInterface.mainMenu import MainMenu
 
 # Helper Functions
 def createObject(pos: Vector, width: int, height: int):
     return ObjectRegister(pos, width, height)
 
-def loadGame():
-    ObjectRegister.load()
-    PlayerData.load()
-    Produce.load()
+def saveGame(save):
+    ObjectRegister.save(save)
+    PlayerData.save(save)
+    Produce.save(save)
 
-def saveGame():
-    ObjectRegister.save()
-    PlayerData.save()
-    Produce.save()
+    Game.running = False
+
+def exitGame():
+    Game.running = False
 
 # this is the main game loop (events, update, draw)
 class Game():
+    running = True
+    screen: pygame.Surface
+    savePrompt: pygame.Rect
+    savePromptText: Text
+    savePromptYesButton: Button
+    savePromptNoButton: Button
+
+
+    def createSavePrompt(self):
+        self.savePrompt = pygame.Rect(self.WIDTH / 4, self.HEIGHT / 4, self.WIDTH / 2, self.HEIGHT / 2)
+        self.savePromptText = Text(Vector(self.WIDTH / 4, self.HEIGHT / 4), 400, 150, "Would you like to save your game?")
+        self.savePromptYesButton = Button(Vector(self.WIDTH / 4 + 80, self.HEIGHT / 4 + 220), "Yes", 40, 40, lambda: saveGame(MainMenu.currentSave))
+        self.savePromptNoButton = Button(Vector(self.WIDTH / 4 + 280, self.HEIGHT / 4 + 220), "No", 40, 40, lambda: exitGame())
+
+    def drawSavePrompt(self):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.savePrompt)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.savePrompt, 2)
+        self.savePromptText.draw()
+        self.savePromptYesButton.draw()
+        self.savePromptNoButton.draw()
+
+    def savePromptEvents(self):
+        self.drawSavePrompt()
+        self.savePromptYesButton.events()
+        self.savePromptNoButton.events()
+
     def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
         pygame.init()
 
@@ -39,12 +66,11 @@ class Game():
         self.HEIGHT = HEIGHT
 
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        self.running = True
+        Game.running = True
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
         ObjectRegister.setScreen(self.screen)
-        loadGame()
 
         # set the game icon
         icon = pygame.image.load('./Resources/Images/Produce/Tomato.png')
@@ -64,6 +90,8 @@ class Game():
         Button.setScreen(self.screen)
         TileMap.setScreen(self.screen)
         Text.setScreen(self.screen)
+
+        self.mainMenu = MainMenu(self.WIDTH, self.HEIGHT)
         
         self.tileMap = TileMap(Vector(0, 0))
         ObjectRegister.setTileSize(self.tileMap.tileSize)
@@ -108,6 +136,8 @@ class Game():
 
         self.textRenderer = Text(Vector(moneyBoxX, moneyBoxY), moneyBoxWidth, moneyBoxHeight, str(PlayerData.data['money']))
 
+        self.promptSaveGame = False
+        self.createSavePrompt()
         # message box instance
         self.messageBox = MessageBox(self.screen)
 
@@ -117,20 +147,28 @@ class Game():
         for event in pygame.event.get():
             # will stop running and exit
             if event.type == pygame.QUIT:
-                self.running = False
+                Game.running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.running = False
+                    postEvent("escape")
                 # press '1' to toggle debug
-                if event.key == pygame.K_1:
+                elif event.key == pygame.K_1:
                     self.debug = not self.debug
+                    postEvent("keyDown", eventData=event)
                 # press '2' to toggle debugPlaceableObjects
-                if event.key == pygame.K_2:
+                elif event.key == pygame.K_2:
                     self.debugPlaceableObjects = not self.debugPlaceableObjects
+                    postEvent("keyDown", eventData=event)
+
+                elif event.key == pygame.K_BACKSPACE:
+                    postEvent("backspace", eventData=event)
 
                 # press space to toggle a test message
-                if event.key == pygame.K_SPACE:
+                elif event.key == pygame.K_SPACE:
                     postEvent("postMessage", eventData="This is a test message!")
+                    postEvent("keyDown", eventData=event)
+                else:
+                    postEvent("keyDown", eventData=event)
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -144,7 +182,10 @@ class Game():
                 if event.button == 3:
                     postEvent("rightMouseUp")
 
-        
+        if MainMenu.active:
+            self.mainMenu.events()
+            return
+
         if len(self.objects):
             self.hideGUI = not self.objects[len(self.objects) - 1].info.placed
         else:
@@ -236,6 +277,12 @@ class Game():
         self.shopMenu.events()
         self.elements = []
 
+        if getEvent("escape"):
+            self.promptSaveGame = True
+
+        if self.promptSaveGame:
+            self.savePromptEvents()
+
         Button.HAS_CLICKED = False
 
     # set every element's hidden variable to the value of self.hideGUI
@@ -271,6 +318,10 @@ class Game():
         self.textRenderer.draw() 
 
     def draw(self):
+        if MainMenu.active:
+            self.mainMenu.draw()
+            return
+
         self.screen.fill((0, 0, 0))
 
         # drawing tileMap
@@ -294,6 +345,9 @@ class Game():
         self.displayMoney()
 
         self.shopMenu.draw()
+
+        if self.promptSaveGame:
+            self.drawSavePrompt()
 
         self.messageBox.draw()
 
@@ -355,13 +409,11 @@ class Game():
         pygame.display.flip()
 
     def run(self):
-        while self.running:
+        while Game.running:
             self.clock.tick(60)
             self.events()
             self.update()
             self.draw()
-        
-        saveGame()
 
         # exit pygame gracefully
         pygame.quit()
