@@ -350,8 +350,8 @@ class ObjectRegister:
         ObjectInfo.tileSize = tileSize
 
     @staticmethod
-    def load():
-        with open ('./Resources/Playerdata/objects.json', 'r') as savefile:
+    def load(filePath):
+        with open (filePath, 'r') as savefile:
             for currentObject in json.load(savefile):
                 objectID = currentObject['objectID']
                 pos = Vector(currentObject['pos']['x'], currentObject['pos']['y'])
@@ -368,11 +368,11 @@ class ObjectRegister:
                 ObjectRegister.objectID = objectID + 1
 
     @staticmethod
-    def save():
+    def save(filePath):
         objectList = []
         for currentObject in ObjectRegister.objects:
             objectList.append(currentObject.save())
-        with open ('./Resources/Playerdata/objects.json', 'w') as savefile:
+        with open (filePath, 'w') as savefile:
             json.dump(objectList, savefile, indent=4)
 
     # ---------- Constructor ----------
