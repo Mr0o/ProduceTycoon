@@ -120,15 +120,22 @@ class Game():
                 if event.key == pygame.K_ESCAPE:
                     self.running = False
                 # press '1' to toggle debug
-                if event.key == pygame.K_1:
+                elif event.key == pygame.K_1:
                     self.debug = not self.debug
+                    postEvent("keyDown", eventData=event)
                 # press '2' to toggle debugPlaceableObjects
-                if event.key == pygame.K_2:
+                elif event.key == pygame.K_2:
                     self.debugPlaceableObjects = not self.debugPlaceableObjects
+                    postEvent("keyDown", eventData=event)
+
+                elif event.key == pygame.K_BACKSPACE:
+                    postEvent("backspace", eventData=event)
+                else:
+                    postEvent("keyDown", eventData=event)
 
                 # press space to toggle a test message
-                if event.key == pygame.K_SPACE:
-                    postEvent("postMessage", eventData="This is a test message!")
+                #if event.key == pygame.K_SPACE:
+                #    postEvent("postMessage", eventData="This is a test message!")
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:

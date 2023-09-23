@@ -58,7 +58,6 @@ class Button():
                 Button.HAS_CLICKED = True
                 if self.info.func != None:
                     self.info.func()
-                    print(self.info.name)
         if not eventOccured("leftMouseDown"):
             self.info.isSelected = False
     
