@@ -31,10 +31,10 @@ class Produce:
 
     @staticmethod
     def load(filePath):
-        with open(filePath, 'r') as savefile:
+        with open(filePath + "produce.json", 'r') as savefile:
             Produce.data = json.load(savefile)
 
     @staticmethod
     def save(filePath):
-        with open(filePath, 'w') as savefile:
+        with open(filePath + "produce.json", 'w') as savefile:
             json.dump(Produce.data, savefile, indent=4)

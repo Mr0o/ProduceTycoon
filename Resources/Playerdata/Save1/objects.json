@@ -70,5 +70,23 @@
             "typeCase": null,
             "amount": 0
         }
+    },
+    {
+        "objectID": 4,
+        "pos": {
+            "x": 275,
+            "y": 350
+        },
+        "info": {
+            "rows": 4,
+            "columns": 4,
+            "tileSize": 25,
+            "placed": true,
+            "hasPlaced": false,
+            "mainTileID": 459,
+            "direction": 0,
+            "typeCase": null,
+            "amount": 0
+        }
     }
 ]

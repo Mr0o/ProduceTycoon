@@ -351,7 +351,7 @@ class ObjectRegister:
 
     @staticmethod
     def load(filePath):
-        with open (filePath, 'r') as savefile:
+        with open (filePath + "objects.json", 'r') as savefile:
             for currentObject in json.load(savefile):
                 objectID = currentObject['objectID']
                 pos = Vector(currentObject['pos']['x'], currentObject['pos']['y'])
@@ -372,7 +372,7 @@ class ObjectRegister:
         objectList = []
         for currentObject in ObjectRegister.objects:
             objectList.append(currentObject.save())
-        with open (filePath, 'w') as savefile:
+        with open (filePath + "objects.json", 'w') as savefile:
             json.dump(objectList, savefile, indent=4)
 
     # ---------- Constructor ----------

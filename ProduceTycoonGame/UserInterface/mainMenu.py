@@ -12,12 +12,6 @@ from ProduceTycoonGame.objectRegister import ObjectRegister
 
 from enum import Enum
 
-# ---------- Enums ---------- #
-class FilePath(Enum):
-    PRODUCE = "produce.json"
-    PLAYER_DATA = "playerData.json"
-    OBJECTS = "objects.json"
-
 # ---------- Helper Functions ---------- #
 def load(save):
     filePath = "./Resources/PlayerData/" + save + "/"
@@ -27,26 +21,16 @@ def load(save):
         os.makedirs(filePath)
         self.createInitialSave(filePath)
 
-    objectsPath = filePath + FilePath.OBJECTS.value 
-    ObjectRegister.load(objectsPath)
-
-    playerDataPath = filePath + FilePath.PLAYER_DATA.value
-    PlayerData.load(playerDataPath)
-
-    producePath = filePath + FilePath.PRODUCE.value
-    Produce.load(producePath)
+    ObjectRegister.load(filePath)
+    PlayerData.load(filePath)
+    Produce.load(filePath)
 
     MainMenu.active = False
 
 def createInitialSave(filePath):
-    producePath = filePath + FilePath.PRODUCE.value
-    Produce.save(producePath)
-
-    playerDataPath = filePath + FilePath.PLAYER_DATA.value
-    PlayerData.save(playerDataPath)
-
-    objectsPath = filePath + FilePath.OBJECTS.value
-    ObjectRegister.save(objectsPath)
+    Produce.save(filePath)
+    PlayerData.save(filePath)
+    ObjectRegister.save(filePath)
 
 def getSaves(): 
     playerDataPath = "Resources\\PlayerData\\"

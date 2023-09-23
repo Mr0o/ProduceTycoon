@@ -21,14 +21,44 @@ from ProduceTycoonGame.UserInterface.mainMenu import MainMenu
 def createObject(pos: Vector, width: int, height: int):
     return ObjectRegister(pos, width, height)
 
-def saveGame():
-    ObjectRegister.save()
-    PlayerData.save()
-    Produce.save()
+def saveGame(save):
+    ObjectRegister.save(save)
+    PlayerData.save(save)
+    Produce.save(save)
 
+    Game.running = False
+
+def exitGame():
+    Game.running = False
 
 # this is the main game loop (events, update, draw)
 class Game():
+    running = True
+    screen: pygame.Surface
+    savePrompt: pygame.Rect
+    savePromptText: Text
+    savePromptYesButton: Button
+    savePromptNoButton: Button
+
+
+    def createSavePrompt(self):
+        self.savePrompt = pygame.Rect(self.WIDTH / 4, self.HEIGHT / 4, self.WIDTH / 2, self.HEIGHT / 2)
+        self.savePromptText = Text(Vector(self.WIDTH / 4, self.HEIGHT / 4), 400, 150, "Would you like to save your game?")
+        self.savePromptYesButton = Button(Vector(self.WIDTH / 4 + 80, self.HEIGHT / 4 + 220), "Yes", 40, 40, lambda: saveGame(MainMenu.currentSave))
+        self.savePromptNoButton = Button(Vector(self.WIDTH / 4 + 240, self.HEIGHT / 4 + 220), "No",40, 40, lambda: exitGame())
+
+    def drawSavePrompt(self):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.savePrompt)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.savePrompt, 2)
+        self.savePromptText.draw()
+        self.savePromptYesButton.draw()
+        self.savePromptNoButton.draw()
+
+    def savePromptEvents(self):
+        self.drawSavePrompt()
+        self.savePromptYesButton.events()
+        self.savePromptNoButton.events()
+
     def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
         pygame.init()
 
@@ -36,7 +66,7 @@ class Game():
         self.HEIGHT = HEIGHT
 
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
-        self.running = True
+        Game.running = True
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
@@ -106,6 +136,8 @@ class Game():
 
         self.textRenderer = Text(Vector(moneyBoxX, moneyBoxY), moneyBoxWidth, moneyBoxHeight, str(PlayerData.data['money']))
 
+        self.promptSaveGame = False
+        self.createSavePrompt()
         # message box instance
         self.messageBox = MessageBox(self.screen)
 
@@ -115,10 +147,10 @@ class Game():
         for event in pygame.event.get():
             # will stop running and exit
             if event.type == pygame.QUIT:
-                self.running = False
+                postEvent("quit")
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    self.running = False
+                    postEvent("escape")
                 # press '1' to toggle debug
                 elif event.key == pygame.K_1:
                     self.debug = not self.debug
@@ -130,12 +162,13 @@ class Game():
 
                 elif event.key == pygame.K_BACKSPACE:
                     postEvent("backspace", eventData=event)
-                else:
-                    postEvent("keyDown", eventData=event)
 
                 # press space to toggle a test message
-                #if event.key == pygame.K_SPACE:
-                #    postEvent("postMessage", eventData="This is a test message!")
+                elif event.key == pygame.K_SPACE:
+                    postEvent("postMessage", eventData="This is a test message!")
+                    postEvent("keyDown", eventData=event)
+                else:
+                    postEvent("keyDown", eventData=event)
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -244,6 +277,12 @@ class Game():
         self.shopMenu.events()
         self.elements = []
 
+        if getEvent("escape") or getEvent("quit"):
+            self.promptSaveGame = True
+
+        if self.promptSaveGame:
+            self.savePromptEvents()
+
         Button.HAS_CLICKED = False
 
     # set every element's hidden variable to the value of self.hideGUI
@@ -307,6 +346,9 @@ class Game():
 
         self.shopMenu.draw()
 
+        if self.promptSaveGame:
+            self.drawSavePrompt()
+
         self.messageBox.draw()
 
         ## DEBUG STUFF ##
@@ -367,7 +409,7 @@ class Game():
         pygame.display.flip()
 
     def run(self):
-        while self.running:
+        while Game.running:
             self.clock.tick(60)
             self.events()
             self.update()
