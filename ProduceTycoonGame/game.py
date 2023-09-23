@@ -17,13 +17,17 @@ from ProduceTycoonGame.playerData import PlayerData
 from ProduceTycoonGame.UserInterface.text import Text
 
 # Helper Functions
-def createObject(screen: pygame.Surface, pos: Vector, width: int, height: int, tileSize: int):
-    return ObjectRegister(screen, pos, width, height, tileSize)
+def createObject(pos: Vector, width: int, height: int):
+    return ObjectRegister(pos, width, height)
 
 def loadGame():
+    ObjectRegister.load()
+    PlayerData.load()
     Produce.load()
 
 def saveGame():
+    ObjectRegister.save()
+    PlayerData.save()
     Produce.save()
 
 # this is the main game loop (events, update, draw)
@@ -39,6 +43,7 @@ class Game():
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
+        ObjectRegister.setScreen(self.screen)
         loadGame()
 
         # set the game icon
@@ -58,16 +63,18 @@ class Game():
         ShopMenu.setScreen(self.screen)
         Button.setScreen(self.screen)
         TileMap.setScreen(self.screen)
+        Text.setScreen(self.screen)
         
         self.tileMap = TileMap(Vector(0, 0))
+        ObjectRegister.setTileSize(self.tileMap.tileSize)
 
         # pathfinding (Vector Fields)
         self.pathfinder = Pathfinder(self.tileMap)
 
 
         # buttons
-        object4x4Args = (self.screen, Vector(0, 0), 4, 4, self.tileMap.tileSize)
-        object1x1Args = (self.screen, Vector(0, 0), 1, 1, self.tileMap.tileSize)
+        object4x4Args = (Vector(0, 0), 4, 4)
+        object1x1Args = (Vector(0, 0), 1, 1)
         self.buttons = []
         self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20, lambda: createObject(*object4x4Args))
         self.buttons.append(self.button4x4)
@@ -99,7 +106,7 @@ class Game():
         moneyBoxY = self.HEIGHT - moneyBoxHeight
         self.moneyBox = pygame.Rect((moneyBoxX, moneyBoxY), (moneyBoxWidth, moneyBoxHeight))
 
-        self.textRenderer = Text(ShopMenu.screen, Vector(moneyBoxX, moneyBoxY), moneyBoxWidth, moneyBoxHeight, str(PlayerData.money))
+        self.textRenderer = Text(Vector(moneyBoxX, moneyBoxY), moneyBoxWidth, moneyBoxHeight, str(PlayerData.data['money']))
 
         # message box instance
         self.messageBox = MessageBox(self.screen)
@@ -260,7 +267,7 @@ class Game():
     def displayMoney(self):
         pygame.draw.rect(self.screen, (255, 255, 255), self.moneyBox)
         pygame.draw.rect(self.screen, (0, 0, 0), self.moneyBox, 2)
-        self.textRenderer.setText(str(PlayerData.money))
+        self.textRenderer.setText(str(PlayerData.data['money']))
         self.textRenderer.draw() 
 
     def draw(self):

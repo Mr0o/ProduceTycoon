@@ -76,7 +76,7 @@ class Button():
             self.text.draw()
 
 def createText(pos, width, height, name):
-    return Text(Button.screen, pos, width, height, name)
+    return Text(pos, width, height, name)
 
 def createRect(pos, width, height):
     return pygame.Rect((pos.x, pos.y), (width, height))

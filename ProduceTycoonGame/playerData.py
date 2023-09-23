@@ -2,10 +2,14 @@ import pygame
 import json
 
 class PlayerData:
-    money = 1000
+    data = {
+        'money': 1000
+    }
 
-    def loadData():
-        pass
+    def load():
+        with open('./Resources/Playerdata/player.json', 'r') as savefile:
+            PlayerData.data = json.load(savefile)
 
-    def saveData():
-        pass
+    def save():
+        with open('./Resources/Playerdata/player.json', 'w') as savefile:
+            json.dump(PlayerData.data, savefile, indent=4)
