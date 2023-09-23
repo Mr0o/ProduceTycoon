@@ -58,18 +58,19 @@ class Button():
                 Button.HAS_CLICKED = True
                 if self.info.func != None:
                     self.info.func()
+                    print(self.info.name)
         if not eventOccured("leftMouseDown"):
             self.info.isSelected = False
     
-    def draw(self):
+    def draw(self, screen: pygame.Surface = Text.screen):
         if not self.info.active:
             return
 
         if self.info.baseImage != None and self.info.selectedImage != None:
             if self.info.isSelected:
-                Button.screen.blit(self.info.selectedImage, (self.info.pos.x, self.info.pos.y))
+                screen.blit(self.info.selectedImage, (self.info.pos.x, self.info.pos.y))
             else:
-                Button.screen.blit(self.info.baseImage, (self.info.pos.x, self.info.pos.y))
+                screen.blit(self.info.baseImage, (self.info.pos.x, self.info.pos.y))
         else:
             pygame.draw.rect(Button.screen, self.info.color, self.rect)
             pygame.draw.rect(Button.screen, (0, 0, 0), self.rect, 2)

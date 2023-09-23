@@ -15,20 +15,17 @@ from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.produce import Produce
 from ProduceTycoonGame.playerData import PlayerData
 from ProduceTycoonGame.UserInterface.text import Text
+from ProduceTycoonGame.UserInterface.mainMenu import MainMenu
 
 # Helper Functions
 def createObject(pos: Vector, width: int, height: int):
     return ObjectRegister(pos, width, height)
 
-def loadGame():
-    ObjectRegister.load()
-    PlayerData.load()
-    Produce.load()
-
 def saveGame():
     ObjectRegister.save()
     PlayerData.save()
     Produce.save()
+
 
 # this is the main game loop (events, update, draw)
 class Game():
@@ -44,7 +41,6 @@ class Game():
         pygame.display.set_caption('Produce Tycoon')
 
         ObjectRegister.setScreen(self.screen)
-        loadGame()
 
         # set the game icon
         icon = pygame.image.load('./Resources/Images/Produce/Tomato.png')
@@ -64,6 +60,8 @@ class Game():
         Button.setScreen(self.screen)
         TileMap.setScreen(self.screen)
         Text.setScreen(self.screen)
+
+        self.mainMenu = MainMenu(self.WIDTH, self.HEIGHT)
         
         self.tileMap = TileMap(Vector(0, 0))
         ObjectRegister.setTileSize(self.tileMap.tileSize)
@@ -144,7 +142,10 @@ class Game():
                 if event.button == 3:
                     postEvent("rightMouseUp")
 
-        
+        if MainMenu.active:
+            self.mainMenu.events()
+            return
+
         if len(self.objects):
             self.hideGUI = not self.objects[len(self.objects) - 1].info.placed
         else:
@@ -271,6 +272,10 @@ class Game():
         self.textRenderer.draw() 
 
     def draw(self):
+        if MainMenu.active:
+            self.mainMenu.draw()
+            return
+
         self.screen.fill((0, 0, 0))
 
         # drawing tileMap
@@ -360,8 +365,6 @@ class Game():
             self.events()
             self.update()
             self.draw()
-        
-        saveGame()
 
         # exit pygame gracefully
         pygame.quit()
