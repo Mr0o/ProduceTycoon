@@ -13,13 +13,13 @@ from ProduceTycoonGame.objectRegister import ObjectRegister
 from enum import Enum
 
 # ---------- Helper Functions ---------- #
-def load(save):
-    filePath = "./Resources/PlayerData/" + save + "/"
+def load(filePath):
     MainMenu.currentSave = filePath
 
     if not os.path.exists(filePath):
         os.makedirs(filePath)
-        self.createInitialSave(filePath)
+        print("Creating new save...")
+        createInitialSave(filePath)
 
     ObjectRegister.load(filePath)
     PlayerData.load(filePath)
@@ -39,7 +39,8 @@ def getSaves():
     saveButtons = []
     x = 150
     for save in saveDir:
-        saveButtons.append(Button(Vector(200, x), save, 400, 50, lambda save=save: load(save)))
+        savePath = "./Resources/PlayerData/" + save + "/"
+        saveButtons.append(Button(Vector(200, x), save, 400, 50, lambda save=savePath: load(save)))
         x += 50
 
     return saveButtons
@@ -98,7 +99,7 @@ class MainMenu:
 
         self.savePath = "./Resources/PlayerData/" + self.savePromptTextInput.getText() + "/"
 
-        self.savePromptSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 100), "Save", 400, 50, lambda: self.load(self.savePath))
+        self.savePromptSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 100), "Save", 400, 50, lambda: load(self.savePath))
         self.cancelSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 150), "Cancel", 400, 50, lambda: self.newSave())
 
     # ---------- Main Methods ---------- #
@@ -126,7 +127,6 @@ class MainMenu:
         if MainMenu.SHOW_SAVES:
             for save in self.saveButtons:
                 save.draw(MainMenu.screen)
-                print(save.info.name)
 
         if MainMenu.CREATE_SAVE:
             pygame.draw.rect(MainMenu.screen, (130, 40, 160), self.savePrompt)
