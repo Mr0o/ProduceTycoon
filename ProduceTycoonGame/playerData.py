@@ -7,8 +7,13 @@ class PlayerData:
     }
 
     def load():
-        with open('./Resources/Playerdata/player.json', 'r') as savefile:
-            PlayerData.data = json.load(savefile)
+        try:
+            # load the data from the file
+            with open('./Resources/Playerdata/player.json', 'r') as loadfile:
+                PlayerData.data = json.load(loadfile)
+        except FileNotFoundError:
+            # if the file doesn't exist, create it using the default data
+            PlayerData.save()
 
     def save():
         with open('./Resources/Playerdata/player.json', 'w') as savefile:
