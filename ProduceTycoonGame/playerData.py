@@ -7,9 +7,9 @@ class PlayerData:
     }
 
     def load(filePath):
-        with open(filePath, 'r') as savefile:
+        with open(filePath + "playerData.json", 'r') as savefile:
             PlayerData.data = json.load(savefile)
 
     def save(filePath):
-        with open(filePath, 'w') as savefile:
+        with open(filePath + "playerData.json", 'w') as savefile:
             json.dump(PlayerData.data, savefile, indent=4)
