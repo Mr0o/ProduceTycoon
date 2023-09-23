@@ -45,7 +45,7 @@ class Game():
         self.savePrompt = pygame.Rect(self.WIDTH / 4, self.HEIGHT / 4, self.WIDTH / 2, self.HEIGHT / 2)
         self.savePromptText = Text(Vector(self.WIDTH / 4, self.HEIGHT / 4), 400, 150, "Would you like to save your game?")
         self.savePromptYesButton = Button(Vector(self.WIDTH / 4 + 80, self.HEIGHT / 4 + 220), "Yes", 40, 40, lambda: saveGame(MainMenu.currentSave))
-        self.savePromptNoButton = Button(Vector(self.WIDTH / 4 + 240, self.HEIGHT / 4 + 220), "No",40, 40, lambda: exitGame())
+        self.savePromptNoButton = Button(Vector(self.WIDTH / 4 + 280, self.HEIGHT / 4 + 220), "No", 40, 40, lambda: exitGame())
 
     def drawSavePrompt(self):
         pygame.draw.rect(self.screen, (255, 255, 255), self.savePrompt)
@@ -147,7 +147,7 @@ class Game():
         for event in pygame.event.get():
             # will stop running and exit
             if event.type == pygame.QUIT:
-                postEvent("quit")
+                Game.running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     postEvent("escape")
@@ -277,7 +277,7 @@ class Game():
         self.shopMenu.events()
         self.elements = []
 
-        if getEvent("escape") or getEvent("quit"):
+        if getEvent("escape"):
             self.promptSaveGame = True
 
         if self.promptSaveGame:
