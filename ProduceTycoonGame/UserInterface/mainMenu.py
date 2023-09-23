@@ -4,6 +4,7 @@ import os
 
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.UserInterface.text import Text
+from ProduceTycoonGame.UserInterface.textInputBox import TextInputBox
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.produce import Produce
 from ProduceTycoonGame.playerData import PlayerData
@@ -11,10 +12,53 @@ from ProduceTycoonGame.objectRegister import ObjectRegister
 
 from enum import Enum
 
+# ---------- Enums ---------- #
 class FilePath(Enum):
     PRODUCE = "produce.json"
     PLAYER_DATA = "playerData.json"
     OBJECTS = "objects.json"
+
+# ---------- Helper Functions ---------- #
+def load(save):
+    filePath = "./Resources/PlayerData/" + save + "/"
+    MainMenu.currentSave = filePath
+
+    if not os.path.exists(filePath):
+        os.makedirs(filePath)
+        self.createInitialSave(filePath)
+
+    objectsPath = filePath + FilePath.OBJECTS.value 
+    ObjectRegister.load(objectsPath)
+
+    playerDataPath = filePath + FilePath.PLAYER_DATA.value
+    PlayerData.load(playerDataPath)
+
+    producePath = filePath + FilePath.PRODUCE.value
+    Produce.load(producePath)
+
+    MainMenu.active = False
+
+def createInitialSave(filePath):
+    producePath = filePath + FilePath.PRODUCE.value
+    Produce.save(producePath)
+
+    playerDataPath = filePath + FilePath.PLAYER_DATA.value
+    PlayerData.save(playerDataPath)
+
+    objectsPath = filePath + FilePath.OBJECTS.value
+    ObjectRegister.save(objectsPath)
+
+def getSaves(): 
+    playerDataPath = "Resources\\PlayerData\\"
+    saveDir = os.listdir(playerDataPath)
+
+    saveButtons = []
+    x = 150
+    for save in saveDir:
+        saveButtons.append(Button(Vector(200, x), save, 400, 50, lambda save=save: load(save)))
+        x += 50
+
+    return saveButtons
 
 class MainMenu:
     # Variables
@@ -23,14 +67,22 @@ class MainMenu:
     loadSave: Button
     newSave: Button
     active: bool = True
-    saves: []
+    saveButtons: []
+    
+    # ---------- Save Prompt ---------- #
+    savePrompt: pygame.Rect
+    savePromptText: Text
+    savePromptTextInput: TextInputBox
+    savePromptSaveButton: Button
+    savePath: str
 
-    currentSave = ""
-
-    # Static Variables
+    # ---------- Static Variables ---------- #
     screen = pygame.Surface((0,0))
+    currentSave = ""
     SHOW_SAVES = False
+    CREATE_SAVE = False
 
+    # ---------- Instance Methods ---------- #
     def __init__(self, width, height):
         self.width = width
         self.height = height
@@ -41,60 +93,62 @@ class MainMenu:
         self.background = pygame.Rect(0, 0, self.width, self.height)
 
         self.loadSave = Button(Vector(0, 0), "Load Save", 100, 50, lambda: self.showSaves())
-        self.newSave = Button(Vector(0, 50), "New Save", 100, 50, lambda: self.newSave())
+        self.newSave = Button(Vector(0, 50), "New Save", 100, 50, lambda: self.promptNewSave())
 
-        self.saves = self.getSaves()
+        self.saveButtons = getSaves()
+
+        self.createSavePrompt()
+
+    # ---------- Helpers ---------- #
+    def promptNewSave(self):
+        MainMenu.CREATE_SAVE = not MainMenu.CREATE_SAVE
 
     def showSaves(self):
         MainMenu.SHOW_SAVES = not MainMenu.SHOW_SAVES
-        print(MainMenu.SHOW_SAVES)
 
-    def getSaves(self): 
-        playerDataPath = "Resources\\PlayerData\\"
-        saveDir = os.listdir(playerDataPath)
+    def createSavePrompt(self):
+        self.savePrompt = pygame.Rect(200, 200, 400, 200)
 
-        saveButtons = []
-        for save in saveDir:
-            savePath = "./Resources/PlayerData/" + save + "/"
-            saveButtons.append(Button(Vector(200, 150), save, 400, 50, lambda: self.load(savePath)))
+        self.savePromptText = Text(Vector(self.savePrompt.x, self.savePrompt.y), 400, 50, "Save Name:")
+        self.savePromptTextInput = TextInputBox(MainMenu.screen, Vector(self.savePrompt.x, self.savePrompt.y + 50), 400, 50)
 
-        return saveButtons
+        self.savePath = "./Resources/PlayerData/" + self.savePromptTextInput.getText() + "/"
 
-    def load(self, filePath):
-        MainMenu.currentSave = filePath
-        objectsPath = filePath + FilePath.OBJECTS.value 
-        ObjectRegister.load(objectsPath)
+        self.savePromptSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 100), "Save", 400, 50, lambda: self.load(self.savePath))
+        self.cancelSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 150), "Cancel", 400, 50, lambda: self.newSave())
 
-        playerDataPath = filePath + FilePath.PLAYER_DATA.value
-        PlayerData.load(playerDataPath)
-
-        producePath = filePath + FilePath.PRODUCE.value
-        Produce.load(producePath)
-
-        MainMenu.active = False
-
-    def newSave(self):
-        pass
-
+    # ---------- Main Methods ---------- #
     def events(self):
         self.loadSave.events()
         self.newSave.events()
 
         if MainMenu.SHOW_SAVES:
-            for save in self.saves:
+            for save in self.saveButtons:
                 save.events()
+
+        if MainMenu.CREATE_SAVE:
+            self.savePromptTextInput.events()
+            self.savePath = "./Resources/PlayerData/" + self.savePromptTextInput.getText() + "/"
+            self.savePromptSaveButton.events()
 
         Button.HAS_CLICKED = False
 
     def draw(self):
-        pygame.draw.rect(MainMenu.screen, (239, 120, 178), self.background)
+        pygame.draw.rect(MainMenu.screen, (247, 120, 98), self.background)
 
         self.loadSave.draw(MainMenu.screen)
         self.newSave.draw(MainMenu.screen)
 
         if MainMenu.SHOW_SAVES:
-            for save in self.saves:
+            for save in self.saveButtons:
                 save.draw(MainMenu.screen)
+                print(save.info.name)
+
+        if MainMenu.CREATE_SAVE:
+            pygame.draw.rect(MainMenu.screen, (130, 40, 160), self.savePrompt)
+            self.savePromptText.draw()
+            self.savePromptTextInput.draw()
+            self.savePromptSaveButton.draw()
 
         pygame.display.update()
 

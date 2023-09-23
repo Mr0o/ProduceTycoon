@@ -1,6 +1,7 @@
 import pygame
 
 from ProduceTycoonGame.vectors import Vector
+from ProduceTycoonGame.events import eventOccured, getEvent
 
 class TextInputBox():
     def __init__(self, screen: pygame.Surface, pos: Vector, width: int, height: int, color: tuple[int, int, int] | pygame.Color = (200, 150, 170)):
@@ -16,28 +17,20 @@ class TextInputBox():
         self.textFont = pygame.font.Font(None, 32)
         self.text = ''
     
-    def events(self, events: list = []):
-        #print()
-        for event in events:
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if self.rect.collidepoint(event.pos):
-                    self.active = True
-                else:
-                    self.active = False
-            if event.type == pygame.KEYDOWN:
-                if self.active:
-                    if event.key == pygame.K_BACKSPACE:
-                        self.text = self.text[:-1]
-                    elif   (event.key == pygame.K_0 or event.key == pygame.K_1 
-                         or event.key == pygame.K_2 or event.key == pygame.K_3 
-                         or event.key == pygame.K_4 or event.key == pygame.K_5 
-                         or event.key == pygame.K_6 or event.key == pygame.K_7 
-                         or event.key == pygame.K_8 or event.key == pygame.K_9):
+    def events(self):
+        if eventOccured("leftMouseDown"):
+            if self.rect.collidepoint(pygame.mouse.get_pos()):
+                self.active = True
+            else:
+                self.active = False
+        if self.active:
+            if eventOccured("backspace"):
+                self.text = self.text[:-1]
+            if eventOccured("keyDown"):
+                self.text += getEvent("keyDown").getData().unicode
 
-                        self.text += event.unicode
-
-    def update(self):
-        pass
+    def getText(self):
+        return self.text
 
     def draw(self):
         pygame.draw.rect(self.screen, self.color, self.rect)

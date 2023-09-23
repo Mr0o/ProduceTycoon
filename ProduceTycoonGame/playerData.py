@@ -11,5 +11,5 @@ class PlayerData:
             PlayerData.data = json.load(savefile)
 
     def save(filePath):
-        with open('./Resources/Playerdata/player.json', 'w') as savefile:
+        with open(filePath, 'w') as savefile:
             json.dump(PlayerData.data, savefile, indent=4)
