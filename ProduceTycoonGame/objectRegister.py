@@ -1,4 +1,5 @@
 import pygame
+import json
 
 from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
@@ -34,14 +35,13 @@ def getNextDirection(direction: Direction):
 class ObjectGUI:
     currentObject: object
     buttons: []
-    active: bool
+    active: bool = False
 
     # Positions
     x = 700; y = 30
 
     # ---------- Constructor ----------
-    def __init__(self, active = False, direction = Direction.NORTH, typeCase = TypeProduceCase.WATERMELON):
-        self.active = active
+    def __init__(self):
         self.buttons = self.createButtons()
 
     # ---------- Setters ----------
@@ -87,12 +87,10 @@ class ObjectGUI:
             button.draw()
 
 class ObjectInfo:
-    screen: pygame.Surface
     pos: Vector
     gui: ObjectGUI
     rows: int
     columns: int
-    tileSize: int
     placed: bool = False
     hasPlaced: bool = False
     mainTileID: int = -1
@@ -103,17 +101,16 @@ class ObjectInfo:
     amount: int = 0
 
     elementRectangles = []
+    screen = pygame.Surface((0, 0))
+    tileSize = 0
 
     # ---------- Constructor ----------  
-    def __init__(self, screen, pos, gui, rows, columns, tileSize):
-        self.screen = screen
+    def __init__(self, pos, gui, rows, columns):
         self.pos = pos
         self.gui = gui
         self.rows = rows
         self.columns = columns
-        self.tileSize = tileSize
-        self.setImage() 
-        self.rect = self.image.get_rect()
+        self.setImage()
 
     # ---------- Setters ----------
     def setImage(self):
@@ -131,8 +128,23 @@ class ObjectInfo:
         self.configureImage(image)
 
     def configureImage(self, image):
-        self.image = pygame.transform.scale(image, (self.tileSize * self.columns, self.tileSize * self.rows))
+        self.image = pygame.transform.scale(image, (ObjectInfo.tileSize * self.columns, ObjectInfo.tileSize * self.rows))
         self.image = pygame.transform.rotate(self.image, self.direction * -90)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (self.pos.x, self.pos.y)
+
+    def save(self):
+        return {
+            'rows': self.rows,
+            'columns': self.columns,
+            'tileSize': ObjectInfo.tileSize,
+            'placed': self.placed,
+            'hasPlaced': self.hasPlaced,
+            'mainTileID': self.mainTileID,
+            'direction': self.direction,
+            'typeCase': self.typeCase.value,
+            'amount': self.amount
+        }
 
 class Object:
     # Variables
@@ -151,7 +163,7 @@ class Object:
     # ---------- Setters ----------
     def setPosition(self):
         mousePos = pygame.mouse.get_pos()
-        tileSize = self.info.tileSize
+        tileSize = ObjectInfo.tileSize
 
         xOffset = self.getOffset(mousePos[0])
         yOffset = self.getOffset(mousePos[1])
@@ -189,7 +201,7 @@ class Object:
 
     # ---------- Getters ----------
     def getOffset(self, mousePos):
-        return self.info.tileSize - mousePos % self.info.tileSize
+        return ObjectInfo.tileSize - mousePos % ObjectInfo.tileSize
 
     def getFrontTiles(self):
         tileMapWidth = 32
@@ -294,24 +306,78 @@ class Object:
         self.placeObject()
 
     def draw(self):
-        self.info.screen.blit(self.info.image, (self.info.pos.x, self.info.pos.y))
+        ObjectInfo.screen.blit(self.info.image, (self.info.pos.x, self.info.pos.y))
         if self.info.gui.active:
             self.info.gui.draw()
 
+    def load(objectID, pos, rows, columns, placed, hasPlaced, mainTileID, direction, typeCase, amount): 
+        gui = ObjectGUI()    
+        info = ObjectInfo(pos, gui, rows, columns)
+        info.mainTileID = mainTileID
+        info.direction = direction
+        info.typeCase = TypeProduceCase(typeCase)
+        info.amount = amount
+        info.placed = placed
+        info.hasPlaced = hasPlaced
+        return Object(objectID, info)
+
+    def save(self):
+        return {
+            'objectID': self.objectID,
+            'pos': {
+                'x': self.info.pos.x,
+                'y': self.info.pos.y
+            },
+            'info': self.info.save()
+        }
+
 class ObjectRegister:
     # Variables
-    objectID = 0
-    # Static Variables
     objects = []
+    objectID = 0
 
     # ---------- Static ----------
     @staticmethod
     def setElementRectangles(elementRectangles):
         ObjectInfo.elementRectangles = elementRectangles
+    
+    @staticmethod
+    def setScreen(screen):
+        ObjectInfo.screen = screen
+
+    @staticmethod
+    def setTileSize(tileSize):
+        ObjectInfo.tileSize = tileSize
+
+    @staticmethod
+    def load():
+        with open ('./Resources/Playerdata/objects.json', 'r') as savefile:
+            for currentObject in json.load(savefile):
+                objectID = currentObject['objectID']
+                pos = Vector(currentObject['pos']['x'], currentObject['pos']['y'])
+                rows = currentObject['info']['rows']
+                columns = currentObject['info']['columns']
+                placed = currentObject['info']['placed']
+                hasPlaced = currentObject['info']['hasPlaced']
+                mainTileID = currentObject['info']['mainTileID']
+                direction = currentObject['info']['direction']
+                typeCase = currentObject['info']['typeCase']
+                amount = currentObject['info']['amount']
+                ObjectRegister.objects.append(Object.load(objectID, pos, rows, columns, placed, hasPlaced, mainTileID,  direction, typeCase, amount))
+
+                ObjectRegister.objectID = objectID + 1
+
+    @staticmethod
+    def save():
+        objectList = []
+        for currentObject in ObjectRegister.objects:
+            objectList.append(currentObject.save())
+        with open ('./Resources/Playerdata/objects.json', 'w') as savefile:
+            json.dump(objectList, savefile, indent=4)
 
     # ---------- Constructor ----------
-    def __init__(self, screen, pos, rows, columns, tileSize):
-        self.objects.append(self.generateObject(screen, pos, rows, columns, tileSize))
+    def __init__(self, pos, rows, columns):
+        self.objects.append(self.generateObject(pos, rows, columns))
 
     # ---------- Helpers ----------
     def generateObjectID(self):
@@ -319,9 +385,9 @@ class ObjectRegister:
         ObjectRegister.objectID += 1
         return objectID
 
-    def generateObject(self, screen, pos, rows, columns, tileSize):
+    def generateObject(self, pos, rows, columns):
         objectID = self.generateObjectID()    
         gui = ObjectGUI()    
-        objectInfo = ObjectInfo(screen, pos, gui, rows, columns, tileSize)
-        return Object(objectID, objectInfo)
+        info = ObjectInfo(pos, gui, rows, columns)
+        return Object(objectID, info)
     
