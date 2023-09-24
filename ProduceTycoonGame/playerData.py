@@ -1,4 +1,3 @@
-import pygame
 import json
 
 class PlayerData:
@@ -7,12 +6,8 @@ class PlayerData:
     }
 
     def load(filePath):
-        try:
-            with open(filePath + "playerData.json", 'r') as savefile:
-                PlayerData.data = json.load(savefile)
-        except FileNotFoundError:
-            # if the file is not found then create a json file with default data
-            PlayerData.save(filePath)
+        with open(filePath + "playerData.json", 'r') as savefile:
+            PlayerData.data = json.load(savefile)
 
     def save(filePath):
         with open(filePath + "playerData.json", 'w') as savefile:
