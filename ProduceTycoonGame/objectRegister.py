@@ -351,21 +351,25 @@ class ObjectRegister:
 
     @staticmethod
     def load(filePath):
-        with open (filePath + "objects.json", 'r') as savefile:
-            for currentObject in json.load(savefile):
-                objectID = currentObject['objectID']
-                pos = Vector(currentObject['pos']['x'], currentObject['pos']['y'])
-                rows = currentObject['info']['rows']
-                columns = currentObject['info']['columns']
-                placed = currentObject['info']['placed']
-                hasPlaced = currentObject['info']['hasPlaced']
-                mainTileID = currentObject['info']['mainTileID']
-                direction = currentObject['info']['direction']
-                typeCase = currentObject['info']['typeCase']
-                amount = currentObject['info']['amount']
-                ObjectRegister.objects.append(Object.load(objectID, pos, rows, columns, placed, hasPlaced, mainTileID,  direction, typeCase, amount))
+        try:
+            with open (filePath + "objects.json", 'r') as savefile:
+                for currentObject in json.load(savefile):
+                    objectID = currentObject['objectID']
+                    pos = Vector(currentObject['pos']['x'], currentObject['pos']['y'])
+                    rows = currentObject['info']['rows']
+                    columns = currentObject['info']['columns']
+                    placed = currentObject['info']['placed']
+                    hasPlaced = currentObject['info']['hasPlaced']
+                    mainTileID = currentObject['info']['mainTileID']
+                    direction = currentObject['info']['direction']
+                    typeCase = currentObject['info']['typeCase']
+                    amount = currentObject['info']['amount']
+                    ObjectRegister.objects.append(Object.load(objectID, pos, rows, columns, placed, hasPlaced, mainTileID,  direction, typeCase, amount))
 
-                ObjectRegister.objectID = objectID + 1
+                    ObjectRegister.objectID = objectID + 1
+        except FileNotFoundError:
+            # if the file is not found then create a json file with default data
+            ObjectRegister.save(filePath)
 
     @staticmethod
     def save(filePath):

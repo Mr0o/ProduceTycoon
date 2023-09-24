@@ -31,8 +31,12 @@ class Produce:
 
     @staticmethod
     def load(filePath):
-        with open(filePath + "produce.json", 'r') as savefile:
-            Produce.data = json.load(savefile)
+        try:
+            with open(filePath + "produce.json", 'r') as savefile:
+                Produce.data = json.load(savefile)
+        except FileNotFoundError:
+            # if the file is not found then create a json file with default data
+            Produce.save(filePath)
 
     @staticmethod
     def save(filePath):
