@@ -1,4 +1,3 @@
-import pygame
 import json
 
 class Produce:
@@ -31,12 +30,8 @@ class Produce:
 
     @staticmethod
     def load(filePath):
-        try:
-            with open(filePath + "produce.json", 'r') as savefile:
-                Produce.data = json.load(savefile)
-        except FileNotFoundError:
-            # if the file is not found then create a json file with default data
-            Produce.save(filePath)
+        with open(filePath + "produce.json", 'r') as savefile:
+            Produce.data = json.load(savefile)
 
     @staticmethod
     def save(filePath):
