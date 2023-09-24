@@ -33,13 +33,13 @@ def createInitialSave(filePath):
     ObjectRegister.save(filePath)
 
 def getSaves(): 
-    playerDataPath = "Resources\\PlayerData\\"
+    playerDataPath = "./Resources/Playerdata/"
     saveDir = os.listdir(playerDataPath)
 
     saveButtons = []
     x = 150
     for save in saveDir:
-        savePath = "./Resources/PlayerData/" + save + "/"
+        savePath = "./Resources/Playerdata/" + save + "/"
         saveButtons.append(Button(Vector(200, x), save, 400, 50, lambda save=savePath: load(save)))
         x += 50
 
