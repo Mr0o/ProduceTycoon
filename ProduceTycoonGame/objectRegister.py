@@ -350,10 +350,9 @@ class ObjectRegister:
         ObjectInfo.tileSize = tileSize
 
     @staticmethod
-    def load():
+    def load(filePath):
         try:
-            # load the data from the file
-            with open ('./Resources/Playerdata/objects.json', 'r') as savefile:
+            with open (filePath + "objects.json", 'r') as savefile:
                 for currentObject in json.load(savefile):
                     objectID = currentObject['objectID']
                     pos = Vector(currentObject['pos']['x'], currentObject['pos']['y'])
@@ -369,8 +368,8 @@ class ObjectRegister:
 
                     ObjectRegister.objectID = objectID + 1
         except FileNotFoundError:
-            # if the file doesn't exist, create it using the default data
-            ObjectRegister.save()
+            # if the file is not found then create a json file with default data
+            ObjectRegister.save(filePath)
 
     @staticmethod
     def save(filePath):

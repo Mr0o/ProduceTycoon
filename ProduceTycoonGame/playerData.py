@@ -6,14 +6,13 @@ class PlayerData:
         'money': 1000
     }
 
-    def load():
+    def load(filePath):
         try:
-            # load the data from the file
-            with open('./Resources/Playerdata/player.json', 'r') as loadfile:
-                PlayerData.data = json.load(loadfile)
+            with open(filePath + "playerData.json", 'r') as savefile:
+                PlayerData.data = json.load(savefile)
         except FileNotFoundError:
-            # if the file doesn't exist, create it using the default data
-            PlayerData.save()
+            # if the file is not found then create a json file with default data
+            PlayerData.save(filePath)
 
     def save(filePath):
         with open(filePath + "playerData.json", 'w') as savefile:
