@@ -276,7 +276,7 @@ class Game():
         self.shopMenu.events()
         self.elements = []
 
-        if getEvent("escape"):
+        if eventOccured("escape"):
             self.promptSaveGame = True
 
         if self.promptSaveGame:
