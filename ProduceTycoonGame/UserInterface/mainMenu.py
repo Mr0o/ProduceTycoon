@@ -30,8 +30,8 @@ def createInitialSave(filePath):
     ObjectRegister.save(filePath)
 
 def getSaves(): 
-    playerDataPath = "./Resources/Playerdata/"
-    saveDir = os.listdir(playerDataPath)
+    playerdataPath = "./Resources/Playerdata/"
+    saveDir = os.listdir(playerdataPath)
 
     saveButtons = []
     x = 150
@@ -94,7 +94,7 @@ class MainMenu:
         self.savePromptText = Text(Vector(self.savePrompt.x, self.savePrompt.y), 400, 50, "Save Name:")
         self.savePromptTextInput = TextInputBox(MainMenu.screen, Vector(self.savePrompt.x, self.savePrompt.y + 50), 400, 50)
 
-        self.savePath = "./Resources/PlayerData/" + self.savePromptTextInput.getText() + "/"
+        self.savePath = "./Resources/Playerdata/" + self.savePromptTextInput.getText() + "/"
 
         self.savePromptSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 100), "Save", 400, 50, lambda: load(self.savePath))
         self.cancelSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 150), "Cancel", 400, 50, lambda: self.newSave())
@@ -110,7 +110,7 @@ class MainMenu:
 
         if MainMenu.CREATE_SAVE:
             self.savePromptTextInput.events()
-            self.savePath = "./Resources/PlayerData/" + self.savePromptTextInput.getText() + "/"
+            self.savePath = "./Resources/Playerdata/" + self.savePromptTextInput.getText() + "/"
             self.savePromptSaveButton.events()
 
         Button.HAS_CLICKED = False
