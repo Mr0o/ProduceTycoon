@@ -16,14 +16,12 @@ from enum import Enum
 def load(filePath):
     MainMenu.currentSave = filePath
 
-    if not os.path.exists(filePath):
-        os.makedirs(filePath)
-        print("Creating new save...")
+    try:
+        ObjectRegister.load(filePath)
+        PlayerData.load(filePath)
+        Produce.load(filePath)
+    except FileNotFoundError:
         createInitialSave(filePath)
-
-    ObjectRegister.load(filePath)
-    PlayerData.load(filePath)
-    Produce.load(filePath)
 
     MainMenu.active = False
 
