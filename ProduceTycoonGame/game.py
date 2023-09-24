@@ -165,7 +165,6 @@ class Game():
 
                 # press space to toggle a test message
                 elif event.key == pygame.K_SPACE:
-                    postEvent("postMessage", eventData="This is a test message!")
                     postEvent("keyDown", eventData=event)
                 else:
                     postEvent("keyDown", eventData=event)
