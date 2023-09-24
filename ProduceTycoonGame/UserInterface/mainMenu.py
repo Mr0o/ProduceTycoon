@@ -33,6 +33,9 @@ def getSaves():
     playerdataPath = "./Resources/Playerdata/"
     saveDir = os.listdir(playerdataPath)
 
+    # sort the saveDir alphabetically
+    saveDir.sort()
+
     saveButtons = []
     x = 150
     for save in saveDir:
