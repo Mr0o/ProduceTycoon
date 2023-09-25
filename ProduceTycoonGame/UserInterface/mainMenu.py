@@ -32,6 +32,9 @@ def createInitialSave(filePath):
 
 def getSaves(): 
     playerdataPath = "./Resources/Playerdata/"
+    if not os.path.exists(playerdataPath):
+        os.mkdir(playerdataPath)
+
     saveDir = os.listdir(playerdataPath)
 
     # sort the saveDir alphabetically
