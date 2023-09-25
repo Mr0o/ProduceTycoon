@@ -19,10 +19,12 @@ def installDependencies() -> None:
 
     import sys
     import subprocess
+    import time
 
     # attempt installing dependencies using pip
     try:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+        time.sleep(1)
     except subprocess.CalledProcessError:
         # pip is likely not installed
         print("ERROR: Failed to install dependencies using pip. \n")
@@ -32,9 +34,9 @@ def installDependencies() -> None:
     
     # if the dependencies are still not installed
     if not isDependenciesInstalled():
-        print(f"""ERROR: Failed to install dependencies using pip. \n 
-                Please install the dependencies manually using the command:\n 
-                '\t {sys.executable} -m pip install -r requirements.txt \n""")
+        print("ERROR: Failed to install dependencies using pip. \n ")
+        print("Please install the dependencies manually using the command:\n ")
+        print("\t{sys.executable} -m pip install -r requirements.txt \n")
         
         exit()
     
