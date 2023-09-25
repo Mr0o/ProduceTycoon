@@ -1,8 +1,8 @@
 # Produce Tycoon
 
 ## Playing the game
-1. Download and install [Python 3](https://www.python.org/downloads/)
-2. [Download](https://github.com/Mr0o/ProduceTycoon/archive/refs/heads/main.zip) the game and unzip it.
+1. Download and install <a href="https://www.python.org/downloads/" target="_blank">Python 3</a>
+2. <a href="https://github.com/Mr0o/ProduceTycoon/archive/refs/heads/main.zip" target="_blank">Download</a> the game and unzip it.
 3. Open the *`ProduceTycoon-main`* folder
 4. Double click on the *`main.py`* file
 
