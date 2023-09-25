@@ -169,6 +169,9 @@ class Game():
                 else:
                     postEvent("keyDown", eventData=event)
 
+                if event.key == pygame.K_RETURN:
+                    postEvent("enterDown", eventData=event)
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
                     postEvent("leftMouseDown")
