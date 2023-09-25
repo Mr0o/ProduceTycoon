@@ -21,14 +21,22 @@ def installDependencies() -> None:
     import subprocess
 
     # attempt installing dependencies using pip
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+    try:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+    except subprocess.CalledProcessError:
+        # pip is likely not installed
+        print("ERROR: Failed to install dependencies using pip. \n")
+        print("Please make sure pip is installed\n")
+
+        exit()
     
-    if isDependenciesInstalled():
-        return
-    
-    print(f"""Failed to install dependencies using pip. \n 
-              Please install the dependencies manually using the command:\n 
-              '\t {sys.executable} -m pip install -r requirements.txt \n""")
+    # if the dependencies are still not installed
+    if not isDependenciesInstalled():
+        print(f"""ERROR: Failed to install dependencies using pip. \n 
+                Please install the dependencies manually using the command:\n 
+                '\t {sys.executable} -m pip install -r requirements.txt \n""")
+        
+        exit()
     
 
 
