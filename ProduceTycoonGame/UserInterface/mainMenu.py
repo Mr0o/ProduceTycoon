@@ -1,6 +1,7 @@
 import pygame
 import os
 
+from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.UserInterface.text import Text
 from ProduceTycoonGame.UserInterface.textInputBox import TextInputBox
@@ -10,6 +11,8 @@ from ProduceTycoonGame.playerData import PlayerData
 from ProduceTycoonGame.objectRegister import ObjectRegister
 
 from enum import Enum
+
+PlayerDataFilePath = "./Resources/Playerdata/"
 
 # ---------- Helper Functions ---------- #
 def load(filePath):
@@ -31,7 +34,7 @@ def createInitialSave(filePath):
     ObjectRegister.save(filePath)
 
 def getSaves(): 
-    playerdataPath = "./Resources/Playerdata/"
+    playerdataPath = PlayerDataFilePath
     if not os.path.exists(playerdataPath):
         os.mkdir(playerdataPath)
 
@@ -43,7 +46,7 @@ def getSaves():
     saveButtons = []
     x = 150
     for save in saveDir:
-        savePath = "./Resources/Playerdata/" + save + "/"
+        savePath = PlayerDataFilePath + save + "/"
         saveButtons.append(Button(Vector(200, x), save, 400, 50, lambda save=savePath: load(save)))
         x += 50
 
@@ -101,7 +104,7 @@ class MainMenu:
         self.savePromptText = Text(Vector(self.savePrompt.x, self.savePrompt.y), 400, 50, "Save Name:")
         self.savePromptTextInput = TextInputBox(MainMenu.screen, Vector(self.savePrompt.x, self.savePrompt.y + 50), 400, 50)
 
-        self.savePath = "./Resources/Playerdata/" + self.savePromptTextInput.getText() + "/"
+        self.savePath = PlayerDataFilePath + self.savePromptTextInput.getText() + "/"
 
         self.savePromptSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 100), "Save", 400, 50, lambda: load(self.savePath))
         self.cancelSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 150), "Cancel", 400, 50, lambda: self.newSave())
@@ -117,7 +120,7 @@ class MainMenu:
 
         if MainMenu.CREATE_SAVE:
             self.savePromptTextInput.events()
-            self.savePath = "./Resources/Playerdata/" + self.savePromptTextInput.getText() + "/"
+            self.savePath = PlayerDataFilePath + self.savePromptTextInput.getText() + "/"
             self.savePromptSaveButton.events()
 
         Button.HAS_CLICKED = False
