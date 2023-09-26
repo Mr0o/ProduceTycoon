@@ -4,6 +4,13 @@ from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.text import Text
 
+# check for debug mode flag in args
+import sys
+debug = False
+if len(sys.argv) > 1:
+    if "--debug" in sys.argv or "-d" in sys.argv:
+        debug = True
+
 class ButtonInfo:
     pos: Vector
     name: str
@@ -74,6 +81,9 @@ class Button:
             pygame.draw.rect(Button.screen, self.info.color, self.rect)
             pygame.draw.rect(Button.screen, (0, 0, 0), self.rect, 2)
             self.text.draw()
+
+        if debug:
+            pygame.draw.rect(Button.screen, (255, 255, 0), self.rect, 1)
 
 def createText(pos, width, height, name):
     return Text(pos, width, height, name)
