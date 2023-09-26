@@ -4,7 +4,7 @@ from ProduceTycoonGame.events import eventOccured, getEvent
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.button import ButtonInfo, Button
 
-class MessageBox():
+class MessageBox:
     def __init__(self, screen: pygame.Surface, message: str = "") -> None:
         self.screen = screen
         self.message = message

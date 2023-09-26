@@ -32,7 +32,7 @@ def exitGame():
     Game.running = False
 
 # this is the main game loop (events, update, draw)
-class Game():
+class Game:
     running = True
     screen: pygame.Surface
     savePrompt: pygame.Rect
@@ -163,14 +163,14 @@ class Game():
                 elif event.key == pygame.K_BACKSPACE:
                     postEvent("backspace", eventData=event)
 
+                elif event.key == pygame.K_RETURN:
+                    postEvent("enterDown", eventData=event)
+
                 # press space to toggle a test message
                 elif event.key == pygame.K_SPACE:
                     postEvent("keyDown", eventData=event)
                 else:
                     postEvent("keyDown", eventData=event)
-
-                if event.key == pygame.K_RETURN:
-                    postEvent("enterDown", eventData=event)
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:

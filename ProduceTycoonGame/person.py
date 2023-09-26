@@ -2,7 +2,7 @@ import pygame
 
 from ProduceTycoonGame.tileMap import Tile
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.eventTriggers import TimedEvent
+from ProduceTycoonGame.timer import TimedEvent
 
 def getImage(sheet: pygame.Surface, x: int, y: int, width: int, height: int, scale: int = 1):
     image = pygame.Surface((width, height)).convert_alpha()
@@ -12,7 +12,7 @@ def getImage(sheet: pygame.Surface, x: int, y: int, width: int, height: int, sca
     return image
 
 # super class for guests and employees
-class Person():
+class Person:
     def __init__(self, screen: pygame.Surface, pos: Vector, id: int, name: str = "Person"):
         self.screen = screen
 

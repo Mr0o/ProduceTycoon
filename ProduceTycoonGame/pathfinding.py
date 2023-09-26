@@ -119,7 +119,7 @@ def createVectorField(tileMap: TileMap, target: Tile) -> list[Vector]:
 
 # used to store the vector field of each placed object
 # a guest will aquire the vector field for tile they are targeting
-class VectorField():
+class VectorField:
     def __init__(self, tileMap: TileMap, target: Tile):
         self.tileMap = tileMap
         self.target = target
@@ -141,7 +141,7 @@ class VectorField():
     
 
 # this will contain all vectorFields and contain methods to create, update, and get vector data from them
-class Pathfinder():
+class Pathfinder:
     def __init__(self, tileMap: TileMap):
         self.tileMap = tileMap
         self.vectorFields: list[VectorField] = []

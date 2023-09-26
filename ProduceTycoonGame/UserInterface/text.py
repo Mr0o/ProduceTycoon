@@ -2,7 +2,7 @@ import pygame
 
 from ProduceTycoonGame.vectors import Vector
 
-class Text():
+class Text:
 
     # Static variables
     screen = pygame.Surface((0, 0))

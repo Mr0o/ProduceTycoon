@@ -4,7 +4,7 @@ from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.text import Text
 
-class ButtonInfo():
+class ButtonInfo:
     pos: Vector
     name: str
     width: int
@@ -25,7 +25,7 @@ class ButtonInfo():
         self.baseImage = baseImage
         self.selectedImage = selectedImage
 
-class Button():
+class Button:
     text: Text
     rect: pygame.Rect
     info: ButtonInfo
