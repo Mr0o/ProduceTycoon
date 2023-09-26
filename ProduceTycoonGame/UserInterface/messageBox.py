@@ -5,9 +5,9 @@ from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.button import ButtonInfo, Button
 
 class MessageBox:
-    def __init__(self, screen: pygame.Surface, message: str = "") -> None:
+    def __init__(self, screen: pygame.Surface) -> None:
         self.screen = screen
-        self.message = message
+        self.message = ""
 
         self.font = pygame.font.SysFont('Arial', 20, bold=True)
         self.text = self.font.render(self.message, True, (0, 0, 0))
