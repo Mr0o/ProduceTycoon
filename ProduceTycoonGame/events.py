@@ -38,7 +38,6 @@ def postEvent(event: 'Event'):
 def postEvent(eventType: str, args=None, eventData=None):
     # create the Event object
     event = Event(eventType, args, eventData)
-
     # append event to eventList
     eventList.append(event)
 
