@@ -18,9 +18,14 @@ PlayerDataFilePath = "./Resources/Playerdata/"
 def load(filePath):
     MainMenu.currentSave = filePath
 
-    if not os.path.exists(filePath):
-        os.mkdir(filePath)
-        createInitialSave(filePath)
+    if MainMenu.CREATE_SAVE:
+        MainMenu.CREATE_SAVE = False
+        if not os.path.exists(filePath):
+            os.mkdir(filePath)
+            createInitialSave(filePath)
+        else:
+            print("Save already exists")
+            return
 
     ObjectRegister.load(filePath)
     PlayerData.load(filePath)
@@ -94,9 +99,11 @@ class MainMenu:
     # ---------- Helpers ---------- #
     def promptNewSave(self):
         MainMenu.CREATE_SAVE = not MainMenu.CREATE_SAVE
+        MainMenu.SHOW_SAVES = False
 
     def showSaves(self):
         MainMenu.SHOW_SAVES = not MainMenu.SHOW_SAVES
+        MainMenu.CREATE_SAVE = False
 
     def createSavePrompt(self):
         self.savePrompt = pygame.Rect(200, 200, 400, 200)
