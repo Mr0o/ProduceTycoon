@@ -184,6 +184,11 @@ class Game:
                 if event.button == 3:
                     postEvent("rightMouseUp")
 
+        #if pygame.mouse.get_pressed()[0]:
+        #    postEvent("leftMouseDown")
+        #if pygame.mouse.get_pressed()[2]:
+        #    postEvent("rightMouseDown")
+
         if MainMenu.active:
             self.mainMenu.events()
             return
