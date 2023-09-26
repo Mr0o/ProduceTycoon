@@ -61,7 +61,7 @@ class MainMenu:
 
         self.createSavePrompt()
 
-        self.messageBox = MessageBox(MainMenu.screen, "Save already exists")
+        self.messageBox = MessageBox(MainMenu.screen)
 
     # ---------- Getters ---------- #
     def getSaves(self,) -> list[Button]: 
