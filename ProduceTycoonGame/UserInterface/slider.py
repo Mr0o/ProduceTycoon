@@ -3,7 +3,7 @@ import pygame
 from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 
-class Slider():
+class Slider:
     def __init__(self, screen: pygame.Surface, pos: Vector, width: int, height: int, color: tuple[int, int, int] | pygame.Color = (200, 150, 170)):
         self.screen = screen
         self.pos = pos

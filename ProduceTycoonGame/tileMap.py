@@ -12,7 +12,7 @@ class Type(IntEnum):
 
 WALKABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/FloorTile.png')
 
-class Tile():
+class Tile:
     id: int
     pos: Vector
     typeTile: Type = Type.WALKABLE
@@ -45,7 +45,7 @@ class Tile():
         self.id = Tile.currentTile
         Tile.currentTile += 1
 
-class TileMap():
+class TileMap:
     pos: Vector
     rows: int
     columns: int
@@ -172,9 +172,6 @@ class TileMap():
 def createStaticTileSurface(tiles: list[Tile], width: int, height: int) -> pygame.Surface:
     staticSurface = pygame.Surface((width, height))
     staticSurface.fill((0, 0, 0))
-
-    # get the original screen of the tiles
-    tempScreen = TileMap.screen
 
     for tile in tiles:
         staticSurface.blit(tile.image, (tile.pos.x, tile.pos.y))

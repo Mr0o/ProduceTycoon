@@ -3,7 +3,7 @@ import pygame
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.events import eventOccured, getEvent
 
-class TextInputBox():
+class TextInputBox:
     def __init__(self, screen: pygame.Surface, pos: Vector, width: int, height: int, color: tuple[int, int, int] | pygame.Color = (200, 150, 170)):
         self.screen = screen
         self.pos = pos

@@ -28,12 +28,12 @@ def load(filePath):
 
     MainMenu.active = False
 
-def createInitialSave(filePath):
+def createInitialSave(filePath) -> None:
     Produce.save(filePath)
     PlayerData.save(filePath)
     ObjectRegister.save(filePath)
 
-def getSaves(): 
+def getSaves() -> list[Button]: 
     playerdataPath = PlayerDataFilePath
     if not os.path.exists(playerdataPath):
         os.mkdir(playerdataPath)
@@ -59,7 +59,7 @@ class MainMenu:
     loadSave: Button
     newSave: Button
     active: bool = True
-    saveButtons: []
+    saveButtons: list[Button]
     
     # ---------- Save Prompt ---------- #
     savePrompt: pygame.Rect

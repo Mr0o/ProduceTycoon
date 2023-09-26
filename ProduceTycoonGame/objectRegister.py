@@ -34,7 +34,7 @@ def getNextDirection(direction: Direction):
 
 class ObjectGUI:
     currentObject: object
-    buttons: []
+    buttons: list[Button]
     active: bool = False
 
     # Positions
@@ -333,7 +333,7 @@ class Object:
 
 class ObjectRegister:
     # Variables
-    objects = []
+    objects: list[Object] = []
     objectID = 0
 
     # ---------- Static ----------
