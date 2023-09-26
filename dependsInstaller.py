@@ -36,7 +36,7 @@ def installDependencies() -> None:
     if not isDependenciesInstalled():
         print("ERROR: Failed to install dependencies using pip. \n ")
         print("Please install the dependencies manually using the command:\n ")
-        print("\t{sys.executable} -m pip install -r requirements.txt \n")
+        print(f"\t{sys.executable} -m pip install -r requirements.txt \n")
         
         exit()
     

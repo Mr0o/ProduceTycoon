@@ -8,7 +8,7 @@ from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.tileMap import TileMap, Tile, Type, updateTileMap
 from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.UserInterface.button import Button
-from ProduceTycoonGame.objectRegister import ObjectRegister
+from ProduceTycoonGame.objectRegister import Object, ObjectRegister
 from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
@@ -103,7 +103,7 @@ class Game:
         # buttons
         object4x4Args = (Vector(0, 0), 4, 4)
         object1x1Args = (Vector(0, 0), 1, 1)
-        self.buttons = []
+        self.buttons: list[Button] = []
         self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20, lambda: createObject(*object4x4Args))
         self.buttons.append(self.button4x4)
         self.button1x1 = Button(Vector(60, 0), "1x1 Tile", 60, 20, lambda: createObject(*object1x1Args))
@@ -114,7 +114,7 @@ class Game:
         self.buttons.append(self.openShop)
 
         # placed objects
-        self.objects: list[ObjectRegister] = []
+        self.objects: list[Object] = []
 
         self.guests: list[Guest] = []
 
