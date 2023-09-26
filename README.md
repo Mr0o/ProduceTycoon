@@ -25,3 +25,10 @@ pip install -r requirements.txt
 ```
 python3 main.py
 ```
+
+<br/>
+
+- Use the flag '--debug' or '-d' to enable debugging features
+```
+python3 main.py -d
+```
