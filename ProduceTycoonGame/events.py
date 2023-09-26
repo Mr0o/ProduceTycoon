@@ -1,14 +1,19 @@
 from collections import defaultdict
 
+# check for debug mode flag in args
+import sys
+debug = False
+if len(sys.argv) > 1:
+    if "--debug" in sys.argv or "-d" in sys.argv:
+        debug = True
+
 # Default value of the dictionary will be list
 subscribers = defaultdict(list)
 
 # Every event that is posted will be appended to this list
 eventList: list['Event'] = []
 
-debug = False
-
-def subscribe(eventType: 'Event', fn):
+def subscribe(eventType: 'Event', fn: callable):
     subscribers[eventType].append(fn)
 
 # post using an Event object
