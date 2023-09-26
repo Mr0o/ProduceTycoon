@@ -2,8 +2,7 @@ from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
 from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.guest import Guest
-from ProduceTycoonGame.tile import Type
-from ProduceTycoonGame.tileMap import TileMap
+from ProduceTycoonGame.tileMap import TileMap, Type
 
 # test the pathfinding algorithm
 if __name__ == "__main__":
@@ -14,7 +13,13 @@ if __name__ == "__main__":
     clock = pygame.time.Clock()
 
     # create a tilemap
-    tileMap = TileMap(screen, Vector(0, 0))
+    TileMap.setScreen(screen)
+    tileMap = TileMap(Vector(0, 0))
+
+    # boundary tile img
+    BOUNDARY_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/Barrier.png')
+    # scale the image
+    BOUNDARY_TILE_IMG = pygame.transform.scale(BOUNDARY_TILE_IMG, (tileMap.tileSize, tileMap.tileSize))
 
     # create a guest
     guest = Guest(screen, Vector(25, 25))
@@ -67,12 +72,12 @@ if __name__ == "__main__":
         # right click to set boundary tiles
         if pygame.mouse.get_pressed()[2]:
             tileAtPos = tileMap.getTileByPos(Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1]))
-            if tileAtPos != None and tileAtPos.type != Type.BOUNDARY and tileAtPos.type != Type.EDGE:
-                tileAtPos.setTileType(Type.BOUNDARY)
+            if tileAtPos != None and tileAtPos.typeTile != Type.BOUNDARY and tileAtPos.typeTile != Type.EDGE:
+                tileAtPos.typeTile = Type.BOUNDARY
 
 
         # if the tileMap has changed, update the pathfinder
-        for tile in tileMap.tileMapGrid:
+        for tile in tileMap.grid:
             if tile.changed:
                 # update the pathfinder
                 pathfinder.update()
@@ -83,8 +88,6 @@ if __name__ == "__main__":
             guest.pos = Vector(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
             guest.vel = Vector(0, 0)
             guest.acc = Vector(0, 0)
-
-        tileMap.events(pygame.mouse.get_pressed()[2])
 
         # guest events
         guest.events()
@@ -99,8 +102,8 @@ if __name__ == "__main__":
         guest.update()
 
         # check for collisions
-        for tile in tileMap.tileMapGrid:
-            if tile.type == Type.BOUNDARY or tile == targetTile:
+        for tile in tileMap.grid:
+            if tile.typeTile == Type.BOUNDARY or tile == targetTile:
                 if isGuestTouchingTile(guest, tile):
                     guest = resolveCollision(guest, tile)
 
@@ -123,14 +126,11 @@ if __name__ == "__main__":
                     guest.pos = neighbor.pos.copy()
                     break
 
-        # update
-        tileMap.update()
-
         # draw
         screen.fill((0, 0, 0))
 
         # draw the heatmap and vector
-        for tile in tileMap.tileMapGrid:
+        for tile in tileMap.grid:
             # use cost to calculate color'
             # red value must be between 0 and 255
             rValue = (tile.cost / 50) * 255
@@ -148,9 +148,9 @@ if __name__ == "__main__":
 
 
         # draw boundary tiles on top of heatmap
-        for tile in tileMap.tileMapGrid:
-            if tile.type == Type.BOUNDARY or tile.type == Type.EDGE or tile == targetTile:
-                screen.blit(tile.BOUNDARY_TILE_IMG_SCALED, (tile.pos.x, tile.pos.y))
+        for tile in tileMap.grid:
+            if tile.typeTile == Type.BOUNDARY or tile.typeTile == Type.EDGE or tile == targetTile:
+                screen.blit(BOUNDARY_TILE_IMG, (tile.pos.x, tile.pos.y))
 
         # draw the guest
         guest.draw()

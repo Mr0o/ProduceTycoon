@@ -12,7 +12,7 @@ class Type(IntEnum):
 
 WALKABLE_TILE_IMG = pygame.image.load('./Resources/Images/Tiles/FloorTile.png')
 
-class Tile():
+class Tile:
     id: int
     pos: Vector
     typeTile: Type = Type.WALKABLE
@@ -45,12 +45,12 @@ class Tile():
         self.id = Tile.currentTile
         Tile.currentTile += 1
 
-class TileMap():
+class TileMap:
     pos: Vector
     rows: int
     columns: int
     tileSize: int
-    grid: []
+    grid: list[Tile]
 
     # Static variables
     screen = pygame.Surface((0, 0))
@@ -173,9 +173,6 @@ def createStaticTileSurface(tiles: list[Tile], width: int, height: int) -> pygam
     staticSurface = pygame.Surface((width, height))
     staticSurface.fill((0, 0, 0))
 
-    # get the original screen of the tiles
-    tempScreen = TileMap.screen
-
     for tile in tiles:
         staticSurface.blit(tile.image, (tile.pos.x, tile.pos.y))
 
@@ -206,12 +203,12 @@ def createStaticLineSurface(tileMap: TileMap, width: int, height: int) -> pygame
 
 def getMainTile(tile: Tile, currentObject):
         # Gets the first tile that collides with the object it sets it as the main tile
-        if tile.rect.colliderect(currentObject.rectangle) and currentObject.mainTileID == -1:
+        if tile.rect.colliderect(currentObject.info.rect) and currentObject.info.mainTileID == -1:
             currentObject.setMainTileID(tile.id)
 
 def changeTileType(tile: Tile, currentObject):
     # If the tile is walkable and the tile is colliding with the current object, change the tile type toboundary
-    if tile.rect.colliderect(currentObject.rectangle):
+    if tile.rect.colliderect(currentObject.info.rect):
         if tile.typeTile == Type.WALKABLE:
             tile.typeTile = Type.BOUNDARY
             tile.changed = True

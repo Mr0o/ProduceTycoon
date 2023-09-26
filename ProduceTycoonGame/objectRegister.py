@@ -1,18 +1,22 @@
 import pygame
+import json
 
 from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.button import Button
+from ProduceTycoonGame.playerData import PlayerData
+from ProduceTycoonGame.produce import Produce
 
 from enum import Enum, IntEnum
 
+# ---------- Enums ----------
 class TypeObject(IntEnum):
     WALL = 0
     PRODUCE_CASE = 1
     REGISTER = 2
 
 class TypeProduceCase(Enum):
-    EMPTY = 'Empty'
+    EMPTY = None
     WATERMELON = 'Watermelon'
     BANANAS = 'Bananas'
     APPLES = 'Apples'
@@ -24,32 +28,27 @@ class Direction(IntEnum):
     SOUTH = 2
     WEST = 3
 
-# Helder functions
+# ---------- Helper Functions ----------
 def getNextDirection(direction: Direction):
     return direction + 1 if direction + 1 < 4 else direction - 3
 
 class ObjectGUI:
-    typeButtons = []
-    active: bool
-    direction: Direction
-    typeCase: TypeProduceCase
+    currentObject: object
+    buttons: list[Button]
+    active: bool = False
 
     # Positions
     x = 700; y = 30
-    def __init__(self, active = False, direction = Direction.NORTH, typeCase = TypeProduceCase.WATERMELON):
-        self.active = active
-        self.direction = direction
-        self.typeCase = typeCase
 
-        self.changeDirectionButton = self.createButton('Rotate', lambda: self.setDirection(self.direction))
-        self.exitButton = self.createButton('X', lambda: self.exitGUI())
+    # ---------- Constructor ----------
+    def __init__(self):
+        self.buttons = self.createButtons()
 
-        self.typeButtons = self.createButtons()
+    # ---------- Setters ----------
+    def setObject(self, newObject: object):
+        self.currentObject = newObject
 
-        # Resets positions back to (700, 30) fbsr;jbwr
-        ObjectGUI.x = 700; ObjectGUI.y = 30
-
-    # Helper methods
+    # ---------- Helpers ----------
     def createButton(self, nameButton: str, func: callable):
         x = ObjectGUI.x
         y = ObjectGUI.y
@@ -57,161 +56,229 @@ class ObjectGUI:
         return Button(Vector(x, y), nameButton, 100, 20, func)
 
     def createButtons(self):
+        # Resets poss back to (700, 30) for the next object
+        ObjectGUI.x = 700; ObjectGUI.y = 30
+
         # Create each button with a lambda function that calls the setTypeCase method with the correct type
         return [
-            self.createButton('Watermelon', lambda: self.setTypeCase(TypeProduceCase.WATERMELON)),
-            self.createButton('Bananas', lambda: self.setTypeCase(TypeProduceCase.BANANAS)),
-            self.createButton('Apples', lambda: self.setTypeCase(TypeProduceCase.APPLES)),
-            self.createButton('Tomatoes', lambda: self.setTypeCase(TypeProduceCase.TOMATOES)),
-            self.createButton('Empty', lambda: self.setTypeCase(TypeProduceCase.EMPTY))
+            self.createButton('Watermelon', lambda: self.currentObject.setTypeCase(TypeProduceCase.WATERMELON)),
+            self.createButton('Bananas', lambda: self.currentObject.setTypeCase(TypeProduceCase.BANANAS)),
+            self.createButton('Apples', lambda: self.currentObject.setTypeCase(TypeProduceCase.APPLES)),
+            self.createButton('Tomatoes', lambda: self.currentObject.setTypeCase(TypeProduceCase.TOMATOES)),
+            self.createButton('Empty', lambda: self.currentObject.setTypeCase(TypeProduceCase.EMPTY)),
+            self.createButton('X', lambda: self.exitGUI()),
+            self.createButton('Rotate', lambda: self.currentObject.setDirection()),
+            self.createButton('Add Produce', lambda: self.currentObject.addProduce()),
+            self.createButton('Remove Produce', lambda: self.currentObject.removeProduce()),
+            self.createButton('Sell Produce', lambda: self.currentObject.sellProduce()),
         ]
-    
-    def setDirection(self, direction: Direction):
-        self.direction = getNextDirection(direction)
-
-    def setTypeCase(self, typeCase: TypeProduceCase):
-        self.typeCase = typeCase
 
     def exitGUI(self):
         self.active = False
         Object.currentID = -1
 
-    # Main methods
+    # ---------- Main ----------
     def events(self):
-        for button in self.typeButtons:
+        for button in reversed(self.buttons):
             button.events()
-        self.changeDirectionButton.events()
-        self.exitButton.events()
 
     def draw(self):
-        for button in self.typeButtons:
+        for button in self.buttons:
             button.draw()
-        self.changeDirectionButton.draw()
-        self.exitButton.draw()
 
 class ObjectInfo:
-    screen: pygame.Surface
-    position: Vector
+    pos: Vector
     gui: ObjectGUI
     rows: int
     columns: int
-    tileSize: int
-    placed: bool
-    hasPlaced: bool
+    placed: bool = False
+    hasPlaced: bool = False
+    mainTileID: int = -1
+    image: pygame.Surface
+    rect: pygame.Rect
+    direction = Direction = Direction.NORTH
+    typeCase = TypeProduceCase = TypeProduceCase.EMPTY
+    amount: int = 0
 
     elementRectangles = []
+    screen = pygame.Surface((0, 0))
+    tileSize = 0
 
-    def __init__(self, screen, position, gui, rows, columns, tileSize, placed = False, hasPlaced = False):
-        self.screen = screen
-        self.position = position
+    # ---------- Constructor ----------  
+    def __init__(self, pos, gui, rows, columns):
+        self.pos = pos
         self.gui = gui
         self.rows = rows
         self.columns = columns
-        self.tileSize = tileSize
-        self.placed = placed
-        self.hasPlaced = hasPlaced
+        self.setImage()
 
-    def canPlace(self, objectRectangle: pygame.Rect):
-        for rectangle in ObjectInfo.elementRectangles:
-            if objectRectangle.colliderect(rectangle):
-                return False
-        return True
+    # ---------- Setters ----------
+    def setImage(self):
+        match self.typeCase:
+            case TypeProduceCase.WATERMELON:
+                image = pygame.image.load('./Resources/Images/Produce/WatermelonBin.png')
+            case TypeProduceCase.BANANAS:
+                image = pygame.image.load('./Resources/Images/Produce/Banana_ProduceTycoon.png')
+            case TypeProduceCase.APPLES:
+                image = pygame.image.load('./Resources/Images/Produce/Apple.png')
+            case TypeProduceCase.TOMATOES:
+                image = pygame.image.load('./Resources/Images/Produce/Tomato.png')
+            case TypeProduceCase.EMPTY:
+                image = pygame.image.load('./Resources/Images/Produce/WatermelonBin.png')
+        self.configureImage(image)
 
-    @staticmethod
-    def setElementRectangles(elementRectangles):
-        ObjectInfo.elementRectangles = elementRectangles     
-    
+    def configureImage(self, image):
+        self.image = pygame.transform.scale(image, (ObjectInfo.tileSize * self.columns, ObjectInfo.tileSize * self.rows))
+        self.image = pygame.transform.rotate(self.image, self.direction * -90)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (self.pos.x, self.pos.y)
+
+    def save(self):
+        return {
+            'rows': self.rows,
+            'columns': self.columns,
+            'tileSize': ObjectInfo.tileSize,
+            'placed': self.placed,
+            'hasPlaced': self.hasPlaced,
+            'mainTileID': self.mainTileID,
+            'direction': self.direction,
+            'typeCase': self.typeCase.value,
+            'amount': self.amount
+        }
+
 class Object:
+    # Variables
     objectID: int
     info: ObjectInfo
-    mainTileID: int
-    image: pygame.Surface
-    rectangle: pygame.Rect
 
+    # Static variables
     currentID = -1
 
-    def __init__(self, objectID, info, mainTileID = -1):
+    # ---------- Constructor ----------
+    def __init__(self, objectID, info):
         self.objectID = objectID
         self.info = info
-        self.mainTileID = mainTileID
-        self.setImage()
-        self.configureImage(self.image)
-        self.rectangle = self.image.get_rect()
+        self.info.gui.setObject(self)
 
-    # Instance methods
-    def configureImage(self, image: pygame.Surface):
-        self.image = pygame.transform.scale(image, (self.info.rows * self.info.tileSize, self.info.columns * self.info.tileSize))
-        #self.image.rotate(self.info.direction * 90)
-
-    def setRectanglePos(self, x, y):
-        self.rectangle.topleft = (x, y)
-
+    # ---------- Setters ----------
     def setPosition(self):
         mousePos = pygame.mouse.get_pos()
-        tileSize = self.info.tileSize
+        tileSize = ObjectInfo.tileSize
 
         xOffset = self.getOffset(mousePos[0])
         yOffset = self.getOffset(mousePos[1])
 
         # X Position 
         if self.info.columns % 2 == 0:
-            posX = mousePos[0] + xOffset - self.info.columns * tileSize // 2
+            x = mousePos[0] + xOffset - self.info.columns * tileSize // 2
         else:
-            posX = mousePos[0] + xOffset - self.info.columns * tileSize
+            x = mousePos[0] + xOffset - self.info.columns * tileSize
+
         # Y Position
         if self.info.rows % 2 == 0:
-            posY = mousePos[1] + yOffset - self.info.rows * tileSize // 2
+            y = mousePos[1] + yOffset - self.info.rows * tileSize // 2
         else:
-            posY = mousePos[1] + yOffset - self.info.rows * tileSize
+            y = mousePos[1] + yOffset - self.info.rows * tileSize
 
-        self.info.position = Vector(posX, posY)
-        self.setRectanglePos(posX, posY)
+        self.info.pos = Vector(x, y)
+        self.info.rect.topleft = (x, y)
 
+    def setTypeCase(self, typeCase: TypeProduceCase):
+        if self.info.typeCase is not TypeProduceCase.EMPTY:
+            TYPE = self.info.typeCase.value
+            PRODUCE = Produce.data[TYPE]
+            # Adds the produce from the case back into the player data to be used again
+            PRODUCE['amount'] += self.info.amount
+            # Set amount back to 0 to add the new type of produce too it
+            self.info.amount = 0
+        # Return nothing if the type is the same
+        if self.info.typeCase is typeCase:
+            return
+        self.info.typeCase = typeCase
+
+    def setDirection(self):
+        self.info.direction = getNextDirection(self.info.direction)
+
+    # ---------- Getters ----------
     def getOffset(self, mousePos):
-        return self.info.tileSize - mousePos % self.info.tileSize
-
-    def setImage(self):
-        match self.info.gui.typeCase:
-            case TypeProduceCase.WATERMELON:
-                image = pygame.image.load('./Resources/Images/WatermelonBin.png')
-            case TypeProduceCase.BANANAS:
-                image = pygame.image.load('./Resources/Images/Banana_ProduceTycoon.png')
-            case TypeProduceCase.APPLES:
-                image = pygame.image.load('./Resources/Images/WatermelonBin.png')
-            case TypeProduceCase.TOMATOES:
-                image = pygame.image.load('./Resources/Images/Tomato.png')
-            case TypeProduceCase.EMPTY:
-                image = pygame.image.load('./Resources/Images/WatermelonBin.png')
-        self.configureImage(image)
-
-    def setMainTileID(self, ID):
-        self.mainTileID = ID
+        return ObjectInfo.tileSize - mousePos % ObjectInfo.tileSize
 
     def getFrontTiles(self):
         tileMapWidth = 32
         frontTileIDs = []
-        match self.info.gui.direction:
+        match self.info.direction:
             case Direction.NORTH:
                 for i in range(self.info.columns):
-                    newTileID = self.mainTileID + i
+                    newTileID = self.info.mainTileID + i
                     frontTileIDs.append(newTileID)
             case Direction.EAST:
                 for i in range(self.info.rows):
-                    newTileID = self.mainTileID + i * tileMapWidth + self.info.rows - 1
+                    newTileID = self.info.mainTileID + i * tileMapWidth + self.info.rows - 1
                     frontTileIDs.append(newTileID)
             case Direction.SOUTH:
                 for i in range(self.info.columns):
-                    newTileID = self.mainTileID + i + (self.info.columns - 1) * tileMapWidth
+                    newTileID = self.info.mainTileID + i + (self.info.columns - 1) * tileMapWidth
                     frontTileIDs.append(newTileID)
             case Direction.WEST:
                 for i in range(self.info.rows):
-                    newTileID = self.mainTileID + i * tileMapWidth
+                    newTileID = self.info.mainTileID + i * tileMapWidth
                     frontTileIDs.append(newTileID)
         return frontTileIDs
-    
+
+    def setMainTileID(self, ID):
+        self.info.mainTileID = ID
+
+    # ---------- Validators ----------
+    def canPlace(self):
+        for rect in ObjectInfo.elementRectangles:
+            if self.info.rect.colliderect(rect):
+                return False
+        return True
+
+    # ---------- Helpers ----------
+    def addProduce(self):
+        if self.info.typeCase is TypeProduceCase.EMPTY:
+            print("---- Cannot add produce to EMPTY case ----")
+            return
+        TYPE = self.info.typeCase.value
+        PRODUCE = Produce.data[TYPE]
+        if PRODUCE['amount'] == 0:
+            print("---- Insufficient produce ----")
+            return
+        self.info.amount += 1
+        print(f"{PRODUCE['name']}: {self.info.amount}")
+        PRODUCE['amount'] -= 1
+
+    def removeProduce(self):
+        if self.info.typeCase is TypeProduceCase.EMPTY:
+            print("---- Cannot remove produce from EMPTY case ----")
+            return
+        TYPE = self.info.typeCase.value
+        PRODUCE = Produce.data[TYPE]
+        if self.info.amount == 0:
+            print("---- Insufficient produce ----")
+            return
+        self.info.amount -= 1
+        print(f"{PRODUCE['name']}: {self.info.amount}")
+        PRODUCE['amount'] += 1
+
+    def sellProduce(self):
+        TYPE = self.info.typeCase.value
+        PRODUCE = Produce.data[TYPE]
+        if self.info.typeCase is TypeProduceCase.EMPTY:
+            print("---- Cannot sell produce from EMPTY case ----")
+            return
+        if self.info.amount == 0:
+            print("---- Insufficient produce ----")
+            return
+        PlayerData.data['money'] += PRODUCE.get('sell')
+        self.info.amount -= 1
+        print(f"{PRODUCE['name']}: {self.info.amount}")
+        print(f"Money: {PlayerData.data['money']}")
+
     def openGUI(self):
         # If clicked happen on object
-        mouseClickedObject = eventOccured("leftMouseDown") and self.rectangle.collidepoint(pygame.mouse.get_pos())
+        mouseClickedObject = eventOccured("leftMouseDown") and self.info.rect.collidepoint(pygame.mouse.get_pos())
         if mouseClickedObject:
             # Current ID is set to this object's ID
             Object.currentID = self.objectID
@@ -222,13 +289,13 @@ class Object:
         return self.info.gui.active
 
     def placeObject(self):
-        if self.info.canPlace(self.rectangle) and eventOccured("leftMouseDown"):
+        if self.canPlace() and eventOccured("leftMouseDown"):
             self.info.placed = True
             self.info.hasPlaced = True
     
-    # Main methods
+    # ---------- Main ----------
     def events(self):
-        self.setImage()
+        self.info.setImage()
 
         if self.info.placed:
             if self.openGUI():
@@ -239,31 +306,88 @@ class Object:
         self.placeObject()
 
     def draw(self):
-        self.info.screen.blit(self.image, (self.info.position.x, self.info.position.y))
-        if self.info.placed and self.info.gui.active:
+        ObjectInfo.screen.blit(self.info.image, (self.info.pos.x, self.info.pos.y))
+        if self.info.gui.active:
             self.info.gui.draw()
-        
+
+    def load(objectID, pos, rows, columns, placed, hasPlaced, mainTileID, direction, typeCase, amount): 
+        gui = ObjectGUI()    
+        info = ObjectInfo(pos, gui, rows, columns)
+        info.mainTileID = mainTileID
+        info.direction = direction
+        info.typeCase = TypeProduceCase(typeCase)
+        info.amount = amount
+        info.placed = placed
+        info.hasPlaced = hasPlaced
+        return Object(objectID, info)
+
+    def save(self):
+        return {
+            'objectID': self.objectID,
+            'pos': {
+                'x': self.info.pos.x,
+                'y': self.info.pos.y
+            },
+            'info': self.info.save()
+        }
 
 class ObjectRegister:
+    # Variables
+    objects: list[Object] = []
     objectID = 0
-    objects = []
 
-    # fix code __init__ or generateObject moethod they should not both take in the same arguments basically
-    def __init__(self, screen, position, rows, columns, tileSize):
-        self.objects.append(self.generateObject(screen, position, rows, columns, tileSize))
+    # ---------- Static ----------
+    @staticmethod
+    def setElementRectangles(elementRectangles):
+        ObjectInfo.elementRectangles = elementRectangles
+    
+    @staticmethod
+    def setScreen(screen):
+        ObjectInfo.screen = screen
 
+    @staticmethod
+    def setTileSize(tileSize):
+        ObjectInfo.tileSize = tileSize
+
+    @staticmethod
+    def load(filePath):
+        with open (filePath + "objects.json", 'r') as savefile:
+            for currentObject in json.load(savefile):
+                objectID = currentObject['objectID']
+                pos = Vector(currentObject['pos']['x'], currentObject['pos']['y'])
+                rows = currentObject['info']['rows']
+                columns = currentObject['info']['columns']
+                placed = currentObject['info']['placed']
+                hasPlaced = currentObject['info']['hasPlaced']
+                mainTileID = currentObject['info']['mainTileID']
+                direction = currentObject['info']['direction']
+                typeCase = currentObject['info']['typeCase']
+                amount = currentObject['info']['amount']
+                ObjectRegister.objects.append(Object.load(objectID, pos, rows, columns, placed, hasPlaced, mainTileID,  direction, typeCase, amount))
+
+                ObjectRegister.objectID = objectID + 1
+
+    @staticmethod
+    def save(filePath):
+        objectList = []
+        for currentObject in ObjectRegister.objects:
+            objectList.append(currentObject.save())
+        with open (filePath + "objects.json", 'w') as savefile:
+            json.dump(objectList, savefile, indent=4)
+
+    # ---------- Constructor ----------
+    def __init__(self, pos, rows, columns):
+        self.objects.append(self.generateObject(pos, rows, columns))
+
+    # ---------- Helpers ----------
     def generateObjectID(self):
         objectID = ObjectRegister.objectID
         ObjectRegister.objectID += 1
         return objectID
 
-    @staticmethod
-    def setElementRectangles(elementRectangles):
-        ObjectInfo.setElementRectangles(elementRectangles)
-
-    def generateObject(self, screen, position, rows, columns, tileSize):
+    def generateObject(self, pos, rows, columns):
         objectID = self.generateObjectID()    
         gui = ObjectGUI()    
-        objectInfo = ObjectInfo(screen, position, gui, rows, columns, tileSize)
-        return Object(objectID, objectInfo)
+        info = ObjectInfo(pos, gui, rows, columns)
+        return Object(objectID, info)
     

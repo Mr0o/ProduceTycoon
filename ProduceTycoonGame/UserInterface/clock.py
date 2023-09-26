@@ -2,7 +2,7 @@ import pygame
 
 from ProduceTycoonGame.vectors import Vector
 
-class Clock():
+class Clock:
     def __init__(self, clock: pygame.time.Clock, screen: pygame.Surface, pos: Vector):
         self.clock = clock
         self.screen = screen
@@ -13,7 +13,7 @@ class Clock():
         self.time = 0
         self.minute = 0
         self.hour = 7
-        self.timeText = ""
+        self.timeText = self.font.render("", True, (0, 0, 0))
 
         self.hidden = False
 
