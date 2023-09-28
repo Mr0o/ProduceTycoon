@@ -40,7 +40,6 @@ class Game:
     savePromptYesButton: Button
     savePromptNoButton: Button
 
-
     def createSavePrompt(self):
         self.savePrompt = pygame.Rect(self.WIDTH / 4, self.HEIGHT / 4, self.WIDTH / 2, self.HEIGHT / 2)
         self.savePromptText = Text(Vector(self.WIDTH / 4, self.HEIGHT / 4), 400, 150, "Would you like to save your game?")

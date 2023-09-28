@@ -17,14 +17,9 @@ class ButtonState(Enum):
     HIDDEN = 0,
     DISABLED = 1,
     ENABLED = 2,
-    HOVERED = 3,
-    CLICKED = 4,
-    
-
-class ButtonFocusState(Enum):
-    NONE = 0,
-    HOVERED = 1,
-    CLICKED = 2
+    #FOCUSED = 3,
+    HOVERED = 4,
+    CLICKED = 5,
 
 class ButtonInfo:
     pos: Vector
