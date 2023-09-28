@@ -4,12 +4,27 @@ from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.UserInterface.text import Text
 
+from enum import Enum
+
 # check for debug mode flag in args
 import sys
 debug = False
 if len(sys.argv) > 1:
     if "--debug" in sys.argv or "-d" in sys.argv:
         debug = True
+
+class ButtonState(Enum):
+    HIDDEN = 0,
+    DISABLED = 1,
+    ENABLED = 2,
+    HOVERED = 3,
+    CLICKED = 4,
+    
+
+class ButtonFocusState(Enum):
+    NONE = 0,
+    HOVERED = 1,
+    CLICKED = 2
 
 class ButtonInfo:
     pos: Vector
@@ -21,7 +36,7 @@ class ButtonInfo:
     selectedImage: pygame.Surface
     color: tuple[int, int, int]= (110, 190, 210)
     active: bool = True
-    isSelected: bool = False
+    state: ButtonState = ButtonState.ENABLED
 
     def __init__(self, pos, name, width, height, func, baseImage, selectedImage):
         self.pos = pos
@@ -56,30 +71,45 @@ class Button:
     # main methods
     def events(self):
         if not self.info.active or Button.HAS_CLICKED:
-            return
-        # Check if mouse position is on the button rect
-        if self.rect.collidepoint(pygame.mouse.get_pos()):
-            # if mouse is clicked and the button is not already selected
-            if eventOccured("leftMouseDown") and not self.info.isSelected:
-                self.info.isSelected = True
-                Button.HAS_CLICKED = True
-                self.info.func()
-        if not eventOccured("leftMouseDown"):
-            self.info.isSelected = False
+            self.into.state = ButtonState.HIDDEN
+        match self.info.state:
+            case ButtonState.DISABLED:
+                return
+
+        match self.info.state:
+            case ButtonState.ENABLED:
+                self.info.color = (110, 190, 210)
+                if self.rect.collidepoint(pygame.mouse.get_pos()):
+                    self.info.state = ButtonState.HOVERED
+
+        match self.info.state:
+            case ButtonState.HOVERED:
+                self.info.color = (100, 170, 210)
+                if eventOccured("leftMouseDown"):
+                    self.info.state = ButtonState.CLICKED
+                else:
+                    self.info.state = ButtonState.ENABLED
+
+        match self.info.state:
+            case ButtonState.CLICKED:
+                self.info.color = (240, 140, 180)
+                if eventOccured("leftMouseUp"):
+                    self.info.func()
+                    self.info.state = ButtonState.ENABLED
+
+        match self.info.state:
+            case ButtonState.HIDDEN:
+                return
     
     def draw(self, screen: pygame.Surface = Text.screen):
-        if not self.info.active:
+        if self.info.state is ButtonState.HIDDEN:
             return
 
-        if self.info.baseImage != None and self.info.selectedImage != None:
-            if self.info.isSelected:
-                Button.screen.blit(self.info.selectedImage, (self.info.pos.x, self.info.pos.y))
-            else:
-                Button.screen.blit(self.info.baseImage, (self.info.pos.x, self.info.pos.y))
-        else:
-            pygame.draw.rect(Button.screen, self.info.color, self.rect)
-            pygame.draw.rect(Button.screen, (0, 0, 0), self.rect, 2)
-            self.text.draw()
+        #if self.image is not None:
+        #    Button.screen.blit(self.info.image, (self.info.pos.x, self.info.pos.y))
+        pygame.draw.rect(Button.screen, self.info.color, self.rect)
+        pygame.draw.rect(Button.screen, (0, 0, 0), self.rect, 2)
+        self.text.draw()
 
         if debug:
             pygame.draw.rect(Button.screen, (255, 255, 0), self.rect, 1)
