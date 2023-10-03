@@ -1,12 +1,25 @@
+"""Author: Owen Smith (Mr0)
+\n Pathfinding module for Produce Tycoon
+\n This module is used to handle pathfinding and is an implementation of the vector field pathfinding algorithm
+\n --
+\n To use it in the game, simply create one instance of the Pathfinder class in the game
+\n \t`pathfinder = Pathfinder(tileMap)`
+"""
+
 import time
 from ProduceTycoonGame.tileMap import TileMap, Tile, Type
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
 
 # the pathfinding algorithm of choice will be Goal Based Vector Field Pathfinding (VFP)
 
-# create a heatmap of the tilemap
 def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
+    """Generate the 'heatmap' for the specified target tile.
+    \n Sets the cost and parent attributes of each tile
+    \n ### Parameters:
+    \n `tileMap`: The tilemap to generate the heatmap for
+    \n `target`: The target goal for the heatmap
+    """
+
     # reset the cost and parent attributes of each tile
     #for tile in tileMap.grid:
     #    tile.cost = 0
@@ -62,8 +75,15 @@ def createHeatmap(tileMap: TileMap, target: Tile) -> list[Tile]:
     # return the closed tiles
     return closedTiles
 
-# get the vector from neighboring tiles using kernel convolution
 def calcVector(tileMap: TileMap, tile: Tile) -> Vector:
+    """Calculate the vector for the specified tile using kernel convolution.
+    \n ### Parameters:
+    \n `tileMap`: The tilemap that contains the tile and its neighbors
+    \n `tile`: The tile to calculate the vector for
+    \n ### Returns:
+    \n `vector`: The vector for the tile
+    """
+
     # get the neighbors of the tile
     neighbors = tileMap.getNeighbors(tile)
 
@@ -103,8 +123,14 @@ def calcVector(tileMap: TileMap, tile: Tile) -> Vector:
     # return the vector
     return vector
 
-# create a vector field of the tilemap
 def createVectorField(tileMap: TileMap, target: Tile) -> list[Vector]:
+    """Create a field of vectors for each tile in the tileMap using the target tile.
+    \n ### Parameters:
+    \n `tileMap`: The tilemap to create the vector field for
+    \n `target`: The target goal for the vector field pathfinding
+    \n ### Returns:
+    \n `vectorField`: The list of Vectors for each tile in the tileMap
+    """
     # create a list of tiles that will be returned
     vectorField: list[Vector] = []
 
@@ -132,6 +158,19 @@ def createVectorField(tileMap: TileMap, target: Tile) -> list[Vector]:
 # used to store the vector field of each placed object
 # a guest will aquire the vector field for tile they are targeting
 class VectorField:
+    """A class to store a vector field pointing to a single target tile.
+    \n A vector field must be created for each target tile.
+    \n It will also need to be updated any time the tilemap changes.
+    \n ### Attributes:
+    \n `tileMap`: The tilemap that the vector field is for
+    \n `target`: The target tile that the vector field points to
+    \n `vectors`: The list of vectors for each tile in the tilemap
+    \n ### Methods:
+    \n `update()`: Updates the vector field
+    \n `getVector(tile)`: Returns the vector for the specified tile
+    \n `getVectors()`: Returns the list of vectors for each tile in the tilemap
+    """
+
     def __init__(self, tileMap: TileMap, target: Tile):
         self.tileMap = tileMap
         self.target = target
@@ -152,17 +191,28 @@ class VectorField:
         return self.vectors
     
 
-# this will contain all vectorFields and contain methods to create, update, and get vector data from them
 class Pathfinder:
+    """Pathfinder class to automatically manage all vector fields.
+    \n To use it, simply create one instance in the game.
+    \n \t`pathfinder = Pathfinder(tileMap)`
+    \n To get a vector for a tile, use the `getVector()` method.
+    \n \t`vector = pathfinder.getVector(tile, target)`
+    \n The update method should be called any time the tilemap changes or simply on every frame.
+    \n \t`pathfinder.update()`
+    \n Everything else is handled internally and automatically.
+    """
     def __init__(self, tileMap: TileMap):
         self.tileMap = tileMap
         self.vectorFields: list[VectorField] = []
 
     def createVectorField(self, target: Tile) -> None:
-        vectorField = VectorField(self.tileMap, target)
-        self.vectorFields.append(vectorField)
+        """Creates a new vector field and appends to the vectorFields list"""
 
     def update(self) -> None:
+        """Updates the pathfinder vector fields
+        \n This should be called any time the tilemap changes
+        \n Alternatively, it can simply be called every frame and will only update if changes are detected
+        """
         # check for any changes in the tilemap and update the vector fields accordingly
         tileMapChanged = False
         for tile in self.tileMap.grid:
@@ -177,6 +227,7 @@ class Pathfinder:
             #print("Vector fields updated in " + str(time.time() - startTime) + " seconds")
 
     def getVector(self, tile: Tile, target: Tile) -> Vector:
+        """Returns the vector to get from the current tile to the target tile"""
         if tile is None:
             print("WARN: Pathfinder.getVector() -> tile is None")
             return Vector(0, 0)
@@ -189,8 +240,9 @@ class Pathfinder:
         return vector
     
     def getVectorField(self, target: Tile) -> VectorField:
+        """Returns the vector field that matches the target"""
         if target is None:
-            print("WARN: getVectorField() -> target is None")
+            print("WARN: Pathfinder.getVectorField() -> target is None")
             return []
         # get the vector field for the target
         for vectorField in self.vectorFields:
@@ -202,4 +254,5 @@ class Pathfinder:
         return self.getVectorField(target)
     
     def clear(self) -> None:
+        """Clears the vector fields list"""
         self.vectorFields.clear()
