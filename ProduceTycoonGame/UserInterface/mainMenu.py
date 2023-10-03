@@ -44,13 +44,14 @@ class MainMenu:
     SHOW_SAVES = False
     CREATE_SAVE = False
 
+    @staticmethod
+    def setScreen(screen: pygame.Surface):
+        MainMenu.screen = screen
+
     # ---------- Instance Methods ---------- #
     def __init__(self, width, height):
         self.width = width
         self.height = height
-
-        MainMenu.screen = pygame.display.set_mode((self.width, self.height))
-        MainMenu.screen.fill((0, 0, 0)) 
 
         self.background = pygame.Rect(0, 0, self.width, self.height)
 
