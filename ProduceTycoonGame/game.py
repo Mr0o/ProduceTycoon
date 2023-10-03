@@ -104,6 +104,7 @@ class Game:
         Button.setScreen(self.screen)
         TileMap.setScreen(self.screen)
         Text.setScreen(self.screen)
+        MainMenu.setScreen(self.screen)
 
         self.mainMenu = MainMenu(self.WIDTH, self.HEIGHT)
         
@@ -163,28 +164,23 @@ class Game:
             if event.type == pygame.QUIT:
                 Game.running = False
             if event.type == pygame.KEYDOWN:
+                # post the keydown event and include the event data
+                postEvent("keyDown", eventData=event)
+
                 if event.key == pygame.K_ESCAPE:
                     postEvent("escape")
                 # press '1' to toggle debug
                 elif event.key == pygame.K_1:
                     self.debug = not self.debug
-                    postEvent("keyDown", eventData=event)
                 # press '2' to toggle debugPlaceableObjects
                 elif event.key == pygame.K_2:
                     self.debugPlaceableObjects = not self.debugPlaceableObjects
-                    postEvent("keyDown", eventData=event)
 
                 elif event.key == pygame.K_BACKSPACE:
                     postEvent("backspace", eventData=event)
 
                 elif event.key == pygame.K_RETURN:
                     postEvent("enterDown", eventData=event)
-
-                # press space to toggle a test message
-                elif event.key == pygame.K_SPACE:
-                    postEvent("keyDown", eventData=event)
-                else:
-                    postEvent("keyDown", eventData=event)
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -197,11 +193,6 @@ class Game:
                     postEvent("leftMouseUp")
                 if event.button == 3:
                     postEvent("rightMouseUp")
-
-        #if pygame.mouse.get_pressed()[0]:
-        #    postEvent("leftMouseDown")
-        #if pygame.mouse.get_pressed()[2]:
-        #    postEvent("rightMouseDown")
 
         if MainMenu.active:
             self.mainMenu.events()
@@ -390,16 +381,6 @@ class Game:
             text = self.debugFont.render(str(int(self.clock.get_fps())) + " FPS ", True, (255, 255, 255))
             self.screen.blit(text, (0, text.get_height() + 20))
 
-            ## draw the highlighted tile id
-            #if self.tileMap.highlightedTile is not None:
-            #    text = self.debugFont.render("Tile ID: " + str(self.tileMap.highlightedTile.id), True, (255, 255, #0))
-            #    self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, 0))
-            #
-            ## draw the selected tile id
-            #if self.tileMap.selectedTile is not None:
-            #    text = self.debugFont.render("Selected ID: " + str(self.tileMap.selectedTile.id), True, (255, 0, #255))
-            #    self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height()))
-
             # draw the size of the pathfinder vector fields list
             text = self.debugFont.render("Vector Fields: " + str(len(self.pathfinder.vectorFields)), True, (255, 255, 255))
             self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height() * 2))
@@ -427,7 +408,7 @@ class Game:
                         mainTile = self.tileMap.getTileByID(currentObject.info.mainTileID)
                         pygame.draw.rect(self.screen, (0, 255, 0), mainTile.rect, 2)
 
-        pygame.display.flip()
+        pygame.display.update()
 
     def run(self):
         while Game.running:
