@@ -73,7 +73,7 @@ class Game:
         self.savePromptYesButton.events()
         self.savePromptNoButton.events()
 
-    def __init__(self, WIDTH: int = 1200, HEIGHT: int = 600):
+    def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
         pygame.init()
 
         self.WIDTH = WIDTH
