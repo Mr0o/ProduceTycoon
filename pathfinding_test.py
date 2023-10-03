@@ -1,3 +1,9 @@
+"""Author: Owen Smith (Mr0)
+\n Test for the pathfinding module
+\n Kinda jank and outdated
+\n Draws the heatmap and vector fields
+"""
+
 from ProduceTycoonGame.collision import isGuestTouchingTile, resolveCollision
 from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.vectors import Vector

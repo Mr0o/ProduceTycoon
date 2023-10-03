@@ -1,3 +1,8 @@
+"""Author: Owen Smith (Mr0)
+\n Collision module for Produce Tycoon
+\n This module uses the circle vs circle collision algorithm to resolve collisions between guests and tiles
+\n https://www.youtube.com/watch?v=LPzyNOHY3A4
+"""
 from math import sqrt
 
 from ProduceTycoonGame.guest import Guest
