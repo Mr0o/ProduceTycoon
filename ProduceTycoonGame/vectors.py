@@ -1,9 +1,11 @@
-#  This is my own Vector module that I created for the fun of it
-#  Plenty of vector libraries already exist that are more robust and have lots more features
-#  but the goal here is to keep it simple
-
-#  In here you will find a Vector class with methods for performing basic vector math
-#  All vector math is 2-Dimensional meaning that all Vectors have just an x and y component
+"""Author: Owen Smith (Mr0)
+\n This is my own Vector module that I created for the fun of it
+\n Plenty of vector libraries already exist that are more robust and have lots more features
+\n but the goal here is to keep it simple
+\n --
+\n In here you will find a Vector class with methods for performing basic vector math
+\n All vector math is 2-Dimensional meaning that all Vectors have just an x and y component
+"""
 
 from math import atan2, sqrt, cos, sin
 from random import randint  # used for random integers
