@@ -1,3 +1,11 @@
+"""Author: Owen Smith (Mr0)
+\n Simple message box module
+\n Only one instance of MessageBox needs to be created
+\n When a message is posted to the message box, it will be displayed in the center of the screen
+\n The message box does not do anything else beyond displaying a message with an OK button
+\n Intended for basic output to the player
+"""
+
 import pygame
 
 from ProduceTycoonGame.events import eventOccured, getEvent

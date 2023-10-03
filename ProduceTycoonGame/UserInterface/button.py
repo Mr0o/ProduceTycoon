@@ -47,7 +47,7 @@ class Button:
         Button.screen = screen
 
     # Instance methods
-    def __init__(self, pos: Vector, name: str, width: int, height: int, func: callable = None, baseImage = None, selectedImage = None):
+    def __init__(self, pos: Vector, name: str, width: int, height: int, func: callable, baseImage = None, selectedImage = None):
         self.text = createText(pos, width, height, name)
         self.rect = createRect(pos, width, height)
         self.info = createInfo(pos, name, width, height, func, baseImage, selectedImage)
@@ -74,9 +74,9 @@ class Button:
 
         if self.info.baseImage != None and self.info.selectedImage != None:
             if self.info.isSelected:
-                screen.blit(self.info.selectedImage, (self.info.pos.x, self.info.pos.y))
+                Button.screen.blit(self.info.selectedImage, (self.info.pos.x, self.info.pos.y))
             else:
-                screen.blit(self.info.baseImage, (self.info.pos.x, self.info.pos.y))
+                Button.screen.blit(self.info.baseImage, (self.info.pos.x, self.info.pos.y))
         else:
             pygame.draw.rect(Button.screen, self.info.color, self.rect)
             pygame.draw.rect(Button.screen, (0, 0, 0), self.rect, 2)

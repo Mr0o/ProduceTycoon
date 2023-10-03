@@ -1,3 +1,18 @@
+"""
+The main game loop for Produce Tycoon
+\n --
+\n Usage:
+\n\t`from ProduceTycoonGame.game import Game`
+\n\t`game = Game()`
+\n\t`game.run()`
+\n --
+\nThis is where the game is initialized and run
+\nThe game loop calls these three methods every frame:
+\n\t`events()` - handles events
+\n\t`update()` - updates the game logic
+\n\t`draw()` - draws the game to the screen
+"""
+
 from random import randint
 import pygame
 from ProduceTycoonGame.UserInterface.messageBox import MessageBox
@@ -16,6 +31,7 @@ from ProduceTycoonGame.produce import Produce
 from ProduceTycoonGame.playerData import PlayerData
 from ProduceTycoonGame.UserInterface.text import Text
 from ProduceTycoonGame.UserInterface.mainMenu import MainMenu
+from ProduceTycoonGame.UserInterface.messageBox import MessageBox
 
 # Helper Functions
 def createObject(pos: Vector, width: int, height: int):
@@ -59,7 +75,7 @@ class Game:
         self.savePromptYesButton.events()
         self.savePromptNoButton.events()
 
-    def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
+    def __init__(self, WIDTH: int = 1200, HEIGHT: int = 600):
         pygame.init()
 
         self.WIDTH = WIDTH
