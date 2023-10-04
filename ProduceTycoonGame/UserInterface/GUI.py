@@ -4,9 +4,11 @@ from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.objectRegister import ObjectRegister
 from ProduceTycoonGame.playerData import PlayerData
+from ProduceTycoonGame.produce import Produce
 
 from ProduceTycoonGame.UserInterface.text import Text
 from ProduceTycoonGame.UserInterface.button import Button
+from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.UserInterface.mainMenu import MainMenu
 from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.UserInterface.messageBox import MessageBox
@@ -14,6 +16,17 @@ from ProduceTycoonGame.UserInterface.messageBox import MessageBox
 # Helper Functions
 def createObject(pos: Vector, width: int, height: int):
     return ObjectRegister(pos, width, height)
+
+def saveGame(save):
+    ObjectRegister.save(save)
+    PlayerData.save(save)
+    Produce.save(save)
+
+    #Game.running = False
+
+def exitGame():
+    #Game.running = False
+    return
 
 class GUI:
     """
@@ -40,6 +53,24 @@ class GUI:
         Text.setScreen(GUI.screen)
         MainMenu.setScreen(GUI.screen)
         ShopMenu.setScreen(GUI.screen)
+
+    def createSavePrompt(self):
+        self.savePrompt = pygame.Rect(self.WIDTH / 4, self.HEIGHT / 4, self.WIDTH / 2, self.HEIGHT / 2)
+        self.savePromptText = Text(Vector(self.WIDTH / 4, self.HEIGHT / 4), 400, 150, "Would you like to save your game?")
+        self.savePromptYesButton = Button(Vector(self.WIDTH / 4 + 80, self.HEIGHT / 4 + 220), "Yes", 40, 40, lambda: saveGame(MainMenu.currentSave))
+        self.savePromptNoButton = Button(Vector(self.WIDTH / 4 + 280, self.HEIGHT / 4 + 220), "No", 40, 40, lambda: exitGame())
+
+    def drawSavePrompt(self):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.savePrompt)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.savePrompt, 2)
+        self.savePromptText.draw()
+        self.savePromptYesButton.draw()
+        self.savePromptNoButton.draw()
+
+    def savePromptEvents(self):
+        self.drawSavePrompt()
+        self.savePromptYesButton.events()
+        self.savePromptNoButton.events()
 
     def __init__(self):
         self.elements = []
@@ -73,6 +104,10 @@ class GUI:
 
         self.promptSaveGame = False
         self.createSavePrompt()
+
+        # clock instance
+        self.displayClock = Clock(pygame.time.Clock(), self.screen, Vector(self.WIDTH - 100, 0))
+
         # message box instance
         self.messageBox = MessageBox(self.screen)
 
@@ -90,6 +125,8 @@ class GUI:
         self.setHiddenUI()
 
         self.shopMenu.events()
+
+        self.displayClock.events()
 
         if eventOccured("escape"):
             self.promptSaveGame = True
@@ -116,6 +153,8 @@ class GUI:
 
         if self.promptSaveGame:
             self.drawSavePrompt()
+
+        self.displayClock.draw()
 
         self.messageBox.draw()
 
