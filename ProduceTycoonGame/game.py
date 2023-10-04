@@ -32,10 +32,6 @@ from ProduceTycoonGame.UserInterface.text import Text
 from ProduceTycoonGame.UserInterface.mainMenu import MainMenu
 from ProduceTycoonGame.UserInterface.messageBox import MessageBox
 
-# Helper Functions
-def createObject(pos: Vector, width: int, height: int):
-    return ObjectRegister(pos, width, height)
-
 def saveGame(save):
     ObjectRegister.save(save)
     PlayerData.save(save)
@@ -50,28 +46,6 @@ def exitGame():
 class Game:
     running = True
     screen: pygame.Surface
-    savePrompt: pygame.Rect
-    savePromptText: Text
-    savePromptYesButton: Button
-    savePromptNoButton: Button
-
-    def createSavePrompt(self):
-        self.savePrompt = pygame.Rect(self.WIDTH / 4, self.HEIGHT / 4, self.WIDTH / 2, self.HEIGHT / 2)
-        self.savePromptText = Text(Vector(self.WIDTH / 4, self.HEIGHT / 4), 400, 150, "Would you like to save your game?")
-        self.savePromptYesButton = Button(Vector(self.WIDTH / 4 + 80, self.HEIGHT / 4 + 220), "Yes", 40, 40, lambda: saveGame(MainMenu.currentSave))
-        self.savePromptNoButton = Button(Vector(self.WIDTH / 4 + 280, self.HEIGHT / 4 + 220), "No", 40, 40, lambda: exitGame())
-
-    def drawSavePrompt(self):
-        pygame.draw.rect(self.screen, (255, 255, 255), self.savePrompt)
-        pygame.draw.rect(self.screen, (0, 0, 0), self.savePrompt, 2)
-        self.savePromptText.draw()
-        self.savePromptYesButton.draw()
-        self.savePromptNoButton.draw()
-
-    def savePromptEvents(self):
-        self.drawSavePrompt()
-        self.savePromptYesButton.events()
-        self.savePromptNoButton.events()
 
     def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
         pygame.init()
@@ -98,34 +72,14 @@ class Game:
         self.debugPlaceableObjects = False
 
         # set the screens
-        ShopMenu.setScreen(self.screen)
-        Button.setScreen(self.screen)
         ObjectRegister.setScreen(self.screen)
         TileMap.setScreen(self.screen)
-        Text.setScreen(self.screen)
-        MainMenu.setScreen(self.screen)
-
-        self.mainMenu = MainMenu(self.WIDTH, self.HEIGHT)
         
         self.tileMap = TileMap(Vector(0, 0))
         ObjectRegister.setTileSize(self.tileMap.tileSize)
 
         # pathfinding (Vector Fields)
         self.pathfinder = Pathfinder(self.tileMap)
-
-
-        # buttons
-        object4x4Args = (Vector(0, 0), 4, 4)
-        object1x1Args = (Vector(0, 0), 1, 1)
-        self.buttons: list[Button] = []
-        self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20, lambda: createObject(*object4x4Args))
-        self.buttons.append(self.button4x4)
-        self.button1x1 = Button(Vector(60, 0), "1x1 Tile", 60, 20, lambda: createObject(*object1x1Args))
-        self.buttons.append(self.button1x1)
-        #self.moveObjects = Button(Vector(120, 0), "Move Objects", 120, 20)
-        self.shopMenu = ShopMenu(Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2)
-        self.openShop = Button(Vector(240, 0), "Shop", 60, 20, self.shopMenu.openGUI)
-        self.buttons.append(self.openShop)
 
         # placed objects
         self.objects: list[Object] = []
@@ -134,26 +88,7 @@ class Game:
 
         self.displayClock = Clock(self.clock, self.screen, Vector(WIDTH - 100, 0))
 
-        #self.shopMenu = ShopMenu(self.screen, Vector(WIDTH / 4, HEIGHT / 4), WIDTH / 2, HEIGHT / 2, self.playerValues)
-
-        self.hideGUI = False
-        self.moveObject = False
-
         self.elements = []
-
-        # money box
-        moneyBoxWidth = 40
-        moneyBoxHeight = 20
-        moneyBoxX = 0
-        moneyBoxY = self.HEIGHT - moneyBoxHeight
-        self.moneyBox = pygame.Rect((moneyBoxX, moneyBoxY), (moneyBoxWidth, moneyBoxHeight))
-
-        self.textRenderer = Text(Vector(moneyBoxX, moneyBoxY), moneyBoxWidth, moneyBoxHeight, str(PlayerData.data['money']))
-
-        self.promptSaveGame = False
-        self.createSavePrompt()
-        # message box instance
-        self.messageBox = MessageBox(self.screen)
 
     def events(self):
         clearEventList()
@@ -193,26 +128,14 @@ class Game:
                 if event.button == 3:
                     postEvent("rightMouseUp")
 
-        if MainMenu.active:
-            self.mainMenu.events()
-            return
-
-        if len(self.objects):
-            self.hideGUI = not self.objects[len(self.objects) - 1].info.placed
-        else:
-            self.hideGUI = False
-
-        self.messageBox.events()
+        # if len(self.objects):
+        #     GUI.hideGUI = not self.objects[len(self.objects) - 1].info.placed
+        # else:
+        #     GUI.hideGUI = False
 
         ObjectRegister.setElementRectangles(self.elements)
 
-        if not self.hideGUI:
-            for button in self.buttons:
-                button.events()
-
         self.objects = ObjectRegister.objects
-
-        self.setHiddenUI()
 
         objectPlaced = False
 
@@ -252,8 +175,6 @@ class Game:
                 if tile.id == self.objects[len(self.objects) - 1].info.mainTileID:
                     placedObjectTiles.remove(tile)
                     break
-        
-            self.pathfinder.update()
 
         # place guests down on mouse click (testing, remove this later)
         if eventOccured("rightMouseDown") and len(self.objects):
@@ -285,25 +206,7 @@ class Game:
 
         self.displayClock.events()
 
-        self.shopMenu.events()
         self.elements = []
-
-        if eventOccured("escape"):
-            self.promptSaveGame = True
-
-        if self.promptSaveGame:
-            self.savePromptEvents()
-
-        Button.HAS_CLICKED = False
-
-    # set every element's hidden variable to the value of self.hideGUI
-    def setHiddenUI(self):
-        for button in self.buttons:
-            self.elements.append(button.rect)
-            button.active = self.hideGUI
-
-        self.displayClock.hidden = self.hideGUI
-        self.elements.append(self.displayClock.rect)
 
     def update(self):
         for guest in self.guests:
@@ -314,25 +217,13 @@ class Game:
 
         # pathfinder update will check for any changes and update the vector fields
         self.pathfinder.update()
-
-        #self.shopMenu.update()
         
         if self.debug:
             pygame.display.set_caption('Produce Tycoon - ' + str(int(self.clock.get_fps())) + ' FPS')
         else:
             pygame.display.set_caption('Produce Tycoon')
 
-    def displayMoney(self):
-        pygame.draw.rect(self.screen, (255, 255, 255), self.moneyBox)
-        pygame.draw.rect(self.screen, (0, 0, 0), self.moneyBox, 2)
-        self.textRenderer.setText(str(PlayerData.data['money']))
-        self.textRenderer.draw() 
-
     def draw(self):
-        if MainMenu.active:
-            self.mainMenu.draw()
-            return
-
         self.screen.fill((0, 0, 0))
 
         # drawing tileMap
@@ -342,9 +233,6 @@ class Game:
         if len(self.objects) and not self.objects[len(self.objects) - 1].info.placed:
             self.tileMap.drawTileLines()
 
-        for button in self.buttons:
-            button.draw()
-
         for currentObject in self.objects:
             currentObject.draw()
 
@@ -353,14 +241,6 @@ class Game:
             guest.draw()
 
         self.displayClock.draw()
-        self.displayMoney()
-
-        self.shopMenu.draw()
-
-        if self.promptSaveGame:
-            self.drawSavePrompt()
-
-        self.messageBox.draw()
 
         ## DEBUG STUFF ##
         if self.debug:
