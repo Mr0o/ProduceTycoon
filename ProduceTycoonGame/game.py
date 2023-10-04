@@ -17,30 +17,13 @@ from random import randint
 import pygame
 
 # local imports
-from ProduceTycoonGame.events import postEvent, eventOccured, getEvent, clearEventList
+from ProduceTycoonGame.events import postEvent, eventOccured, clearEventList
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.tileMap import TileMap, Tile, Type, updateTileMap
+from ProduceTycoonGame.tileMap import TileMap, updateTileMap
 from ProduceTycoonGame.guest import Guest
-from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.objectRegister import Object, ObjectRegister
-from ProduceTycoonGame.UserInterface.clock import Clock
 from ProduceTycoonGame.pathfinding import Pathfinder
-from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
-from ProduceTycoonGame.produce import Produce
-from ProduceTycoonGame.playerData import PlayerData
-from ProduceTycoonGame.UserInterface.text import Text
-from ProduceTycoonGame.UserInterface.mainMenu import MainMenu
-from ProduceTycoonGame.UserInterface.messageBox import MessageBox
-
-def saveGame(save):
-    ObjectRegister.save(save)
-    PlayerData.save(save)
-    Produce.save(save)
-
-    Game.running = False
-
-def exitGame():
-    Game.running = False
+from ProduceTycoonGame.UserInterface.GUI import GUI
 
 # this is the main game loop (events, update, draw)
 class Game:
@@ -74,6 +57,12 @@ class Game:
         # set the screens
         ObjectRegister.setScreen(self.screen)
         TileMap.setScreen(self.screen)
+        GUI.setScreen(self.screen)
+
+        # init the GUI
+        GUI.WIDTH = self.WIDTH
+        GUI.HEIGHT = self.HEIGHT
+        self.GUI = GUI()
         
         self.tileMap = TileMap(Vector(0, 0))
         ObjectRegister.setTileSize(self.tileMap.tileSize)
@@ -85,8 +74,6 @@ class Game:
         self.objects: list[Object] = []
 
         self.guests: list[Guest] = []
-
-        self.displayClock = Clock(self.clock, self.screen, Vector(WIDTH - 100, 0))
 
         self.elements = []
 
@@ -128,10 +115,14 @@ class Game:
                 if event.button == 3:
                     postEvent("rightMouseUp")
 
-        # if len(self.objects):
-        #     GUI.hideGUI = not self.objects[len(self.objects) - 1].info.placed
-        # else:
-        #     GUI.hideGUI = False
+        # semi-hacky workaround to avoid importing the Game class in the GUI module (avoiding circular imports)
+        if len(self.objects):
+            GUI.hideGUI = not self.objects[len(self.objects) - 1].info.placed
+        else:
+            GUI.hideGUI = False
+
+        # events for the GUI
+        self.GUI.events()
 
         ObjectRegister.setElementRectangles(self.elements)
 
@@ -204,8 +195,6 @@ class Game:
 
             guest.update()
 
-        self.displayClock.events()
-
         self.elements = []
 
     def update(self):
@@ -240,7 +229,8 @@ class Game:
         for guest in self.guests:
             guest.draw()
 
-        self.displayClock.draw()
+        # draw the GUI
+        self.GUI.draw()
 
         ## DEBUG STUFF ##
         if self.debug:
