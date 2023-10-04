@@ -26,7 +26,7 @@ class TextInputBox:
         if self.active:
             if eventOccured("backspace"):
                 self.text = self.text[:-1]
-            if eventOccured("keyDown"):
+            elif eventOccured("keyDown"):
                 self.text += getEvent("keyDown").getData().unicode
 
     def getText(self):
