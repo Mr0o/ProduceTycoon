@@ -85,8 +85,6 @@ class Game:
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
 
-        ObjectRegister.setScreen(self.screen)
-
         # set the game icon
         icon = pygame.image.load('./Resources/Images/Produce/Tomato.png')
         pygame.display.set_icon(icon)
@@ -103,6 +101,7 @@ class Game:
         # set the screens
         ShopMenu.setScreen(self.screen)
         Button.setScreen(self.screen)
+        ObjectRegister.setScreen(self.screen)
         TileMap.setScreen(self.screen)
         Text.setScreen(self.screen)
         MainMenu.setScreen(self.screen)
