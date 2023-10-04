@@ -1,0 +1,135 @@
+import pygame
+
+from ProduceTycoonGame.vectors import Vector
+from ProduceTycoonGame.events import eventOccured
+from ProduceTycoonGame.objectRegister import ObjectRegister
+from ProduceTycoonGame.playerData import PlayerData
+
+from ProduceTycoonGame.UserInterface.text import Text
+from ProduceTycoonGame.UserInterface.button import Button
+from ProduceTycoonGame.UserInterface.mainMenu import MainMenu
+from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
+from ProduceTycoonGame.UserInterface.messageBox import MessageBox
+
+# Helper Functions
+def createObject(pos: Vector, width: int, height: int):
+    return ObjectRegister(pos, width, height)
+
+class GUI:
+    """
+    Contains all the GUI elements
+    \n Intended to seperate the GUI specific logic from the game class
+    """
+    screen: pygame.Surface
+    WIDTH: int
+    HEIGHT: int
+
+    savePrompt: pygame.Rect
+    savePromptText: Text
+    savePromptYesButton: Button
+    savePromptNoButton: Button
+    hideGUI: bool
+
+    @staticmethod
+    def setScreen(screen: pygame.Surface):
+        """
+        Set the screen for all the GUI elements
+        """
+        GUI.screen = screen
+        Button.setScreen(GUI.screen)
+        Text.setScreen(GUI.screen)
+        MainMenu.setScreen(GUI.screen)
+        ShopMenu.setScreen(GUI.screen)
+
+    def __init__(self):
+        self.elements = []
+
+        # buttons
+        object4x4Args = (Vector(0, 0), 4, 4)
+        object1x1Args = (Vector(0, 0), 1, 1)
+        self.buttons: list[Button] = []
+        self.button4x4 = Button(Vector(0, 0), "4x4 Tile", 60, 20, lambda: createObject(*object4x4Args))
+        self.buttons.append(self.button4x4)
+        self.button1x1 = Button(Vector(60, 0), "1x1 Tile", 60, 20, lambda: createObject(*object1x1Args))
+        self.buttons.append(self.button1x1)
+        #self.moveObjects = Button(Vector(120, 0), "Move Objects", 120, 20)
+        self.shopMenu = ShopMenu(Vector(GUI.WIDTH / 4, GUI.HEIGHT / 4), GUI.WIDTH / 2, GUI.HEIGHT / 2)
+        self.openShop = Button(Vector(240, 0), "Shop", 60, 20, self.shopMenu.openGUI)
+        self.buttons.append(self.openShop)
+
+        self.mainMenu = MainMenu(self.WIDTH, self.HEIGHT)
+
+        self.hideGUI = False
+        self.moveObject = False
+
+        # money box
+        moneyBoxWidth = 40
+        moneyBoxHeight = 20
+        moneyBoxX = 0
+        moneyBoxY = self.HEIGHT - moneyBoxHeight
+        self.moneyBox = pygame.Rect((moneyBoxX, moneyBoxY), (moneyBoxWidth, moneyBoxHeight))
+
+        self.textRenderer = Text(Vector(moneyBoxX, moneyBoxY), moneyBoxWidth, moneyBoxHeight, str(PlayerData.data['money']))
+
+        self.promptSaveGame = False
+        self.createSavePrompt()
+        # message box instance
+        self.messageBox = MessageBox(self.screen)
+
+    def events(self):
+        if MainMenu.active:
+            self.mainMenu.events()
+            return
+        
+        self.messageBox.events()
+
+        if not self.hideGUI:
+            for button in self.buttons:
+                button.events()
+
+        self.setHiddenUI()
+
+        self.shopMenu.events()
+
+        if eventOccured("escape"):
+            self.promptSaveGame = True
+
+        if self.promptSaveGame:
+            self.savePromptEvents()
+
+        Button.HAS_CLICKED = False
+
+    def update(self):
+        pass
+
+    def draw(self):
+        if MainMenu.active:
+            self.mainMenu.draw()
+            return
+        
+        for button in self.buttons:
+            button.draw()
+
+        self.displayMoney()
+
+        self.shopMenu.draw()
+
+        if self.promptSaveGame:
+            self.drawSavePrompt()
+
+        self.messageBox.draw()
+
+    def displayMoney(self):
+        pygame.draw.rect(self.screen, (255, 255, 255), self.moneyBox)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.moneyBox, 2)
+        self.textRenderer.setText(str(PlayerData.data['money']))
+        self.textRenderer.draw() 
+
+    # set every element's hidden variable to the value of self.hideGUI
+    def setHiddenUI(self):
+        for button in self.buttons:
+            self.elements.append(button.rect)
+            button.active = self.hideGUI
+
+        self.displayClock.hidden = self.hideGUI
+        self.elements.append(self.displayClock.rect)
