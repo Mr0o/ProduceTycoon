@@ -79,7 +79,7 @@ class Game:
         self.WIDTH = WIDTH
         self.HEIGHT = HEIGHT
 
-        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT), pygame.RESIZABLE)
         Game.running = True
         self.clock = pygame.time.Clock()
         pygame.display.set_caption('Produce Tycoon')
