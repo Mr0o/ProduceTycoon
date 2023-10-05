@@ -2,9 +2,10 @@ import pygame
 
 from ProduceTycoonGame.vectors import Vector
 from ProduceTycoonGame.events import eventOccured
-from ProduceTycoonGame.objectRegister import ObjectRegister
+from ProduceTycoonGame.objectRegister import Object, ObjectRegister
 from ProduceTycoonGame.playerData import PlayerData
 from ProduceTycoonGame.produce import Produce
+from ProduceTycoonGame.tileMap import TileMap # This is required by ObjectRegister (CAN WE DECOUPLE THIS?)
 
 from ProduceTycoonGame.UserInterface.text import Text
 from ProduceTycoonGame.UserInterface.button import Button
@@ -43,6 +44,9 @@ class GUI:
     savePromptNoButton: Button
     hideGUI: bool
 
+    # tileMap - This is required by ObjectRegister (CAN WE DECOUPLE THIS?)
+    tileMap: TileMap
+
     @staticmethod
     def setScreen(screen: pygame.Surface):
         """
@@ -73,8 +77,6 @@ class GUI:
         self.savePromptNoButton.events()
 
     def __init__(self):
-        self.elements = []
-
         # buttons
         object4x4Args = (Vector(0, 0), 4, 4)
         object1x1Args = (Vector(0, 0), 1, 1)
@@ -92,6 +94,10 @@ class GUI:
 
         self.hideGUI = False
         self.moveObject = False
+
+        ### placed objects (CAN WE DECOUPLE THIS FROM THE GUI?) ###
+        self.objects: list[Object] = []
+        self.elements: list[pygame.Rect] = []
 
         # money box
         moneyBoxWidth = 40
@@ -134,7 +140,54 @@ class GUI:
         if self.promptSaveGame:
             self.savePromptEvents()
 
+        ### Object event stuff (CAN WE DECOUPLE THIS FROM THE GUI?) ###
+        ObjectRegister.setElementRectangles(self.elements)
+
+        self.objects = ObjectRegister.objects
+
+        objectPlaced = False
+
+        for currentObject in self.objects:
+            currentObject.events()
+
+            #if not currentObject.info.placed:
+                #Exit = currentObject.info.objectGUI.exitButton.events(eventOccured("leftMouseDown"))
+                #if Exit:
+                #    self.objects.remove(currentObject)
+                #continue
+
+            self.elements.append(currentObject.info.rect)
+            #if self.moveObject:
+            #    if eventOccured("leftMouseDown") and self.previousMouseClicked:
+            #        self.moveObject = currentObject.moveToNewPos()
+            
+            # do some stuff when the object is placed (only once on the frame the object is placed)
+            if currentObject.info.hasPlaced:
+                currentObject.info.hasPlaced = False
+                
+                # set the currentObject's mainTile to changed (important for detecting changes in the tileMap)
+                placedTileID = currentObject.info.mainTileID
+                placedTile = self.tileMap.getTileByID(placedTileID)
+
+                if placedTile is not None:
+                    placedTile.changed = True
+                    
+                    objectPlaced = True
+
+        if objectPlaced:
+            # get the tiles that fall within the currentObject's rect
+            placedObjectTiles = self.tileMap.getTilesInRect(self.objects[len(self.objects) - 1].info.rect)
+
+            # remove the main tile from the list
+            for tile in placedObjectTiles:
+                if tile.id == self.objects[len(self.objects) - 1].info.mainTileID:
+                    placedObjectTiles.remove(tile)
+                    break
+        self.elements = []
+        ### END OF OBJECT/OBJECTREGISTER EVENTS CODE ###
+
         Button.HAS_CLICKED = False
+        
 
     def update(self):
         pass
@@ -143,6 +196,9 @@ class GUI:
         if MainMenu.active:
             self.mainMenu.draw()
             return
+        
+        for currentObject in self.objects:
+            currentObject.draw()
         
         for button in self.buttons:
             button.draw()
