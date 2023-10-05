@@ -207,6 +207,8 @@ class Pathfinder:
 
     def createVectorField(self, target: Tile) -> None:
         """Creates a new vector field and appends to the vectorFields list"""
+        vectorField = VectorField(self.tileMap, target)
+        self.vectorFields.append(vectorField)
 
     def update(self) -> None:
         """Updates the pathfinder vector fields
