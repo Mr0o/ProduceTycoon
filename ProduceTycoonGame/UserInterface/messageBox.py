@@ -45,10 +45,20 @@ class MessageBox:
             # post the message to the message box
             self.postMessage(str(messageEvent.eventData))
 
+        # check if the window has been resized
+        if eventOccured("windowResize"):
+            # update the message box rects and button position
+            self.updatePos()
+
         self.button.events()
 
     def dismiss(self):
         self.dismissed = True
+
+    def updatePos(self) -> None:
+        self.rect = pygame.Rect((self.screen.get_width()/2 - 200, self.screen.get_height()/2 - 100), (400, 200))
+        self.outline = pygame.Rect((self.rect.x - 2, self.rect.y - 2), (self.rect.width + 4, self.rect.height + 4))
+        self.button.setPos(Vector(self.rect.x + self.rect.width - 105, self.rect.y + self.rect.height - 55))
         
     def draw(self) -> None:
         if not self.dismissed:
