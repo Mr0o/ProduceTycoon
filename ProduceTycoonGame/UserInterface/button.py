@@ -84,6 +84,11 @@ class Button:
         if debug:
             pygame.draw.rect(Button.screen, (255, 255, 0), self.rect, 1)
 
+    def setPos(self, pos: Vector):
+        self.text.setPos(pos)
+        self.rect = createRect(pos, self.info.width, self.info.height)
+        self.info.pos = pos
+
 def createText(pos, width, height, name):
     return Text(pos, width, height, name)
 

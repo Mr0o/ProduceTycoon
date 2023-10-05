@@ -20,8 +20,7 @@ class Text:
 
         self.objectSize = pygame.font.SysFont('Arial', 15, bold=True)
         self.renderText = self.objectSize.render(self.text, True, (0, 0, 0))
-        self.x = self.pos.x + (self.width/2 - self.renderText.get_width()/2)
-        self.y = self.pos.y + (self.height/2 - self.renderText.get_height()/2)
+        self.setPos(self.pos)
 
     def update(self):
         self.renderText = self.objectSize.render(self.text, True, (0, 0, 0))
@@ -32,3 +31,8 @@ class Text:
     def setText(self, text: str):
         self.text = text
         self.update()
+
+    def setPos(self, pos: Vector):
+        self.pos = pos
+        self.x = self.pos.x + (self.width/2 - self.renderText.get_width()/2)
+        self.y = self.pos.y + (self.height/2 - self.renderText.get_height()/2)
