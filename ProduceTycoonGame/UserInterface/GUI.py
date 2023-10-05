@@ -5,7 +5,7 @@ from ProduceTycoonGame.events import eventOccured
 from ProduceTycoonGame.objectRegister import Object, ObjectRegister
 from ProduceTycoonGame.playerData import PlayerData
 from ProduceTycoonGame.produce import Produce
-from ProduceTycoonGame.tileMap import TileMap # This is required by ObjectRegister (CAN WE DECOUPLE THIS?)
+from ProduceTycoonGame.tileMap import TileMap, updateTileMap # This is required by ObjectRegister (CAN WE DECOUPLE THIS?)
 
 from ProduceTycoonGame.UserInterface.text import Text
 from ProduceTycoonGame.UserInterface.button import Button
@@ -194,7 +194,8 @@ class GUI:
         
 
     def update(self):
-        pass
+        if len(self.objects) > 0:
+            updateTileMap(self.tileMap, self.objects)
 
     def draw(self):
         if MainMenu.active:
