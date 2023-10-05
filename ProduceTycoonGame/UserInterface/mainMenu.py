@@ -1,7 +1,7 @@
 import pygame
 import os
 
-from ProduceTycoonGame.events import eventOccured, postEvent
+from ProduceTycoonGame.events import eventOccured, getEvent, postEvent
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.UserInterface.text import Text
 from ProduceTycoonGame.UserInterface.textInputBox import TextInputBox
@@ -23,8 +23,8 @@ def createInitialSave(filePath) -> None:
 
 class MainMenu:
     # Variables
-    width: int
-    height: int
+    WIDTH: int
+    HEIGHT: int
     loadSave: Button
     newSave: Button
     active: bool = True
@@ -49,11 +49,11 @@ class MainMenu:
         MainMenu.screen = screen
 
     # ---------- Instance Methods ---------- #
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
+    def __init__(self, w, h):
+        self.WIDTH = w
+        self.HEIGHT = h
 
-        self.background = pygame.Rect(0, 0, self.width, self.height)
+        self.background = pygame.Rect(0, 0, self.WIDTH, self.HEIGHT)
 
         self.loadSave = Button(Vector(0, 0), "Load Save", 100, 50, lambda: self.showSaves())
         self.newSave = Button(Vector(0, 50), "New Save", 100, 50, lambda: self.promptNewSave())
@@ -76,11 +76,12 @@ class MainMenu:
         saveDir.sort()
 
         saveButtons = []
-        x = 150
+        y = 150
+        w = 400; h = 50
         for save in saveDir:
             savePath = PlayerDataFilePath + save + "/"
-            saveButtons.append(Button(Vector(200, x), save, 400, 50, lambda save=savePath: self.load(save)))
-            x += 50
+            saveButtons.append(Button(Vector(self.WIDTH/2 - w/2, y), save, w, h, lambda: self.load(savePath)))
+            y += 50
 
         return saveButtons
 
@@ -102,9 +103,8 @@ class MainMenu:
                 os.mkdir(filePath)
                 createInitialSave(filePath)
             else:
-                print("Save already exists")
-                postEvent("postMessage", eventData="Save already exists")
-                print(eventOccured("postMessage"))
+                # The save with that name already exists, notify the player
+                postEvent("postMessage", eventData="Save with that name already exists!")
                 return
 
         ObjectRegister.load(filePath)
@@ -123,6 +123,22 @@ class MainMenu:
 
         self.savePromptSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 100), "Save", 400, 50, lambda: self.load(self.savePath))
         self.cancelSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 150), "Cancel", 400, 50, lambda: self.newSave())
+
+    def updateMainMenuPos(self):
+        # for when the window is resized, update all the positions
+        self.savePrompt.x = self.WIDTH / 2 - self.savePrompt.width / 2
+        self.savePrompt.y = self.HEIGHT / 2 - self.savePrompt.height / 2
+
+        self.savePromptText.setPos(Vector(self.savePrompt.x, self.savePrompt.y))
+        self.savePromptTextInput.setPos(Vector(self.savePrompt.x, self.savePrompt.y + 50))
+        self.savePromptSaveButton.setPos(Vector(self.savePrompt.x, self.savePrompt.y + 100))
+        self.cancelSaveButton.setPos(Vector(self.savePrompt.x, self.savePrompt.y + 150))
+
+        # update each save button
+        y = 150
+        for save in self.saveButtons:
+            save.setPos(Vector(self.WIDTH/2 - save.info.width/2, y))
+            y += 50
 
     # ---------- Main Methods ---------- #
     def events(self):
