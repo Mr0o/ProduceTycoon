@@ -46,6 +46,10 @@ class GUI:
 
     # tileMap - This is required by ObjectRegister (CAN WE DECOUPLE THIS?)
     tileMap: TileMap
+    @staticmethod
+    def setTileMap(tileMap: TileMap):
+        GUI.tileMap = tileMap
+        ObjectRegister.setTileSize(tileMap.tileSize)
 
     @staticmethod
     def setScreen(screen: pygame.Surface):

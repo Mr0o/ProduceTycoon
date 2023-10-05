@@ -63,7 +63,7 @@ class Game:
         self.tileMap = TileMap(Vector(0, 0))
 
         # init the GUI
-        GUI.tileMap = self.tileMap # this is required by ObjectRegister (CAN WE DECOUPLE THIS?)
+        GUI.setTileMap(self.tileMap) # this is required by ObjectRegister (CAN WE DECOUPLE THIS?)
         GUI.WIDTH = self.WIDTH
         GUI.HEIGHT = self.HEIGHT
         self.GUI = GUI()
