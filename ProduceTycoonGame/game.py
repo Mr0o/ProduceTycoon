@@ -58,24 +58,20 @@ class Game:
         ObjectRegister.setScreen(self.screen)
         TileMap.setScreen(self.screen)
         GUI.setScreen(self.screen)
+        
+        # create the tileMap
+        self.tileMap = TileMap(Vector(0, 0))
 
         # init the GUI
+        GUI.tileMap = self.tileMap # this is required by ObjectRegister (CAN WE DECOUPLE THIS?)
         GUI.WIDTH = self.WIDTH
         GUI.HEIGHT = self.HEIGHT
         self.GUI = GUI()
-        
-        self.tileMap = TileMap(Vector(0, 0))
-        ObjectRegister.setTileSize(self.tileMap.tileSize)
 
         # pathfinding (Vector Fields)
         self.pathfinder = Pathfinder(self.tileMap)
 
-        # placed objects
-        self.objects: list[Object] = []
-
         self.guests: list[Guest] = []
-
-        self.elements = []
 
     def events(self):
         clearEventList()
@@ -115,66 +111,14 @@ class Game:
                 if event.button == 3:
                     postEvent("rightMouseUp")
 
-        # semi-hacky workaround to avoid importing the Game class in the GUI module (avoiding circular imports)
-        if len(self.objects):
-            GUI.hideGUI = not self.objects[len(self.objects) - 1].info.placed
-        else:
-            GUI.hideGUI = False
-
-        # events for the GUI
-        self.GUI.events()
-
-        ObjectRegister.setElementRectangles(self.elements)
-
-        self.objects = ObjectRegister.objects
-
-        objectPlaced = False
-
-        for currentObject in self.objects:
-            currentObject.events()
-
-            #if not currentObject.info.placed:
-                #Exit = currentObject.info.objectGUI.exitButton.events(eventOccured("leftMouseDown"))
-                #if Exit:
-                #    self.objects.remove(currentObject)
-                #continue
-
-            self.elements.append(currentObject.info.rect)
-            #if self.moveObject:
-            #    if eventOccured("leftMouseDown") and self.previousMouseClicked:
-            #        self.moveObject = currentObject.moveToNewPos()
-            
-            # do some stuff when the object is placed (only once on the frame the object is placed)
-            if currentObject.info.hasPlaced:
-                currentObject.info.hasPlaced = False
-                
-                # set the currentObject's mainTile to changed (important for detecting changes in the tileMap)
-                placedTileID = currentObject.info.mainTileID
-                placedTile = self.tileMap.getTileByID(placedTileID)
-
-                if placedTile is not None:
-                    placedTile.changed = True
-                    
-                    objectPlaced = True
-
-        if objectPlaced:
-            # get the tiles that fall within the currentObject's rect
-            placedObjectTiles = self.tileMap.getTilesInRect(self.objects[len(self.objects) - 1].info.rect)
-
-            # remove the main tile from the list
-            for tile in placedObjectTiles:
-                if tile.id == self.objects[len(self.objects) - 1].info.mainTileID:
-                    placedObjectTiles.remove(tile)
-                    break
-
-        # place guests down on mouse click (testing, remove this later)
-        if eventOccured("rightMouseDown") and len(self.objects):
+        ### Place guests down on mouse click for testing (VERY HACKY, NEEDS TO BE REMOVED LATER) ###
+        if eventOccured("rightMouseDown") and len(self.GUI.objects):
             # pick a random currentObject
-            randomIndex = randint(0, len(self.objects) - 1)
+            randomIndex = randint(0, len(self.GUI.objects) - 1)
             
             mousePos = pygame.mouse.get_pos()
             newGuest = Guest(self.screen, Vector(mousePos[0], mousePos[1]))
-            targetTileID = self.objects[randomIndex].getFrontTiles()[0]
+            targetTileID = self.GUI.objects[randomIndex].getFrontTiles()[0]
             newGuest.targetTile = self.tileMap.getTileByID(targetTileID)
 
             # make sure the guest is not None
@@ -182,7 +126,7 @@ class Game:
                 self.guests.append(newGuest)
         
         for guest in self.guests:
-            self.elements.append(guest.rect)
+            self.GUI.elements.append(guest.rect)
             # guest events
             guest.events()
 
@@ -194,15 +138,14 @@ class Game:
             
 
             guest.update()
+        ### END OF GUEST TESTING CODE ###
 
-        self.elements = []
+        # events for the GUI
+        self.GUI.events()
 
     def update(self):
         for guest in self.guests:
             guest.update()
-        
-        if len(self.objects) > 0:
-            updateTileMap(self.tileMap, self.objects)
 
         # pathfinder update will check for any changes and update the vector fields
         self.pathfinder.update()
@@ -218,14 +161,11 @@ class Game:
         # drawing tileMap
         self.tileMap.draw()
 
-        # if we are placing an object, draw the tile lines
-        if len(self.objects) and not self.objects[len(self.objects) - 1].info.placed:
+        # if we are placing an object, draw the tile lines (feels like this if statement doesn't belong here..)
+        if len(self.GUI.objects) and not self.GUI.objects[len(self.GUI.objects) - 1].info.placed:
             self.tileMap.drawTileLines()
 
-        for currentObject in self.objects:
-            currentObject.draw()
-
-        # drawing charachters
+        # drawing characters
         for guest in self.guests:
             guest.draw()
 
