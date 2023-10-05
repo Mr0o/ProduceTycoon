@@ -114,6 +114,12 @@ class Game:
                 if event.button == 3:
                     postEvent("rightMouseUp")
 
+            # check for window resize
+            if event.type == pygame.VIDEORESIZE:
+                postEvent("windowResize", eventData=(event.w, event.h))
+                self.WIDTH = event.w
+                self.HEIGHT = event.h
+
         ### Place guests down on mouse click for testing (VERY HACKY, NEEDS TO BE REMOVED LATER) ###
         if eventOccured("rightMouseDown") and len(self.GUI.objects):
             # pick a random currentObject
@@ -199,6 +205,10 @@ class Game:
             # draw the size of the pathfinder vector fields list
             text = self.debugFont.render("Vector Fields: " + str(len(self.pathfinder.vectorFields)), True, (255, 255, 255))
             self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height() * 2))
+
+            # draw the current resolution WxH
+            text = self.debugFont.render("Resolution: " + str(self.WIDTH) + " x " + str(self.HEIGHT), True, (255, 255, 255))
+            self.screen.blit(text, (self.WIDTH/2 - text.get_width()/2, text.get_height() * 3))
             
             # debug placeable objects
             if self.debugPlaceableObjects:
