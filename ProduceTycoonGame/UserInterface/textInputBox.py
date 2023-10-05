@@ -31,6 +31,10 @@ class TextInputBox:
 
     def getText(self):
         return self.text
+    
+    def setPos(self, pos: Vector):
+        self.pos = pos
+        self.rect = pygame.Rect((self.pos.x, self.pos.y), (self.width, self.height))
 
     def draw(self):
         pygame.draw.rect(self.screen, self.color, self.rect)
