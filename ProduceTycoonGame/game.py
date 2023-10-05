@@ -97,7 +97,10 @@ class Game:
                     postEvent("backspace", eventData=event)
 
                 elif event.key == pygame.K_RETURN:
-                    postEvent("enterDown", eventData=event)
+                    postEvent("enter", eventData=event)
+            
+            if event.type == pygame.KEYUP:
+                postEvent("keyUp", eventData=event)
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:
