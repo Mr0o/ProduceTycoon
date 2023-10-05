@@ -150,6 +150,9 @@ class Game:
         for guest in self.guests:
             guest.update()
 
+        # update the GUI
+        self.GUI.update()
+
         # pathfinder update will check for any changes and update the vector fields
         self.pathfinder.update()
         
