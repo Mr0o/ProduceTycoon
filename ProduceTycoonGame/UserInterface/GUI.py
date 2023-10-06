@@ -1,7 +1,7 @@
 import pygame
 
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.events import eventOccured
+from ProduceTycoonGame.events import eventOccured, getEvent
 from ProduceTycoonGame.objectRegister import Object, ObjectRegister
 from ProduceTycoonGame.playerData import PlayerData
 from ProduceTycoonGame.produce import Produce
@@ -63,10 +63,18 @@ class GUI:
         ShopMenu.setScreen(GUI.screen)
 
     def createSavePrompt(self):
-        self.savePrompt = pygame.Rect(self.WIDTH / 4, self.HEIGHT / 4, self.WIDTH / 2, self.HEIGHT / 2)
-        self.savePromptText = Text(Vector(self.WIDTH / 4, self.HEIGHT / 4), 400, 150, "Would you like to save your game?")
-        self.savePromptYesButton = Button(Vector(self.WIDTH / 4 + 80, self.HEIGHT / 4 + 220), "Yes", 40, 40, lambda: saveGame(MainMenu.currentSave))
-        self.savePromptNoButton = Button(Vector(self.WIDTH / 4 + 280, self.HEIGHT / 4 + 220), "No", 40, 40, lambda: exitGame())
+        w = 350; h = 225
+        # position at center of the screen
+        self.savePrompt = pygame.Rect(self.WIDTH / 2 - w / 2, self.HEIGHT / 2 - h / 2, w, h)
+        # position text at center of the savePrompt rect
+        textPos = Vector(self.savePrompt.x + self.savePrompt.width / 2, self.savePrompt.y + 10)
+        self.savePromptText = Text(textPos, self.savePrompt.width/2, 20, "Would you like to save your game?")
+        # bottom left of the savePrompt rect
+        noPos = Vector(self.savePrompt.x + 10, self.savePrompt.y + h - 50)
+        self.savePromptNoButton = Button(noPos, "No", 40, 40, lambda: exitGame())
+        # bottom right of the savePrompt rect
+        yesPos = Vector(self.savePrompt.x + self.savePrompt.width - 50, self.savePrompt.y + h - 50)
+        self.savePromptYesButton = Button(yesPos, "Yes", 40, 40, lambda: saveGame(self.savePath))
 
     def drawSavePrompt(self):
         pygame.draw.rect(self.screen, (255, 255, 255), self.savePrompt)
@@ -122,6 +130,27 @@ class GUI:
         self.messageBox = MessageBox(self.screen)
 
     def events(self):
+        # check for window resize
+        if eventOccured("windowResize"):
+            # get the event
+            event = getEvent("windowResize")
+            # set the new width and height
+            self.WIDTH = event.eventData[0]
+            self.HEIGHT = event.eventData[1]
+
+            # update the Main Menu
+            self.mainMenu.WIDTH = self.WIDTH
+            self.mainMenu.HEIGHT = self.HEIGHT
+            self.mainMenu.background = pygame.Rect(0, 0, self.WIDTH, self.HEIGHT)
+            self.mainMenu.updateMainMenuPos()
+
+            # update the save prompt
+            self.createSavePrompt()
+
+            # update clock pos
+            self.displayClock.pos = Vector(self.WIDTH - 100, 0)
+            self.displayClock.rect = pygame.Rect(self.displayClock.pos.x, self.displayClock.pos.y, 100, 25)
+
         if MainMenu.active:
             self.mainMenu.events()
             return
@@ -220,6 +249,12 @@ class GUI:
         self.messageBox.draw()
 
     def displayMoney(self):
+        moneyBoxWidth = 40
+        moneyBoxHeight = 20
+        moneyBoxX = 0
+        moneyBoxY = self.HEIGHT - moneyBoxHeight
+        self.moneyBox = pygame.Rect((moneyBoxX, moneyBoxY), (moneyBoxWidth, moneyBoxHeight))
+        self.textRenderer = Text(Vector(moneyBoxX, moneyBoxY), moneyBoxWidth, moneyBoxHeight, str(PlayerData.data['money']))
         pygame.draw.rect(self.screen, (255, 255, 255), self.moneyBox)
         pygame.draw.rect(self.screen, (0, 0, 0), self.moneyBox, 2)
         self.textRenderer.setText(str(PlayerData.data['money']))
