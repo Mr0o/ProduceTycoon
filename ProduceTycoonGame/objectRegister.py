@@ -33,7 +33,7 @@ def getNextDirection(direction: Direction):
     return direction + 1 if direction + 1 < 4 else direction - 3
 
 class ObjectGUI:
-    currentObject: object
+    currentObject: 'Object'
     buttons: list[Button]
     active: bool = False
 
@@ -79,7 +79,12 @@ class ObjectGUI:
 
     # ---------- Main ----------
     def events(self):
+        # Keep the x pos updated for window resizing (check the info.screen)
+        WIDTH = self.currentObject.info.screen.get_width()
+        self.x = WIDTH - 100
+            
         for button in reversed(self.buttons):
+            button.setPos(Vector(self.x, button.info.pos.y)) # update the x pos of each button
             button.events()
 
     def draw(self):
