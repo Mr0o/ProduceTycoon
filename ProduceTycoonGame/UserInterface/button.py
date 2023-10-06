@@ -67,7 +67,7 @@ class Button:
         if not eventOccured("leftMouseDown"):
             self.info.isSelected = False
     
-    def draw(self, screen: pygame.Surface = Text.screen):
+    def draw(self):
         if not self.info.active:
             return
 

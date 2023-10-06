@@ -161,12 +161,12 @@ class MainMenu:
     def draw(self):
         pygame.draw.rect(MainMenu.screen, (247, 120, 98), self.background)
 
-        self.loadSave.draw(MainMenu.screen)
-        self.newSave.draw(MainMenu.screen)
+        self.loadSave.draw()
+        self.newSave.draw()
 
         if MainMenu.SHOW_SAVES:
             for save in self.saveButtons:
-                save.draw(MainMenu.screen)
+                save.draw()
 
         if MainMenu.CREATE_SAVE:
             pygame.draw.rect(MainMenu.screen, (130, 40, 160), self.savePrompt)
