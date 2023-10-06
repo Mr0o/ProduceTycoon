@@ -17,6 +17,7 @@
 
 ## For developers:
 - This game uses Python 3 and Pygame
+- Minimum Python version: 3.10
 - The game will automatically install dependencies but they can also be installed manually using the following command:
 ```
 pip install -r requirements.txt
