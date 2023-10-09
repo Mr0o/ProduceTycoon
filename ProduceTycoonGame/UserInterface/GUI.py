@@ -67,8 +67,8 @@ class GUI:
         # position at center of the screen
         self.savePrompt = pygame.Rect(self.WIDTH / 2 - w / 2, self.HEIGHT / 2 - h / 2, w, h)
         # position text at center of the savePrompt rect
-        textPos = Vector(self.savePrompt.x + self.savePrompt.width / 2, self.savePrompt.y + 10)
-        self.savePromptText = Text(textPos, self.savePrompt.width/2, 20, "Would you like to save your game?")
+        textPos = Vector(self.savePrompt.centerx + 10, self.savePrompt.centery - 100)
+        self.savePromptText = Text(textPos, 0, 0, "Would you like to save your game?")
         # bottom left of the savePrompt rect
         noPos = Vector(self.savePrompt.x + 10, self.savePrompt.y + h - 50)
         self.savePromptNoButton = Button(noPos, "No", 40, 40, lambda: exitGame())
