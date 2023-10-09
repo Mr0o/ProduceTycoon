@@ -104,7 +104,8 @@ class MainMenu:
                 createInitialSave(filePath)
             else:
                 # The save with that name already exists, notify the player
-                postEvent("postMessage", eventData="Save with that name already exists!")
+                saveName = filePath.split("/")[-2]
+                postEvent("postMessage", eventData="Save file:\n" + saveName + "\nalready exists!")
                 return
         try:
             ObjectRegister.load(filePath)
@@ -112,17 +113,17 @@ class MainMenu:
             Produce.load(filePath)
         except PermissionError:
             # file permissions error at the OS level
-            postEvent("postMessage", eventData="PermissionError: Could not load save!")
+            postEvent("postMessage", eventData="PermissionError: Could not load save!\nCheck your file permissions!")
             self.showSaves()
             return
         except FileNotFoundError:
             # file not found error at the OS level
-            postEvent("postMessage", eventData="FileNotFoundError: Could not load save!")
+            postEvent("postMessage", eventData="FileNotFoundError: Could not load save!\nIs the save corrupted?")
             self.showSaves()
             return
         except Exception as e:
             # something else went wrong
-            postEvent("postMessage", eventData="Error: " + str(e))
+            postEvent("postMessage", eventData="Something went wrong!\nException:\n" + str(e))
             self.showSaves()
             return
 
