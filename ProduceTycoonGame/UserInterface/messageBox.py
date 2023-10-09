@@ -2,6 +2,7 @@
 \n Simple message box module
 \n Only one instance of MessageBox needs to be created
 \n When a message is posted to the message box, it will be displayed in the center of the screen
+\n The message str can be split by newlines
 \n The message box does not do anything else beyond displaying a message with an OK button
 \n Intended for basic output to the player
 """
@@ -34,8 +35,6 @@ class MessageBox:
         self.message = message
         self.dismissed = False
 
-        self.text = self.font.render(self.message, True, (0, 0, 0))
-
     def events(self) -> None:
         # check if any message post events have occured
         if eventOccured("postMessage") and self.dismissed:
@@ -67,5 +66,10 @@ class MessageBox:
 
             self.button.draw()
             
-            # draw message text
-            self.screen.blit(self.text, (self.screen.get_width()/2 - self.text.get_width()/2, self.screen.get_height()/2 - self.text.get_height()/2 - 25))
+            # split message into message lines
+            lines = self.message.split("\n")
+            # render each message line
+            for i in range(len(lines)):
+                self.text = self.font.render(lines[i], True, (0, 0, 0))
+                ## draw message line
+                self.screen.blit(self.text, (self.screen.get_width()/2 - self.text.get_width()/2, self.screen.get_height()/2 - self.text.get_height()/2 - 25 + i * 25))
