@@ -106,10 +106,25 @@ class MainMenu:
                 # The save with that name already exists, notify the player
                 postEvent("postMessage", eventData="Save with that name already exists!")
                 return
-
-        ObjectRegister.load(filePath)
-        PlayerData.load(filePath)
-        Produce.load(filePath)
+        try:
+            ObjectRegister.load(filePath)
+            PlayerData.load(filePath)
+            Produce.load(filePath)
+        except PermissionError:
+            # file permissions error at the OS level
+            postEvent("postMessage", eventData="PermissionError: Could not load save!")
+            self.showSaves()
+            return
+        except FileNotFoundError:
+            # file not found error at the OS level
+            postEvent("postMessage", eventData="FileNotFoundError: Could not load save!")
+            self.showSaves()
+            return
+        except Exception as e:
+            # something else went wrong
+            postEvent("postMessage", eventData="Error: " + str(e))
+            self.showSaves()
+            return
 
         MainMenu.active = False
 
