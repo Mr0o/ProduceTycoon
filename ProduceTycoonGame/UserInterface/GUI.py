@@ -1,7 +1,7 @@
 import pygame
 
 from ProduceTycoonGame.vectors import Vector
-from ProduceTycoonGame.events import eventOccured, getEvent
+from ProduceTycoonGame.events import eventOccured, getEvent, postEvent
 from ProduceTycoonGame.objectRegister import Object, ObjectRegister
 from ProduceTycoonGame.playerData import PlayerData
 from ProduceTycoonGame.produce import Produce
@@ -10,7 +10,7 @@ from ProduceTycoonGame.tileMap import TileMap, updateTileMap # This is required 
 from ProduceTycoonGame.UserInterface.text import Text
 from ProduceTycoonGame.UserInterface.button import Button
 from ProduceTycoonGame.UserInterface.clock import Clock
-from ProduceTycoonGame.UserInterface.mainMenu import MainMenu
+from ProduceTycoonGame.UserInterface.mainMenu import MainMenu, createSave
 from ProduceTycoonGame.UserInterface.shopMenu import ShopMenu
 from ProduceTycoonGame.UserInterface.messageBox import MessageBox
 
@@ -150,6 +150,13 @@ class GUI:
             # update clock pos
             self.displayClock.pos = Vector(self.WIDTH - 100, 0)
             self.displayClock.rect = pygame.Rect(self.displayClock.pos.x, self.displayClock.pos.y, 100, 25)
+        # (Temporary) save the game on 's' key press
+        if eventOccured("keyDown"):
+            event = getEvent("keyDown")
+            if event.eventData.key == pygame.K_s:
+                createSave(self.mainMenu.currentSave)
+                saveName = self.mainMenu.currentSave.split("/")[-2]
+                postEvent("postMessage", eventData=f"Game Saved to\n'{saveName}'")
 
         if MainMenu.active:
             self.mainMenu.events()
