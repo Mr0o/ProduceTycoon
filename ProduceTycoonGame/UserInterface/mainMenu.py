@@ -16,7 +16,7 @@ from enum import Enum
 PlayerDataFilePath = "./Resources/Playerdata/"
 
 # ---------- Helper Functions ---------- #
-def createInitialSave(filePath) -> None:
+def createSave(filePath: str) -> None:
     Produce.save(filePath)
     PlayerData.save(filePath)
     ObjectRegister.save(filePath)
@@ -35,12 +35,12 @@ class MainMenu:
     savePromptText: Text
     savePromptTextInput: TextInputBox
     savePromptSaveButton: Button
-    savePath: str
+    newSavePath: str
     messageBox: MessageBox
 
     # ---------- Static Variables ---------- #
     screen = pygame.Surface((0,0))
-    currentSave = ""
+    currentSave: str = ""
     SHOW_SAVES = False
     CREATE_SAVE = False
 
@@ -94,14 +94,14 @@ class MainMenu:
         MainMenu.SHOW_SAVES = not MainMenu.SHOW_SAVES
         MainMenu.CREATE_SAVE = False
 
-    def load(self, filePath):
+    def load(self, filePath: str):
         MainMenu.currentSave = filePath
 
         if MainMenu.CREATE_SAVE:
             MainMenu.CREATE_SAVE = False
             if not os.path.exists(filePath):
                 os.mkdir(filePath)
-                createInitialSave(filePath)
+                createSave(filePath)
             else:
                 # The save with that name already exists, notify the player
                 saveName = filePath.split("/")[-2]
@@ -135,9 +135,9 @@ class MainMenu:
         self.savePromptText = Text(Vector(self.savePrompt.x, self.savePrompt.y), 400, 50, "Save Name:")
         self.savePromptTextInput = TextInputBox(MainMenu.screen, Vector(self.savePrompt.x, self.savePrompt.y + 50), 400, 50)
 
-        self.savePath = PlayerDataFilePath + self.savePromptTextInput.getText() + "/"
+        self.newSavePath = PlayerDataFilePath + self.savePromptTextInput.getText() + "/"
 
-        self.savePromptSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 100), "Save", 400, 50, lambda: self.load(self.savePath))
+        self.savePromptSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 100), "Save", 400, 50, lambda: self.load(self.newSavePath))
         self.cancelSaveButton = Button(Vector(self.savePrompt.x, self.savePrompt.y + 150), "Cancel", 400, 50, lambda: self.newSave())
 
     def updateMainMenuPos(self):
@@ -167,7 +167,7 @@ class MainMenu:
 
         if MainMenu.CREATE_SAVE:
             self.savePromptTextInput.events()
-            self.savePath = PlayerDataFilePath + self.savePromptTextInput.getText() + "/"
+            self.newSavePath = PlayerDataFilePath + self.savePromptTextInput.getText() + "/"
             self.savePromptSaveButton.events()
 
         self.messageBox.events()
