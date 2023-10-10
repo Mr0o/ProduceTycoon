@@ -192,8 +192,6 @@ class MainMenu:
 
         self.messageBox.draw()
 
-        pygame.display.update()
-
 
     
 
