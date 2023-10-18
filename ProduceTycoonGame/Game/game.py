@@ -24,11 +24,13 @@ from ProduceTycoonGame.guest import Guest
 from ProduceTycoonGame.objectRegister import Object, ObjectRegister
 from ProduceTycoonGame.pathfinding import Pathfinder
 from ProduceTycoonGame.UserInterface.GUI import GUI
+from ProduceTycoonGame.Game.gameStates import State
 
 # this is the main game loop (events, update, draw)
 class Game:
     running = True
     screen: pygame.Surface
+    _state: State
 
     def __init__(self, WIDTH: int = 800, HEIGHT: int = 600):
         pygame.init()
@@ -53,6 +55,9 @@ class Game:
 
         # debug variable that when true will draw the tiles that make up each currentObject (this could impact performance, therefore it is disabled by default)
         self.debugPlaceableObjects = False
+
+        #States
+        
 
         # set the screens
         ObjectRegister.setScreen(self.screen)

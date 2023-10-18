@@ -4,7 +4,7 @@ if not isDependenciesInstalled():
     installDependencies()
 
 # Run the game
-from ProduceTycoonGame.game import Game
+from ProduceTycoonGame.Game.game import Game
 
 if __name__ == '__main__':
     game = Game()
