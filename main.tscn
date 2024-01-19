@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://bspy600k42s0"]
+[gd_scene load_steps=7 format=3 uid="uid://bspy600k42s0"]
 
 [ext_resource type="Texture2D" uid="uid://2x5cfx8sivk6" path="res://Resources/Images/Produce/Tomato.png" id="1_8hb7u"]
 [ext_resource type="Texture2D" uid="uid://bm6ljirlhlvif" path="res://Resources/Images/Produce/Apple.png" id="2_1bqdk"]
 [ext_resource type="Texture2D" uid="uid://bjru3op1bhuhs" path="res://Resources/Images/Produce/Banana_ProduceTycoon.png" id="3_83b3d"]
 [ext_resource type="Texture2D" uid="uid://dckfghitiibrj" path="res://Resources/Images/Characters/GenericGuest.png" id="4_3ivpx"]
+[ext_resource type="Script" path="res://GenericGuestScript.gd" id="5_wva3b"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_pj3vl"]
 font_size = 56
@@ -43,3 +44,4 @@ texture_filter = 1
 position = Vector2(578, 352)
 scale = Vector2(7.3125, 7.3125)
 texture = ExtResource("4_3ivpx")
+script = ExtResource("5_wva3b")
