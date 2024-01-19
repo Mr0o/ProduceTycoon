@@ -1,9 +1,11 @@
-# ignore pycache file
-*.pyc
-__pycache__/
-
 # ignore .vscode folder
 .vscode/
 
 # ignore Playerdata folder
 Resources/Playerdata/
+
+# ignore .godot project files
+.godot
+
+# ignore godot project generated .import files
+*.import
