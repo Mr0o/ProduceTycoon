@@ -1,0 +1,45 @@
+[gd_scene load_steps=6 format=3 uid="uid://bspy600k42s0"]
+
+[ext_resource type="Texture2D" uid="uid://2x5cfx8sivk6" path="res://Resources/Images/Produce/Tomato.png" id="1_8hb7u"]
+[ext_resource type="Texture2D" uid="uid://bm6ljirlhlvif" path="res://Resources/Images/Produce/Apple.png" id="2_1bqdk"]
+[ext_resource type="Texture2D" uid="uid://bjru3op1bhuhs" path="res://Resources/Images/Produce/Banana_ProduceTycoon.png" id="3_83b3d"]
+[ext_resource type="Texture2D" uid="uid://dckfghitiibrj" path="res://Resources/Images/Characters/GenericGuest.png" id="4_3ivpx"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_pj3vl"]
+font_size = 56
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Tomato" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(869, 312)
+scale = Vector2(2.42868, 2.42868)
+texture = ExtResource("1_8hb7u")
+
+[node name="Apple" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(874, 387)
+scale = Vector2(4.41453, 4.41453)
+texture = ExtResource("2_1bqdk")
+
+[node name="BananaProduceTycoon" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(247, 335)
+scale = Vector2(5.5625, 5.5625)
+texture = ExtResource("3_83b3d")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -5.0
+offset_top = 76.0
+offset_right = 1157.0
+offset_bottom = 283.0
+text = "Produce Tycoon"
+label_settings = SubResource("LabelSettings_pj3vl")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="GenericGuest" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(578, 352)
+scale = Vector2(7.3125, 7.3125)
+texture = ExtResource("4_3ivpx")
